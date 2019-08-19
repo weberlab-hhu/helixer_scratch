@@ -1,0 +1,528 @@
+---
+title: "meta2pred"
+author: "Ali"
+date: "8/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Meta data vs prediction accuracy
+
+Investigating any relationship between the metadata going into genomes
+and the prediction accuracy coming back out
+
+```{r}
+source('scripts/import.R')
+```
+
+## Reproducibility pred accuracy
+
+comp `predacc4` (trained on Gmax,Creindhardtii,Mpolymorpha,Tcacao)
+
+with `predacc9` (trained on Creinhardtii,Athaliana,Ptrichocarpa,Gmax,Sitalica,Bdistachyon,Slycopersicum,Mpolymorpha,Vvinifera)
+
+```{r}
+toplot <- predacc4
+colnames(toplot) <- paste(colnames(toplot), '4', sep='.')
+tmp <- predacc9
+colnames(tmp) <- paste(colnames(tmp), '9', sep='.')
+toplot <- merge(toplot, tmp, by.x = 'genome.4', by.y='genome.9')
+```
+
+```{r}
+library(ggplot2)
+bp <- ggplot(toplot, aes(color=factor(trained_on.4), fill=factor(trained_on.9))) +
+  scale_fill_manual(values = c("grey55", "red2")) +
+  scale_color_manual(values=c("white", "black")) +
+  theme_bw() + 
+  geom_abline(slope=1, intercept=0, color="grey20")
+bp + geom_point(aes(x=acc_overall.4, y=acc_overall.9), shape=21, size=2.5) 
+bp + geom_point(aes(x=f1_total_0.4, y=f1_total_0.9), shape=21, size=2.5) 
+bp + geom_point(aes(x=f1_total_1.4, y=f1_total_1.9), shape=21, size=2.5) 
+```
+At a glance, yes the prediction accuracy is reproducible with different training sets,
+yes being in the training set is a sort of bonus
+
+## comparisons of high interest
+
+```{r}
+metadata$N50frac <- metadata$N50 / metadata$total_len
+metadata$busco_C_loss_tran <- metadata$busco_C_tran - metadata$busco_C_geno
+metadata$busco_C_loss_prot <- metadata$busco_C_prot - metadata$busco_C_geno
+
+# stat for kmer diversity
+k2mers <- metadata[, nchar(colnames(metadata)) == 2]
+metadata$k2mer_sd <- apply(k2mers, 1, sd)
+
+
+prepreg <- merge(metadata, predacc9, by.x='species', by.y='genome')
+is_meta <- c(rep(TRUE, ncol(metadata)), rep(FALSE, ncol(predacc9)))
+
+bp <- ggplot(prepreg, aes(color=factor(trained_on))) +
+  scale_color_manual(values = c("grey55", "red2")) +
+  theme_bw()
+
+# genome size
+bp + geom_point(aes(x=total_len, y=acc_overall))
+bp + geom_point(aes(x=total_len, y=f1_total_1))
+```
+
+```{r}
+# N50
+bp + geom_point(aes(x=N50, y=acc_overall))
+bp + geom_point(aes(x=N50, y=f1_total_1))
+```
+
+
+```{r}
+# N50 as a fraction of genome size
+bp + geom_point(aes(x=N50frac, y=acc_overall))
+bp + geom_point(aes(x=N50frac, y=f1_total_1))
+```
+
+```{r}
+# GC
+bp + geom_point(aes(x=C, y=acc_overall))
+bp + geom_point(aes(x=C, y=f1_total_1))
+```
+```{r}
+# busco genomic completeness
+bp + geom_point(aes(x=busco_C_geno, y=acc_overall))
+bp + geom_point(aes(x=busco_C_geno, y=f1_total_1))
+```
+
+```{r}
+# busco ratio transcriptome completeness - genome completeness
+bp + geom_point(aes(x=busco_C_loss_tran, y=acc_overall))
+bp + geom_point(aes(x=busco_C_loss_tran, y=f1_total_1))
+```
+
+
+```{r}
+# busco ratio proteom completeness / genome completeness
+bp + geom_point(aes(x=busco_C_loss_prot, y=acc_overall))
+bp + geom_point(aes(x=busco_C_loss_prot, y=f1_total_1))
+```
+
+```{r}
+# sd in rel abundance of k2 mers (wondering if we might be measuring,
+# say, genome repetitivity / intergenic with the kmers)
+bp + geom_point(aes(x=k2mer_sd, y=acc_overall))
+bp + geom_point(aes(x=k2mer_sd, y=f1_total_1))
+```
+
+## single regression
+
+```{r, results="hide", warning=FALSE}
+col_is_na <- apply(apply(prepreg, 1:2, as.numeric), 2, function(x) is.na(x[1]))
+to_scale <- (! col_is_na) & is_meta
+prepreg_scale <- prepreg
+prepreg_scale[, to_scale] <- scale(prepreg_scale[, to_scale])
+```
+
+### prep single binomial regression
+
+```{r}
+glm_binom <- function(y_frac, x=NULL, weights=prepreg$total_len){
+  suc_fail <- round(cbind(y_frac, 1 - y_frac) * weights)
+  if (is.null(x)){
+    out <- glm(suc_fail ~ 1, family = binomial)
+  }else{
+    out <- glm(suc_fail ~ x, family = binomial)
+  }
+  return(out)
+}
+
+sigmoid_pred_line <- function(a_model){
+  our_fit_fn <- function(x) predict(a_model, newdata = data.frame(x=x), type="response")
+  stat_function(fun=our_fit_fn, color="grey30")
+}
+
+key_stats <- function(a_model){
+  aic <- AIC(a_model)
+  coeffs <- coef(a_model)
+  p.value <- summary(a_model)$coefficients[2, 4]
+  return(c(AIC=aic, coef=coeffs[2], p.value=p.value))
+}
+
+```
+
+### vs accuracy
+```{r}
+xes <- colnames(prepreg_scale[to_scale])
+indi_linregs_acc <- lapply(xes, 
+                           function(x) glm_binom(y_frac=prepreg_scale$acc_overall, 
+                                                 x=prepreg_scale[, x]))
+names(indi_linregs_acc) <- xes
+intercept_only <- glm_binom(y_frac=prepreg_scale$acc_overall)
+indi_linregs_sum <- t(sapply(indi_linregs_acc, key_stats))
+# sort by AIC score
+indi_linregs_sum <- indi_linregs_sum[order(indi_linregs_sum[,1]), ]
+```
+
+#### most significant negative relationships (redundancy reduced)
+
+```{r}
+# fragmented buscos in the transcriptome (proteome was second)
+bp <- ggplot(prepreg_scale, aes(y=acc_overall, color=factor(trained_on))) +
+  scale_color_manual(values=c("black", "red2")) +
+  theme_bw()
+bp +
+  geom_point(aes(x=busco_F_tran)) +
+  sigmoid_pred_line(indi_linregs_acc[["busco_F_tran"]])
+```
+
+```{r}
+# single copy buscos in the transcriptome (proteom was second); AKA lacks alternative splicing
+bp + geom_point(aes(x=busco_S_tran)) +
+  sigmoid_pred_line(indi_linregs_acc[["busco_S_tran"]])
+```
+
+#### most significant positive relationships (redundancy reduced)
+```{r}
+# duplicated buscos in the transcriptome (proteom was second); AKA has alternative splicing
+bp + geom_point(aes(x=busco_D_tran)) +
+  sigmoid_pred_line(indi_linregs_acc[["busco_D_tran"]])
+```
+
+```{r}
+# count of CDS features from gff3 (maybe also related to alternative splicing?)
+bp + geom_point(aes(x=CDS)) +
+  sigmoid_pred_line(indi_linregs_acc[["CDS"]])
+```
+
+```{r}
+# count of five_prime_UTR features from gff3 (maybe also related to alternative splicing?)
+# that and probably the program that made the gff
+bp + geom_point(aes(x=five_prime_UTR)) +
+  sigmoid_pred_line(indi_linregs_acc[["five_prime_UTR"]])
+# next would be more gff counts: 3', mRNA, exon
+```
+
+```{r}
+# finally all the total_len_gt_X fall out with x in decreasing order
+bp + geom_point(aes(x=total_len_gt_50k)) +
+  sigmoid_pred_line(indi_linregs_acc[["total_len_gt_50k"]])
+```
+
+
+## multi regression (PLS after logit function)
+
+```{r}
+# linearizing transform for bounded 0-1 data (assuming it followed sigmoid to start with)
+logit <- function(x){
+  log(x) - log(1-x)
+}
+
+prepreg_scale$acc_overall_logit <- logit(prepreg_scale$acc_overall)
+```
+
+### OK, once just with lm
+```{r}
+non_redundant <- c("busco_F_tran","busco_D_tran","CDS","five_prime_UTR","mRNA","total_len_gt_50k","total_len","largest_contig","N75","gene","busco_C_tran","busco_C_loss_tran","N50frac","busco_F_geno","contigs_gt_5k","busco_M_tran","contigs","L50","CC","CA","busco_C_geno","CG","busco_M_geno","C","TA","AA","AC","N","AT","GA","GC","A","busco_D_geno","AG", "k2mer_sd")
+
+x <- prepreg_scale[, non_redundant]
+x$y <- prepreg_scale$acc_overall_logit
+# bullshit bingo
+lm.acc_overall.fit <- lm(y~., data=x)
+summary(lm.acc_overall.fit)
+```
+
+### Now PLS
+
+```{r}
+library(pls)
+# these are basically all the input vars
+x <- prepreg_scale[, to_scale]
+x$trained_on = prepreg_scale$trained_on
+x$y <- prepreg_scale$acc_overall_logit
+pls.acc_overall.fit <- plsr(y~., data=x)
+validationplot(pls.acc_overall.fit)
+```
+
+```{r}
+# viz prediction accuracy
+plot(x$y, predict(pls.acc_overall.fit, x, ncomp=3))
+plot(x$y, predict(pls.acc_overall.fit, x, ncomp=12))
+```
+
+```{r}
+library(reshape2)
+metaclass <- c(rep("gff", 6), 
+               rep("quast", 18),
+               rep("buscoG", 5),
+               rep("buscoP", 5),
+               rep("buscoT", 5),
+               rep("kmers", 13),
+               rep("f.eng", 5))
+metaclass <- factor(metaclass, levels=unique(metaclass))
+# look at loadings of first components
+plot_with_loadings <- function(amodel, metaclass){
+  pls.loadings <- amodel$loadings
+  toplot <- data.frame(pls.loadings[,1:3])
+  toplot$meta <- factor(rownames(toplot), levels = rownames(toplot))
+  toplot$metaclass <- metaclass
+  toplot <- melt(toplot)
+  #return(toplot)
+  colnames(toplot)[3:4] <- c("component", "loading")
+
+  bp <- ggplot(toplot, aes(y=loading, x=meta, fill=metaclass)) +
+    scale_fill_brewer(palette = "Set3") +
+    geom_bar(stat="identity") +
+    facet_grid(rows=vars(component)) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  bp
+}
+plot_with_loadings(pls.acc_overall.fit, metaclass)
+```
+
+#### looking at final coeffs with ncomp=2
+```{r}
+
+plot_with_ncomps <- function(ncomps, amodel, metaclass){
+  toplot <- coef(amodel, ncomp=ncomps)
+  toplot <- data.frame(coeffs3=toplot, 
+                       meta=factor(rownames(toplot), 
+                                   levels=rownames(toplot)),
+                       metaclass=metaclass
+                       )
+  colnames(toplot)[1] <- 'coeffs'
+  ggplot(toplot, aes(x=meta, y=coeffs, fill=metaclass)) +
+    geom_bar(stat="identity") +
+    scale_fill_brewer(palette = "Set3") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+}
+plot_with_ncomps(2, pls.acc_overall.fit, metaclass)
+```
+
+#### looking at final coeffs with ncomp=3
+```{r}
+plot_with_ncomps(3, pls.acc_overall.fit, metaclass = metaclass)
+```
+
+
+#### looking at final coeffs with ncomp=9
+```{r}
+plot_with_ncomps(9, pls.acc_overall.fit, metaclass)
+```
+
+#### looking at final coeffs with ncomp=16
+```{r}
+plot_with_ncomps(16, pls.acc_overall.fit, metaclass)
+```
+
+## OK, and now that we have something resembling useful, PLS f1 1
+```{r}
+# these are basically all the input vars
+x <- prepreg_scale[, to_scale]
+x$trained_on <- prepreg_scale$trained_on
+x$y <- logit(prepreg_scale$f1_total_1)
+pls.f1_total_f1.fit <- plsr(y~., data=x)
+validationplot(pls.f1_total_f1.fit)
+```
+
+```{r}
+# viz prediction accuracy
+plot(x$y, predict(pls.f1_total_f1.fit, x, ncomp=3))
+plot(x$y, predict(pls.f1_total_f1.fit, x, ncomp=12))
+```
+
+```{r}
+# loadings
+plot_with_loadings(pls.f1_total_f1.fit, metaclass)
+```
+
+#### looking at final coeffs with ncomp=2+
+```{r}
+plot_with_ncomps(2, pls.f1_total_f1.fit, metaclass)
+plot_with_ncomps(3, pls.f1_total_f1.fit, metaclass)
+plot_with_ncomps(9, pls.f1_total_f1.fit, metaclass)
+plot_with_ncomps(16, pls.f1_total_f1.fit, metaclass)
+```
+
+
+## And further trained on 9, PLS f1_total_0
+```{r}
+# these are basically all the input vars
+x <- prepreg_scale[, to_scale]
+x$trained_on <- prepreg_scale$trained_on
+x$y <- logit(prepreg_scale$f1_total_0)
+pls.f1_total_f0.fit <- plsr(y~., data=x)
+validationplot(pls.f1_total_f0.fit)
+```
+
+```{r}
+# viz prediction accuracy
+plot(x$y, predict(pls.f1_total_f0.fit, x, ncomp=3))
+plot(x$y, predict(pls.f1_total_f0.fit, x, ncomp=12))
+```
+
+```{r}
+# loadings
+plot_with_loadings(pls.f1_total_f0.fit, metaclass)
+```
+
+#### looking at final coeffs with ncomp=2+
+```{r}
+plot_with_ncomps(2, pls.f1_total_f0.fit, metaclass)
+plot_with_ncomps(3, pls.f1_total_f0.fit, metaclass)
+plot_with_ncomps(9, pls.f1_total_f0.fit, metaclass)
+plot_with_ncomps(16, pls.f1_total_f0.fit, metaclass)
+```
+
+## kmers...
+
+```{r}
+kmers <- prepreg[, nchar(colnames(prepreg)) < 3]
+mycols <- c('blue3', 'gold2', 'green3', 'grey40')
+boxplot(kmers, col=mycols[c(1,2,4,1,3,3,1,3,2,2,3,2,1)], ylab='rel. freq.', main='kmers')
+```
+
+
+### model without kmers/kmers only (train 9, f1 1)
+
+```{r}
+# split input to kmers / no kmers
+x <- prepreg_scale[, to_scale]
+x$trained_on <- prepreg$trained_on
+kmerish <- c("gc_content", "A", "C", "AA", "AC", "AG", "AT", "CA", "CC", "CG", "GA", "GC", "TA")
+kmers_only <- x[, kmerish]
+kmers_only$y <- logit(prepreg_scale$f1_total_1)
+
+no_kmers <- x[, ! colnames(x) %in% kmerish]
+no_kmers$y <- logit(prepreg_scale$f1_total_1)
+```
+
+#### kmers
+
+```{r}
+pls.kmers.f1_total_f1.fit <- plsr(y~., data=kmers_only)
+validationplot(pls.kmers.f1_total_f1.fit)
+plot(kmers_only$y, predict(pls.kmers.f1_total_f1.fit, kmers_only, ncomp=3))
+mck <- metaclass[colnames(x) %in% kmerish]
+plot_with_loadings(pls.kmers.f1_total_f1.fit, metaclass=mck)
+plot_with_ncomps(2, pls.kmers.f1_total_f1.fit, metaclass=mck)
+plot_with_ncomps(3, pls.kmers.f1_total_f1.fit, metaclass=mck)
+```
+
+#### no kmers
+
+```{r}
+pls.nokmers.f1_total_f1.fit <- plsr(y~., data=no_kmers)
+validationplot(pls.nokmers.f1_total_f1.fit)
+plot(no_kmers$y, predict(pls.nokmers.f1_total_f1.fit, no_kmers, ncomp=3))
+
+mc2 <- metaclass[! colnames(x) %in% kmerish]
+plot_with_loadings(pls.nokmers.f1_total_f1.fit, metaclass=mc2)
+plot_with_ncomps(2, pls.nokmers.f1_total_f1.fit, metaclass=mc2)
+plot_with_ncomps(3, pls.nokmers.f1_total_f1.fit, metaclass=mc2)
+```
+
+## Finally, PLS of f1_total_1 for trained on 4 
+(to see if some or all is robust to exact training set)
+
+
+
+```{r, results="hide", warning=FALSE}
+prepreg <- merge(metadata, predacc4, by.x='species', by.y='genome')
+col_is_na <- apply(apply(prepreg, 1:2, as.numeric), 2, function(x) is.na(x[1]))
+to_scale <- (! col_is_na) & is_meta
+prepreg_scale <- prepreg
+prepreg_scale[, to_scale] <- scale(prepreg_scale[, to_scale])
+```
+
+```{r}
+# these are basically all the input vars
+x <- prepreg_scale[, to_scale]
+x$trained_on <- prepreg_scale$trained_on
+x$y <- logit(prepreg_scale$f1_total_1)
+pls4.f1_total_f1.fit <- plsr(y~., data=x)
+validationplot(pls4.f1_total_f1.fit)
+```
+```{r}
+# viz prediction accuracy
+plot(x$y, predict(pls4.f1_total_f1.fit, x, ncomp=3))
+plot(x$y, predict(pls4.f1_total_f1.fit, x, ncomp=12))
+```
+
+```{r}
+# loadings
+plot_with_loadings(pls4.f1_total_f1.fit, metaclass)
+```
+
+#### looking at final coeffs with ncomp=2+
+```{r}
+plot_with_ncomps(2, pls4.f1_total_f1.fit, metaclass)
+plot_with_ncomps(3, pls4.f1_total_f1.fit, metaclass)
+plot_with_ncomps(9, pls4.f1_total_f1.fit, metaclass)
+plot_with_ncomps(16, pls4.f1_total_f1.fit, metaclass)
+```
+
+#### and finally side by side, 9 and 4
+```{r}
+plot_with_ncomps(3, pls.f1_total_f1.fit, metaclass)
+plot_with_ncomps(3, pls4.f1_total_f1.fit, metaclass)
+```
+
+OK, on the side that just makes sense
+
+* trained_on is positive
+* fragmented buscos always hurt
+* genomic buscos, sorts: complete, single copy, duplicated missing, fragmented
+
+Makes some sense
+
+* total length hurts
+
+Confusing
+
+* more contigs are good?
+
+Maybe related to calling alternative splicing
+
+* total counts of gff features help, particularly CDS, exon
+* duplicated buscos are good, and single copy bad at the transcriptome/proteome level
+
+Worrisome
+
+* kmers
+
+Adding the engineered feature from the kmers (2mer sd) certainly
+helps a model without the kmers, but otherwise doesn't capture
+that much of the kmer info / replace them.
+
+```{r}
+library(ggrepel)
+coeffs9 <- coef(pls.f1_total_f1.fit, ncomp=3)
+coeffs4 <- coef(pls4.f1_total_f1.fit, ncomp=3)
+
+
+incl_name <- function(x, keep){
+  if (x %in% keep){
+    return(x)
+  }else{
+    return(NA)
+  }
+}
+# prep labels
+
+toorder <- abs(coeffs4 - coeffs9)
+toorder <- data.frame(toorder)[order(toorder, decreasing = TRUE),, drop=FALSE]
+
+toplot <- data.frame(coeffs4=coeffs4, coeffs9=coeffs9)
+colnames(toplot) <- c("coeffs4", "coeffs9")
+toplot$meta <- rownames(toplot)
+toplot$meta_labs <- sapply(toplot$meta, incl_name, keep=rownames(toorder)[1:6])
+
+
+ggplot(toplot, aes(x=coeffs4, y=coeffs9)) + 
+  geom_abline(slope=1, intercept=0, color="grey") +
+  geom_point() +
+  geom_text_repel(aes(label=meta_labs), color="blue") +
+  theme_bw()
+```
+
+
