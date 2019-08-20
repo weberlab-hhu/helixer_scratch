@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import argparse
 from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.Alphabet import generic_dna
 from kpal.klib import Profile
 
 def count_seq(seq, k):
@@ -15,7 +17,20 @@ def main(fastain, min_k, max_k):
         seq = str(record.seq).upper()
         for k in range(min_k, max_k + 1, 1):
             counts, kmers = count_seq(seq, k)
+            count_dict = dict()
             for count, kmer in zip(counts, kmers):
+                count_dict[str(kmer)] = int(count)
+            # collapse to canonical kmers
+            to_del = []
+            for kmer in count_dict:
+                kmer_rc = str(Seq(kmer, generic_dna).reverse_complement())
+                if kmer > kmer_rc:
+                    count_dict[kmer_rc] += count_dict[kmer]
+                    to_del.append(kmer)
+            for kmer in to_del:
+                count_dict.pop(kmer)
+            for kmer in sorted(count_dict):
+                count = count_dict[kmer]
                 print('\t'.join([str(x) for x in [record.id, kmer, count, k]]))
         print('\t'.join([str(x) for x in [record.id, 'N', seq.count('N'), 1]]))
 
