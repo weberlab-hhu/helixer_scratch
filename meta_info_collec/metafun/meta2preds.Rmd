@@ -74,6 +74,7 @@ bp + geom_point(aes(x=total_len, y=f1_total_1))
 # N50
 bp + geom_point(aes(x=N50, y=acc_overall))
 bp + geom_point(aes(x=N50, y=f1_total_1))
+bp + geom_point(aes(x=N50, y=f1_cds_1))
 ```
 
 
@@ -373,6 +374,70 @@ plot_with_ncomps(9, pls.f1_total_f0.fit, metaclass)
 plot_with_ncomps(16, pls.f1_total_f0.fit, metaclass)
 ```
 
+## now for Augustus (Marvin's internship results)
+
+### first: f1_cds_1 on the same subset of genomes but with pred 9
+```{r}
+# these are basically all the input vars
+aug <- read.csv('Augustus_results.csv')
+plus_aug <- merge(prepreg_scale, aug, by.x="species", by.y="genome")
+x <- plus_aug[, c(to_scale, FALSE)]  # new f1_cds_1_RT column is not scaled
+#x$trained_on <- plus_aug$trained_on
+x$y <- logit(plus_aug$f1_cds_1)
+pls.f1_cds_1.fit <- plsr(y~., data=x)
+validationplot(pls.f1_cds_1.fit)
+```
+
+```{r}
+# viz prediction accuracy
+plot(x$y, predict(pls.f1_cds_1.fit, x, ncomp=3))
+plot(x$y, predict(pls.f1_cds_1.fit, x, ncomp=12))
+```
+
+```{r}
+# loadings
+mc_aug <- metaclass[-length(metaclass)]
+plot_with_loadings(pls.f1_cds_1.fit, mc_aug)
+```
+
+#### looking at final coeffs with ncomp=2+
+```{r}
+plot_with_ncomps(2, pls.f1_cds_1.fit, mc_aug)
+plot_with_ncomps(3, pls.f1_cds_1.fit, mc_aug)
+plot_with_ncomps(9, pls.f1_cds_1.fit, mc_aug)
+plot_with_ncomps(16, pls.f1_cds_1.fit, mc_aug)
+```
+
+
+
+### now for Augustus 
+
+```{r}
+# these are basically all the input vars
+x <- plus_aug[, c(to_scale, FALSE)]  # new f1_cds_1_RT column is 
+x$y <- logit(plus_aug$f1_cds_1_RT)
+pls.f1_cds_1_RT.fit <- plsr(y~., data=x)
+validationplot(pls.f1_cds_1_RT.fit)
+```
+```{r}
+# viz prediction accuracy
+plot(x$y, predict(pls.f1_cds_1_RT.fit, x, ncomp=3))
+plot(x$y, predict(pls.f1_cds_1_RT.fit, x, ncomp=12))
+```
+```{r}
+# loadings
+# skip trained_on for metaclass
+plot_with_loadings(pls.f1_cds_1_RT.fit, mc_aug)
+```
+#### looking at final coeffs with ncomp=2+
+```{r}
+plot_with_ncomps(2, pls.f1_cds_1_RT.fit, mc_aug)
+plot_with_ncomps(3, pls.f1_cds_1_RT.fit, mc_aug)
+plot_with_ncomps(9, pls.f1_cds_1_RT.fit, mc_aug)
+plot_with_ncomps(16, pls.f1_cds_1_RT.fit, mc_aug)
+```
+
+
 ## kmers...
 
 ```{r}
@@ -525,4 +590,8 @@ ggplot(toplot, aes(x=coeffs4, y=coeffs9)) +
   theme_bw()
 ```
 
-
+Lucikly it looks like our training genomes are fairly well distributed in
+terms of kmers.
+```{r}
+source('scripts/PCA.R')
+```
