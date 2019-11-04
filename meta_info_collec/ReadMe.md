@@ -16,10 +16,25 @@ record) after using them, but one might find originals stored with the data.
 ## test (first attempt to run a second time
 
 ```
+metapath=/home/ali/repos/github/alisandra/helixer_scratch/meta_info_collec/
 cd $readypath
 bash setup/get_transcriptome.sh test
+# fix stop codons in proteome
+for i in `ls test`; 
+do 
+  python scripts/fix_stopcodons.py -i test/$i/*/annotation/protein.fa -o tmpprotein$i.fa;
+  mv tmpprotein$i.fa test/$i/*/annotation/protein.fa;
+done
+
 # quast
+# todo, insert activate quast venv?
 ls test/|xargs -I% -n1 -P4 bash scripts/quast.sh test %
 # count gff features
-ls test/|xargs -I% -n1 -P4 bash /home/ali/repos/github/alisandra/helixer_scratch/meta_info_collec/scripts/count_gff.sh test %
+ls test/|xargs -I% -n1 -P4 bash $metapath/scripts/count_gff.sh test %
+
+# kmers
+deactivate
+source ~/repos/venv/bin/activate
+ls test/|xargs -n1 -P4 bash $metapath/scripts/kmers.sh test 
+
 ```
