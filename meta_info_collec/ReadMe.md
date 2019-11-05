@@ -38,3 +38,12 @@ source ~/repos/venv/bin/activate
 ls test/|xargs -n1 -P4 bash $metapath/scripts/kmers.sh test 
 
 ```
+
+## improved org
+
+```
+# e.g. 
+basedir=test
+ls $basedir/ | xargs -n1 -P6 bash $metapath/prep1.sh $basedir
+ls $basedir/ | xargs -n1 -P6 bash $metapath/local1.sh $basedir
+```

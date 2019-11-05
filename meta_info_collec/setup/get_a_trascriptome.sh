@@ -2,17 +2,11 @@ datadir=$1
 sp=$2
 echo $sp
 basedir=$datadir/$sp
+# assumes existing fa
+fa_in=`echo $basedir/*/assembly/*.fa`
+# assumes extracted gff
+gff3_in=`echo $basedir/*/annotation/*.gff3`
 
-fa_in=$basedir/*/assembly/*.fa 
-gz_in=`echo $fa_in.gz`
-fa_in=${gz_in%.gz}
-echo -n "zcat fa... "
-zcat $gz_in > $fa_in
-gff3_in=$basedir/*/annotation/*.gff3
-ggz_in=`echo $gff3_in.gz`
-gff3_in=${ggz_in%.gz}
-echo -n "zcat gff3... "
-zcat $ggz_in > $gff3_in
 
 anno_dir=${gff3_in%/*.gff3}
 echo "gffread..."
