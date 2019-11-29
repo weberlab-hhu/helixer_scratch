@@ -1,0 +1,48 @@
+sqlite> select feature.type, count(*) from feature group by type order by count(*) desc;
+type                                      count(*)                      
+----------------------------------------  ------------------------------
+geenuff_intron                            64201975                      
+geenuff_transcript                        7791304                       
+geenuff_cds                               6430138                       
+missing_utr_5p                            3590578                       
+missing_utr_3p                            3499045                       
+too_short_intron                          1625591                       
+missing_start_codon                       1138210                       
+missing_stop_codon                        564326                        
+super_loci_overlap_error                  86744                         
+mismatched_ending_phase                   44475                         
+wrong_starting_phase                      15178                         
+
+sqlite> select type, count(*) from transcript group by type order by count(*) desc;
+type                                      count(*)                      
+----------------------------------------  ------------------------------
+mRNA                                      6416210                       
+lnc_RNA                                   671585                        
+snRNA                                     149604                        
+pseudogenic_transcript                    121676                        
+ncRNA                                     114185                        
+snoRNA                                    103726                        
+miRNA                                     88493                         
+rRNA                                      76643                         
+piRNA                                     15363                         
+unconfirmed_transcript                    10503                         
+transcript                                6218                          
+V_gene_segment                            5921                          
+scRNA                                     3861                          
+tRNA                                      3086                          
+Y_RNA                                     1732                          
+J_gene_segment                            999                           
+C_gene_segment                            746                           
+pre_miRNA                                 519                           
+vaultRNA_primary_transcript               117                           
+D_gene_segment                            103                           
+three_prime_overlapping_ncrna             9                             
+gene_segment                              5                             
+
+sqlite> select type, count(*) from super_locus group by type order by count(*) desc;
+type                                      count(*)                      
+----------------------------------------  ------------------------------
+gene                                      3885690                       
+ncRNA_gene                                875488                        
+pseudogene                                121410                        
+bidirectional_promoter_lncRNA             34                            
