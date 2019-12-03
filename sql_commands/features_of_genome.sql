@@ -64,22 +64,33 @@ GROUP BY genome.id
 ORDER BY count(distinct(transcript.id)) DESC
 LIMIT 100;
 
-
-
-SELECT feature.id FROM feature
+-- features of a gene
+SELECT start, end, feature.type FROM feature
 JOIN coordinate ON feature.coordinate_id = coordinate.id
 JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
 JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
 JOIN transcript ON transcript_piece.transcript_id = transcript.id
 JOIN genome ON genome.id = coordinate.genome_id
-WHERE transcript.longest = 1 AND coordinate.id IN (
-	SELECT DISTINCT feature.coordinate_id AS feature_coordinate_id
-	FROM feature
-)
-AND genome.species IN ('Olucimarinus')
-ORDER BY genome.species, coordinate.length DESC;
+JOIN super_locus on transcript.super_locus_id = super_locus.id
+WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and super_locus.given_name = 'AT1G01073.TAIR10'
+ORDER BY feature.type, start;
+
+-- too short intron errors by species
+SELECT genome.species, count(feature.id) FROM feature
+JOIN coordinate ON feature.coordinate_id = coordinate.id
+JOIN genome ON genome.id = coordinate.genome_id
+WHERE feature.type == 'geenuff_intron' and abs(feature.start - feature.end) < 60
+GROUP BY genome.id
+ORDER BY count(feature.id);
 
 
+SELECT start, end, feature.type FROM feature
+JOIN coordinate ON feature.coordinate_id = coordinate.id
+JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+JOIN transcript ON transcript_piece.transcript_id = transcript.id
+JOIN genome ON genome.id = coordinate.genome_id
+WHERE genome.species = 'Athaliana' and coordinate.seqid = 'Chr1' and feature.is_plus_strand = 0 and end < 10000;
 
 
 SELECT count(feature.id) FROM feature
