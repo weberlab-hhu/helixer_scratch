@@ -18,7 +18,5 @@ CROSS JOIN transcript ON transcript_piece.transcript_id = transcript.id
 CROSS JOIN super_locus ON transcript.super_locus_id = super_locus.id
 WHERE genome.species IN ('Athaliana') AND super_locus.type = 'gene' AND transcript.type = 'mRNA'
 	AND feature.type = 'geenuff_transcript' AND feature.is_plus_strand = 0
-GROUP BY super_locus.id
-ORDER BY count(distinct(transcript.id)) DESC
-LIMIT 10;
+GROUP BY super_locus.id;
 
