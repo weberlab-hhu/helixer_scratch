@@ -38,6 +38,17 @@ JOIN genome ON genome.id = coordinate.genome_id
 JOIN super_locus on transcript.super_locus_id = super_locus.id
 WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.longest = 1 and feature.type = 'geenuff_transcript';
 
+-- average length of genes grouped by genome
+SELECT genome.species, round(avg(abs(feature.start - feature.end))) avg_gene_length from feature
+JOIN coordinate ON feature.coordinate_id = coordinate.id
+JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+JOIN transcript ON transcript_piece.transcript_id = transcript.id
+JOIN genome ON genome.id = coordinate.genome_id
+JOIN super_locus on transcript.super_locus_id = super_locus.id
+WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.longest = 1 and feature.type = 'geenuff_transcript'
+GROUP BY genome.id;
+
 -- all super loci with their number of transcripts for one genome
 SELECT super_locus.given_name, count(distinct(transcript.id)) FROM feature
 JOIN coordinate ON feature.coordinate_id = coordinate.id
