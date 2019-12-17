@@ -3,3 +3,10 @@ nohup.out
 backup-home.log
 gene_lengths
 data_files
+*.pdf
+texput.log
+main.log
+main.aux
+main.bbl
+main.pdf
+
