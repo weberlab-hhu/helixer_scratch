@@ -10,16 +10,16 @@
 \subtitle{Really cool deep learning stuff}
 
 \title[short Title]{General purpose gene annotation using deep learning}
-\author[Sample \textit{et~al}.]{Felix Stiehler\,$^{\text{\sfb 1,}*}$, Alisandra Denton\,$^{\text{\sfb 1,}*}$}
-\address{$^{\text{\sf 1}}$Biochemistry of Plants, Heinrich-Heine-Universiät, Düsseldorf, Post Code, Germany}
+\author[Sample \textit{et~al}.]{Felix Stiehler\,$^{\text{\sfb 1,}}$$^\dagger$, Alisandra Denton\,$^{\text{\sfb 1,}}$$^\dagger$\, Andreas Weber\,$^{\text{\sfb 1,}*}$}
+\address{$^{\text{\sf 1}}$Institue for Plant Biochemistry, Heinrich-Heine-University, Dusseldorf, D-40225, Germany}
 
-\corresp{$^\ast$To whom correspondence should be addressed. Both authors contributed equally.}
+\corresp{$^\dagger$Authors contributed equally. \newline $^\ast$To whom correspondence should be addressed.}
 
 \history{Received on XXXXX; revised on XXXXX; accepted on XXXXX}
 
 \editor{Associate Editor: XXXXXXX}
 
-\abstract{\textbf{Motivation:} Current state of the art gene annotation programs for eucaryotic genomes have to be pretrained for each species and still often produce annotations that lack the required accuracy. \\
+\abstract{\textbf{Motivation:} Current state of the art gene annotation programs for eukaryotic genomes have to be pretrained for each species and still often produce annotations that lack the required accuracy. \\
 \textbf{Results:} We set up a framework that can be used to build much more general gene callers that also outperform traditional methods on a variety of complex genomes.\\
 \textbf{Availability:} Text  Text Text Text Text Text Text Text Text Text  Text Text Text Text
 Text Text Text Text Text Text Text Text Text Text Text Text Text Text  Text\\
@@ -30,19 +30,17 @@ online.}
 \maketitle
 
 \section{Introduction}
-
-Text Text Text Text Text Text  Text Text Text Text Text Text Text
-Text Text  Text Text Text Text Text Text. Figure~\ref{fig:01}
-shows that the above method  Text Text Text Text  Text Text Text
-Text Text Text  Text Text.  \citep{Bag01} wants to know about
-{\ldots}{\ldots} text follows.
-\begin{equation}
-\sum \text{\it x}+ \text{\it y} =\text{\it Z}\label{eq:01}\vspace*{-10pt}
-\end{equation}
-
-%\enlargethispage{12pt}
+\begin{itemize}
+	\item Calling genes correctly is very important
+	\item but also very difficult in eukaryotes
+	\item All current state of the art gene callers work based on HMMs
+	\item The structure of the HMMs is finely tuned and engineered
+	\item Actual learning is very limited, and with that generalization across different genomes 
+	\item (Also have problems with genes that contain long introns, common in mammals)
+\end{itemize}
 
 \section{Approach}
+We seek to show a path for improving on current HMM-based methods both in performance and in the ability to generalize. To accomplish this, we use deep neural networks, which have been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods when detecting complex patterns in variety of fields. The genomic data was preprocessed with Geenuff \citealp{Denton19} abc
 
 Equation~(\ref{eq:01}) Text Text Text Text Text Text  Text Text
 Text Text Text Text Text Text Text Text Text Text Text Text Text.
@@ -549,36 +547,13 @@ This work has been supported by the... Text Text  Text Text.\vspace*{-12pt}
 
 \begin{thebibliography}{}
 
-\bibitem[Bofelli {\it et~al}., 2000]{Boffelli03}
-Bofelli,F., Name2, Name3 (2003) Article title, {\it Journal Name}, {\bf 199}, 133-154.
-
-\bibitem[Bag {\it et~al}., 2001]{Bag01}
-Bag,M., Name2, Name3 (2001) Article title, {\it Journal Name}, {\bf 99}, 33-54.
-
-\bibitem[Yoo \textit{et~al}., 2003]{Yoo03}
-Yoo,M.S. \textit{et~al}. (2003) Oxidative stress regulated genes
-in nigral dopaminergic neurnol cell: correlation with the known
-pathology in Parkinson's disease. \textit{Brain Res. Mol. Brain
-Res.}, \textbf{110}(Suppl. 1), 76--84.
-
-\bibitem[Lehmann, 1986]{Leh86}
-Lehmann,E.L. (1986) Chapter title. \textit{Book Title}. Vol.~1, 2nd edn. Springer-Verlag, New York.
+\bibitem[Denton {\it et~al}., 2019]{Denton19}
+Denton,A., Stiehler,F. (2019) Article title, {\it Journal Name}, {\bf 199}, 133-154.
 
 \bibitem[Crenshaw and Jones, 2003]{Cre03}
 Crenshaw, B.,III, and Jones, W.B.,Jr (2003) The future of clinical
 cancer management: one tumor, one chip. \textit{Bioinformatics},
 doi:10.1093/bioinformatics/btn000.
-
-\bibitem[Auhtor \textit{et~al}. (2000)]{Aut00}
-Auhtor,A.B. \textit{et~al}. (2000) Chapter title. In Smith, A.C.
-(ed.), \textit{Book Title}, 2nd edn. Publisher, Location, Vol. 1, pp.
-???--???.
-
-\bibitem[Bardet, 1920]{Bar20}
-Bardet, G. (1920) Sur un syndrome d'obesite infantile avec
-polydactylie et retinite pigmentaire (contribution a l'etude des
-formes cliniques de l'obesite hypophysaire). PhD Thesis, name of
-institution, Paris, France.
 
 \end{thebibliography}
 \end{document}
