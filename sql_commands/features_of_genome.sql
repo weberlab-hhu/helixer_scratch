@@ -38,8 +38,8 @@ JOIN genome ON genome.id = coordinate.genome_id
 JOIN super_locus on transcript.super_locus_id = super_locus.id
 WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.longest = 1 and feature.type = 'geenuff_transcript';
 
--- average length of genes grouped by genome
-SELECT genome.species, round(avg(abs(feature.start - feature.end))) avg_gene_length from feature
+-- average length of longest transcripts grouped by genome
+SELECT genome.species, round(avg(abs(feature.start - feature.end))) avg_transcript_length from feature
 JOIN coordinate ON feature.coordinate_id = coordinate.id
 JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
 JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
@@ -47,7 +47,8 @@ JOIN transcript ON transcript_piece.transcript_id = transcript.id
 JOIN genome ON genome.id = coordinate.genome_id
 JOIN super_locus on transcript.super_locus_id = super_locus.id
 WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.longest = 1 and feature.type = 'geenuff_transcript'
-GROUP BY genome.id;
+GROUP BY genome.id
+ORDER BY round(avg(abs(feature.start - feature.end))) DESC;
 
 -- all super loci with their number of transcripts for one genome
 SELECT super_locus.given_name, count(distinct(transcript.id)) FROM feature
@@ -118,19 +119,6 @@ JOIN transcript ON transcript_piece.transcript_id = transcript.id
 JOIN genome ON genome.id = coordinate.genome_id
 WHERE transcript.longest = 1 AND genome.species IN ('Athaliana')
 GROUP BY feature.type;
-
--- average longest transcript length per genome
-SELECT genome.species, avg(abs(feature.start - feature.end)) FROM genome
-CROSS JOIN coordinate ON coordinate.genome_id = genome.id
-CROSS JOIN feature ON feature.coordinate_id = coordinate.id
-CROSS JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
-CROSS JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
-CROSS JOIN transcript ON transcript_piece.transcript_id = transcript.id
-CROSS JOIN super_locus ON transcript.super_locus_id = super_locus.id
-WHERE super_locus.type = 'gene' AND transcript.type = 'mRNA' AND transcript.longest = 1
-	AND feature.type = 'geenuff_transcript'
-GROUP BY genome.id
-ORDER BY avg(abs(feature.start - feature.end)) DESC;
 
 -- average intron length per genome
 SELECT genome.species, avg(abs(feature.start - feature.end)) FROM genome
