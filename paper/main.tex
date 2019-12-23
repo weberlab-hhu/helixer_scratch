@@ -40,11 +40,27 @@ online.}
 \end{itemize}
 
 \section{Approach}
-Helixer is a set of tested guidelines for training and utilizing a general purpose gene annotation model for eukaryotic genomes. We demonstrate the effectiveness of this approach by training a single model for animals (phylogenetic names?) and plants respectively, which was then evaluated on more than 190 genomes in the animal case and 70 genomes for the plant model. We leverage modelling techniques from the field of deep learning, which has been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods in a variety of fields. Our model expects the raw genomic sequence as input and produces base pair wise predictions as output.
+Helixer is a set of tested guidelines for training and utilizing a general purpose gene annotation model for eukaryotic genomes. We demonstrate the effectiveness of this approach by training a single model for animals (phylogenetic names?) and plants respectively, which was then evaluated on more than 190 genomes in the animal case and 70 genomes for the plant model. We leverage modelling techniques from the field of deep learning, which has been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods in a variety of fields. Our model expects the raw genomic sequence as main input and produces base pair wise predictions as output.
 
 \begin{methods}
 \section{Methods}
-The genomic data was preprocessed with Geenuff \citealp{Denton19}
+Helixer models work based on genomic data that was preprocessed and checked for errors by Geenuff \citealp{Denton19}, which stores all information in a SQL database. From there, training and evaluation data is generated. The generated data arrays can be found in Table  
+
+
+\begin{table}[!t]
+\processtable{Data arrays generated and used by Helixer\label{Tab:01}} {
+\begin{tabular}{@{}llll@{}}
+\toprule Name & Information \\
+\midrule
+Input & Genomic sequence in a one hot encoding\\
+Output & Labels in a 4-dimensional one hot encoding \\
+Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
+Gene lengths & The length of a gene at a base or 0 if intergenic \\
+RNASeq score & A score in the interval $...$ to rank the coherence of the \\
+		     & annotation with RNASeq information \\
+\botrule
+\end{tabular}}{}
+\end{table}
 
 
 
