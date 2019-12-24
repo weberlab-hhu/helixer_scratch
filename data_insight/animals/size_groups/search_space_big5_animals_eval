@@ -1,0 +1,19 @@
+{
+    "test_data": {
+        "_type": "choice",
+        "_value": [
+"/gpfs/project/festi100/data/animals/single_genomes_200k/dasypus_novemcinctus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/phascolarctos_cinereus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/procavia_capensis/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/macaca_nemestrina/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/cercocebus_atys/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/cebus_capucinus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/saimiri_boliviensis_boliviensis/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/urocitellus_parryii/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/mus_spicilegus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/prolemur_simus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/equus_asinus_asinus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/ornithorhynchus_anatinus/test_data.h5"
+        ]
+    }
+}

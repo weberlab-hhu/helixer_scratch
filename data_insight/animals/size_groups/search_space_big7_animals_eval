@@ -1,0 +1,19 @@
+{
+    "test_data": {
+        "_type": "choice",
+        "_value": [
+"/gpfs/project/festi100/data/animals/single_genomes_200k/carlito_syrichta/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/spermophilus_dauricus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/colobus_angolensis_palliatus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/sorex_araneus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/jaculus_jaculus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/bos_taurus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/ursus_americanus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/castor_canadensis/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/microcebus_murinus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/mustela_putorius_furo/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/chelonoidis_abingdonii/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/myotis_lucifugus/test_data.h5"
+        ]
+    }
+}

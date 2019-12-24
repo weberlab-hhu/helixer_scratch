@@ -1,0 +1,20 @@
+{
+    "test_data": {
+        "_type": "choice",
+        "_value": [
+"/gpfs/project/festi100/data/animals/single_genomes_200k/tupaia_belangeri/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/loxodonta_africana/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/octodon_degus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/bison_bison_bison/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/latimeria_chalumnae/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/cavia_porcellus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/heterocephalus_glaber_female/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/felis_catus/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/sus_scrofa/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/vulpes_vulpes/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/fukomys_damarensis/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/gopherus_agassizii/test_data.h5",
+"/gpfs/project/festi100/data/animals/single_genomes_200k/notechis_scutatus/test_data.h5"
+        ]
+    }
+}
