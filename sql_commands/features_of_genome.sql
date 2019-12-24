@@ -120,6 +120,37 @@ JOIN genome ON genome.id = coordinate.genome_id
 WHERE transcript.longest = 1 AND genome.species IN ('Athaliana')
 GROUP BY feature.type;
 
+-- super loci of coordinate
+SELECT distinct(super_locus.id) from feature
+JOIN coordinate ON feature.coordinate_id = coordinate.id
+JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+JOIN transcript ON transcript_piece.transcript_id = transcript.id
+JOIN genome ON genome.id = coordinate.genome_id
+JOIN super_locus ON transcript.super_locus_id = super_locus.id
+WHERE coordinate.seqid = 'Contig28439';
+
+-- transcript of super loci
+SELECT distinct(transcript.id) from feature
+JOIN coordinate ON feature.coordinate_id = coordinate.id
+JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+JOIN transcript ON transcript_piece.transcript_id = transcript.id
+JOIN genome ON genome.id = coordinate.genome_id
+JOIN super_locus ON transcript.super_locus_id = super_locus.id
+WHERE super_locus.id = 3010278;
+
+-- overreaching features
+SELECT species, seqid, coordinate.length, feature.type, feature.is_plus_strand, feature.start, feature.end, transcript.id, transcript.type, transcript.given_name from feature
+JOIN coordinate ON feature.coordinate_id = coordinate.id
+JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+JOIN transcript ON transcript_piece.transcript_id = transcript.id
+JOIN genome ON genome.id = coordinate.genome_id
+JOIN super_locus ON transcript.super_locus_id = super_locus.id
+WHERE ((feature.is_plus_strand = 1 and feature.end > coordinate.length + 1) or
+       (feature.is_plus_strand = 0 and feature.start > coordinate.length));
+
 -- average intron length per genome
 SELECT genome.species, avg(abs(feature.start - feature.end)) FROM genome
 CROSS JOIN coordinate ON coordinate.genome_id = genome.id
