@@ -72,10 +72,12 @@ for key in "${!values[@]}"; do
 	echo "$key:${values[$key]}"
 	sed -i -e "s/$key/${values[$key]}/g" $species".sh"
 done
+echo "line offset: $line_offset"
 
 # qsub
 qsub $species".sh"
+echo "job queued"
 
 # increment line number
 echo -n $((line_offset+1)) > ../next_line
-
+echo "line number incremented"
