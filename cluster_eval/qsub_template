@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -l select=1:ncpus=__CPUS__:mem=__MEM__gb:ngpus=__GPUS__:accelerator_model=gtx1080ti
-#PBS -l walltime=HOURS:59:00
+#PBS -l walltime=__HOURS__:59:00
 #PBS -A "HelixerOpt"
 set -e
 

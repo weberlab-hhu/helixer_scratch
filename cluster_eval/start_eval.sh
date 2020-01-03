@@ -14,9 +14,14 @@ if [[ ! -f "next_line" ]]; then
 	exit
 fi
 
+line_offset=$(<next_line)
+if [[ $line_offset -gt $(cat datasets | wc -l) ]]; then
+	echo "Line offset $line_offset is too large. Maybe everything is done already."
+	exit
+fi
+
 model=$1
 datasets_basepath=$2
-line_offset=$(<next_line)
 line_content=$(sed -n "$line_offset"p datasets)
 species=$(echo -n $line_content | cut -d "," -f1)
 eval_len=$(echo -n $line_content | cut -d "," -f2)
@@ -34,7 +39,20 @@ cd $species
 # we could put this into a config file but for now this should work
 declare -A values
 if [[ "$eval_len" == "20" ]]; then
-	echo "test"
+	values[__BATCH_SIZE__]="150"
+	values[__HOURS__]="3"
+elif [[ "$eval_len" == "50" ]]; then
+	values[__BATCH_SIZE__]="60"
+	values[__HOURS__]="47"
+elif [[ "$eval_len" == "100" ]]; then
+	values[__BATCH_SIZE__]="30"
+	values[__HOURS__]="47"
+elif [[ "$eval_len" == "200" ]]; then
+	values[__BATCH_SIZE__]="15"
+	values[__HOURS__]="47"
+else
+	echo "Unknown length $eval_len. exiting."
+	exit
 fi
 
 # general params
@@ -55,19 +73,9 @@ for key in "${!values[@]}"; do
 	sed -i -e "s/$key/${values[$key]}/g" $species".sh"
 done
 
+# qsub
+qsub $species".sh"
 
-
-
-
-
-
-
-
-echo $species $eval_len ${values[CPUS]}
-
-
-
-
-
-
+# increment line number
+echo -n $((line_offset+1)) > ../next_line
 
