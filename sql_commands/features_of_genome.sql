@@ -50,6 +50,28 @@ WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.long
 GROUP BY genome.id
 ORDER BY round(avg(abs(feature.start - feature.end))) DESC;
 
+-- average length of longest transcripts in plant training genomes
+SELECT round(avg(abs(feature.start - feature.end))) avg_transcript_length from genome
+CROSS JOIN coordinate ON coordinate.genome_id = genome.id
+CROSS JOIN feature ON feature.coordinate_id = coordinate.id
+CROSS JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+CROSS JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+CROSS JOIN transcript ON transcript_piece.transcript_id = transcript.id
+CROSS JOIN super_locus ON transcript.super_locus_id = super_locus.id
+WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.longest = 1 and feature.type = 'geenuff_transcript'
+	 and genome.species in ('Athaliana','Bdistachyon','Creinhardtii','Gmax','Mguttatus','Mpolymorpha','Ptrichocarpa','Sitalica');
+
+-- average length of longest transcripts in animal training genomes
+SELECT round(avg(abs(feature.start - feature.end))) avg_transcript_length from genome
+CROSS JOIN coordinate ON coordinate.genome_id = genome.id
+CROSS JOIN feature ON feature.coordinate_id = coordinate.id
+CROSS JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+CROSS JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+CROSS JOIN transcript ON transcript_piece.transcript_id = transcript.id
+CROSS JOIN super_locus ON transcript.super_locus_id = super_locus.id
+WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.longest = 1 and feature.type = 'geenuff_transcript'
+	 and genome.species in ('mus_musculus','oryzias_latipes','gallus_gallus','theropithecus_gelada','anabas_testudineus','drosophila_melanogaster');
+
 -- all super loci with their number of transcripts for one genome
 SELECT super_locus.given_name, count(distinct(transcript.id)) FROM feature
 JOIN coordinate ON feature.coordinate_id = coordinate.id
