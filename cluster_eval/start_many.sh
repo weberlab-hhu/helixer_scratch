@@ -12,8 +12,8 @@ fi
 
 line_offset=$(<next_line)
 n_lines=$(cat datasets | wc -l)
-if [[ $(($line_offset+$1)) -gt $n_lines ]]; then
-	n_qsubs=$(($n_lines-$line_offset))
+if [[ $(($line_offset+$1)) -gt $(($n_lines+1)) ]]; then
+	n_qsubs=$(($n_lines-$line_offset+1))
 else
 	n_qsubs=$1
 fi
