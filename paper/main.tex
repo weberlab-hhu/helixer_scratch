@@ -40,11 +40,11 @@ online.}
 \end{itemize}
 
 \section{Approach}
-Helixer is a set of tested guidelines for training and utilizing a general purpose gene annotation model for eukaryotic genomes. We demonstrate the effectiveness of this approach by training a single model for animals (phylogenetic names?) and plants respectively, which was then evaluated on more than 190 genomes in the animal case and 70 genomes for the plant model. We leverage modelling techniques from the field of deep learning, which has been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods in a variety of fields. Our model expects the raw genomic sequence as main input and produces base pair wise predictions as output.
+Helixer is a prototype software for training and utilizing a general purpose gene annotation model for eukaryotic genomes. We demonstrate the effectiveness of this approach by training a single model for animals (phylogenetic names?) and plants respectively, which was then evaluated on 192 genomes in the animal case and 60 genomes for the plant model. We leverage modelling techniques from the field of deep learning, which has been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods in a variety of fields. Our model expects the raw genomic sequence as main input and produces functional predictions on a base pair wise level.
 
 \begin{methods}
 \section{Methods}
-Helixer models work based on genomic data that was preprocessed and checked for errors by Geenuff \citealp{Denton19}, which stores all information in a SQL database. From there, training and evaluation data is generated. The generated data arrays can be found in Table  
+	Helixer models work based on genomic data that was preprocessed and checked for errors by Geenuff \citealp{Denton19}, which stores all information in a SQL database. From there, training and evaluation data is generated. The generated data arrays can be found in Table \ref{Tab:01}. We worked with 192 animal and 60 plant genomes. The data is comprised of all animals genomes in ensembl Metazoa 45 (?) \citealp{Howe19} as well as all non-embargoed plant genomes of the JGI Phytosome 13 database (?, citation). Both groups were treated seperately both during training as well as evaluation. At the start of our work we split both genome groups into training and test sets, which contained 19 or 6 genomes, respectively. Some of the remaining genomes were used for training purposes and all were used for evaluating our models. 
 
 
 \begin{table}[!t]
@@ -376,15 +376,6 @@ Figure~2\vphantom{\ref{fig:02}} shows that the above method  Text
 Text Text Text  Text Text Text Text Text Text  Text Text.
 \citealp{Boffelli03} might want to know about  text text text text
 
-\begin{table}[!t]
-\processtable{This is table caption\label{Tab:01}} {\begin{tabular}{@{}llll@{}}\toprule head1 &
-head2 & head3 & head4\\\midrule
-row1 & row1 & row1 & row1\\
-row2 & row2 & row2 & row2\\
-row3 & row3 & row3 & row3\\
-row4 & row4 & row4 & row4\\\botrule
-\end{tabular}}{This is a footnote}
-\end{table}
 
 \end{methods}
 
@@ -561,10 +552,8 @@ This work has been supported by the... Text Text  Text Text.\vspace*{-12pt}
 \bibitem[Denton {\it et~al}., 2019]{Denton19}
 Denton,A., Stiehler,F. (2019) Article title, {\it Journal Name}, {\bf 199}, 133-154.
 
-\bibitem[Crenshaw and Jones, 2003]{Cre03}
-Crenshaw, B.,III, and Jones, W.B.,Jr (2003) The future of clinical
-cancer management: one tumor, one chip. \textit{Bioinformatics},
-doi:10.1093/bioinformatics/btn000.
+\bibitem[Howe KL {\it et~al}., 2019]{Howe19}
+Howe KL, Contreras-Moreira B, De Silva N, Maslen G, Akanni W, Allen J, Alvarez-Jarreta J, Barba M, Bolser DM, Cambell L, Carbajo M, Chakiachvili M, Christensen M, Cummins C, Cuzick A, Davis P, Fexova S, Gall A, George N, Gil L, Gupta P, Hammond-Kosack KE, Haskell E, Hunt SE, Jaiswal P, Janacek SH, Kersey PJ, Langridge N, Maheswari U, Maurel T, McDowall MD, Moore B, Muffato M, Naamati G, Naithani S, Olson A, Papatheodorou I, Patricio M, Paulini M, Pedro H, Perry E, Preece J, Rosello M, Russell M, Sitnik V, Staines DM, Stein J, Tello-Ruiz MK, Trevanion SJ, Urban M, Wei S, Ware D, Williams G, Yates AD, Flicek P. (2019) Ensembl Genomes 2020-enabling non-vertebrate genomic research. {\it Nucleic Acids Research 2019} https://doi.org/10.1093/nar/gkz890
 
 \end{thebibliography}
 \end{document}
