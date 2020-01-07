@@ -40,16 +40,12 @@ cd $species
 declare -A values
 if [[ "$eval_len" == "20" ]]; then
 	values[__BATCH_SIZE__]="150"
-	values[__HOURS__]="3"
 elif [[ "$eval_len" == "50" ]]; then
 	values[__BATCH_SIZE__]="60"
-	values[__HOURS__]="47"
 elif [[ "$eval_len" == "100" ]]; then
 	values[__BATCH_SIZE__]="30"
-	values[__HOURS__]="47"
 elif [[ "$eval_len" == "200" ]]; then
 	values[__BATCH_SIZE__]="15"
-	values[__HOURS__]="47"
 else
 	echo "Unknown length $eval_len. exiting."
 	exit
