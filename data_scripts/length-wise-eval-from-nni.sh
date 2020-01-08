@@ -6,4 +6,4 @@ data_path="/home/felix-stiehler/Desktop/data/plants/single_genomes_new/"
 
 genome=$(cat "$trial_path"parameter.cfg | cut -d "{" -f3 | cut -d "/" -f8)
 
-/home/felix-stiehler/git/HelixerPrep/scripts/errors_position_wise.py -p "$trial_path"predictions.h5 -d "$data_path$genome"/test_data.h5 -g $genome &> eval_"$genome"
+/home/felix-stiehler/git/HelixerPrep/scripts/errors_position_wise.py -p "$trial_path"predictions.h5 -d "$data_path$genome"/test_data.h5 -g $genome -res 200 &> eval_"$genome"
