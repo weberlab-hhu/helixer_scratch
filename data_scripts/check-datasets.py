@@ -20,7 +20,12 @@ for genome_folder in os.listdir(args.folder):
         h5_files = glob.glob(os.path.join(args.folder, genome_folder, args.sub_folder, '*.h5'))
 
     for h5_file in h5_files:
-        f = h5py.File(h5_file, 'r')
+        try:
+            f = h5py.File(h5_file, 'r')
+        except OSError:
+            print('ERROR', h5_file)
+            continue
+
         if 'genomes' in f.attrs:
             print('OK', h5_file)
         else:
