@@ -79,7 +79,7 @@ We use a 4-layer deep stacked BLSTM network with 256 units per layer and layer n
 	
 The model was trained with 10 bases of genomic sequence as input during each time step and produces individual predictions for each of those 10 bases simultaneously. This grouping enabled us to train with far longer sequences than usual. A class wise evaluation including the calculation of the Genic F1 score is performed for the validation set after every epoch. We use the model with the best Genic F1 score unless the improvement to the next best one was less than $0.01$ apart in order to prevent overfitting. 
 
-We also used multiple techniques to improve the prediction quality after the training was done. One very effective way was to input longer sequences during inference than during training. The sequences were up to 10 times larger, depending on species group and assembly quality. We also reconstructed the final predictions of a single model from overlapping predictions that were cut to a core sequence. This was done to drastically reduce a typical bias of the models towards the beginning and end of each sequence and also to provide the model with multiple different starting points. The different overlapping sequences were recombined by averaging the softmax values of each base. This was also done when we finally ensembled the whole output of different models on the softmax value level from (8?) different models. For more details on these post-processing techniques see Suplementary Material (?). 
+	We also used multiple techniques to improve the prediction quality after the training was done. One very effective way was to input longer sequences during inference than during training. The sequences were up to 10 times larger, depending on species group and assembly quality. We also reconstructed the final predictions of a single model from overlapping predictions that were cut to a core sequence. This was done to drastically reduce a typical bias of the models towards the beginning and end of each sequence (see figure \ref{fig:length_wise_bias}) and also to provide the model with multiple different starting points. The different overlapping sequences were recombined by averaging the softmax values of each base. This was also done when we finally ensembled the whole output of different models on the softmax value level from (8?) different models. For more details on these post-processing techniques see Suplementary Material (?). 
 
 \subsection{Evaluation of Augustus} \label{augustus}
 What Marvin did, why we don't use Genic F1 for comparison, etc
@@ -132,12 +132,9 @@ Text Text  Text Text Text Text Text Text.
 
 \end{methods}
 
-\begin{figure}[!tpb]%figure1
-\fboxsep=0pt\colorbox{gray}{\begin{minipage}[t]{235pt} \vbox to 100pt{\vfill\hbox to
-235pt{\hfill\fontsize{24pt}{24pt}\selectfont FPO\hfill}\vfill}
-\end{minipage}}
-%\centerline{\includegraphics{fig01.eps}}
-\caption{Caption, caption.}\label{fig:01}
+\begin{figure}[!tpb]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/length_wise_bias}}
+\caption{Caption, caption.}\label{fig:length_wise_bias}
 \end{figure}
 
 %\begin{figure}[!tpb]%figure2
