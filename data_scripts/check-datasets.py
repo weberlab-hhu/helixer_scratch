@@ -26,7 +26,8 @@ for genome_folder in os.listdir(args.folder):
             print('ERROR', h5_file)
             continue
 
-        if 'genomes' in f.attrs:
+        if 'timestamp' in f.attrs:
+            # the attributes should be written after all data has been saved
             print('OK', h5_file)
         else:
             print('ERROR', h5_file)
