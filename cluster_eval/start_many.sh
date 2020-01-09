@@ -10,6 +10,11 @@ if [[ ! -f "next_line" ]]; then
 	exit
 fi
 
+if [[ $(basename $(pwd)) = "cluster_eval" ]]; then
+	echo "script seems to be run from the repository, which should be an error"
+	exit
+fi
+
 line_offset=$(<next_line)
 n_lines=$(cat datasets | wc -l)
 if [[ $(($line_offset+$1)) -gt $(($n_lines+1)) ]]; then
