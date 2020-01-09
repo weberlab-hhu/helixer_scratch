@@ -1,7 +1,7 @@
 #! /bin/bash
 
-if [[ $# -lt 1 ]]; then
-	echo "Usage: ./start_many.sh n_qsubs"
+if [[ $# -lt 3 ]]; then
+	echo "Usage: ./start_many.sh model_file main_data_folder n_qsubs"
 	exit
 fi
 
@@ -15,14 +15,17 @@ if [[ $(basename $(pwd)) = "cluster_eval" ]]; then
 	exit
 fi
 
+model_file=$1
+main_data_folder=$2
+
 line_offset=$(<next_line)
 n_lines=$(cat datasets | wc -l)
 if [[ $(($line_offset+$1)) -gt $(($n_lines+1)) ]]; then
 	n_qsubs=$(($n_lines-$line_offset+1))
 else
-	n_qsubs=$1
+	n_qsubs=$3
 fi
 
 for i in $(seq 1 $n_qsubs); do
-	./start_eval.sh /gpfs/project/festi100/models/ZCPHo_6.h5 /gpfs/project/festi100/data/animals/
+	./start_eval.sh $model_file $main_data_folder
 done
