@@ -18,4 +18,4 @@ rsync -rzt --stats --exclude="predictions.h5" festi100@hpc.rz.uni-duesseldorf.de
 rsync -rzt --stats --exclude="predictions.h5" festi100@hpc.rz.uni-duesseldorf.de:/home/festi100/.local/nnictl nni_cluster/
 
 echo -e "\ncluster jobs"
-rsync -rzt --stats --exclude="predictions.h5" festi100@hpc.rz.uni-duesseldorf.de:/home/festi100/git/HelixerPrep/jobs cluster_jobs/
+rsync -rzt --stats --exclude="predictions.h5" festi100@hpc.rz.uni-duesseldorf.de:/gpfs/project/festi100/jobs cluster_jobs/
