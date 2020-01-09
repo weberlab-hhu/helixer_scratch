@@ -64,10 +64,16 @@ Average gene length & 23000 (+- 5000) & 3370 (+- 50) \\
 \end{tabular}}{Values are averages across all genomes of a data group}
 \end{table}
 
-	
 During data generation, we only queried for the longest transcript of each gene and did not include FASTA sequences that had no functional annotation (explanation why this is a sign of error?). As Geenuff checks the genomic annotations for potential errors like missing UTR sections and marks areas as potentially erroneous, we were able to effectively blank out those bases during training. For the training, we divided each continous genomic sequence into 20.000 or 30.000 bases long subsequences, which are then used as input or label for the neural network. We appended zero padding if the subsequences are not long enough. If a subsequence is fully marked as erroneous, we do not include it in the training or evaluation datasets.
 
-The selection of training genomes requires balancing multiple conflicting tradeoffs. On the one hand, we do want to train with as much data as possible, but not all data has a good enough quality to enable a powerful generalization. It is also very desirable to have a broad spread in phylogenetic distance as well as genome size and average gene length as the model is increasingly unlikely to generalize well beyond the borders given by the training data. It was also important to us to get experimental results within a couple of days as we tested many different data and model configurations, which limited the overall size of the training set and the model.
+The selection of training genomes requires balancing multiple conflicting tradeoffs. On the one hand, we do want to train with as much data as possible, but not all data has a good enough quality to enable a powerful generalization. It is also very desirable to have a broad spread in phylogenetic distance as well as genome size and average gene length as the model is increasingly unlikely to generalize well beyond the borders given by the training data. However, if the genomic patterns inside the data are too different from each other, it may be difficult for the model to generalize as well. It was also important to us to get experimental results within a couple of days as we tested many different data and model configurations, which limited the overall size of the training set and the model. 
+	
+We employed an iterative approach to effectively select a proper set of training genomes. We first started with 3-4 genomes that were almost certain to be of the highest quality. We then evaluated the performance of the resulting model on all genomes individually (including the training genomes) and looked for candidates to add to the training set or to remove from it. This process was repeated multiple times concurrently with the model search until we saw no more room for substantial improvement given our computational constraints.
+
+Once a set of training genomes was selected, we generated a validation set from it by splitting of 20\% of the FASTA sequences above and below the N90 of each genome, ensuring a proper distribution of large and short sequences in both the training and validation set. The validation set was only used to roughly judge the performance of our models during training. Evaluation of the annotations on all training and validation genomes was done regularly, as we ultimately only cared about the performance on fully unknown genomes.
+
+
+
 
 Model evaluation during training was done with a metric that we call the {\it Genic F1}. This score is very similar to a classic F1 score calculated across multiple classes, except that it takes into account that the data is 
 
