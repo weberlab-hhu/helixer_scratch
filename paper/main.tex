@@ -72,11 +72,8 @@ We employed an iterative approach to effectively select a proper set of training
 
 Once a set of training genomes was selected, we generated a validation set from it by splitting of 20\% of the FASTA sequences above and below the N90 of each genome, ensuring a proper distribution of large and short sequences in both the training and validation set. The validation set was only used to roughly judge the performance of our models during training. Evaluation of the annotations on all training and validation genomes was done regularly, as we ultimately only cared about the performance on fully unknown genomes.
 
-
-
-
-Model evaluation during training was done with a metric that we call the {\it Genic F1}. This score is very similar to a classic F1 score calculated across multiple classes, except that it takes into account that the data is 
-
+	We use metrics two metrics to judge model performance. The {\it Genic F1} is our primary metric that provides the most comprehensive picture of annotation quality in one number. The {\it Subgenic F1} is similar to the Genic F1, except that it does not take UTR prediction quality into account. This is done for comparability with Augustus and further explained in chapter \ref{augustus}. Both metrics work by summing up True Positives (TP), False Positives (FP), etc of each considered class before calculating precision, recall and ultimatily a F1 score. Both metrics do also leave out the intergenic class, as this is by far the easiest to predict and could potentially skew the results too far away from the performance in the genic region. The Genic F1 thus essentially provides a weighted mean of the classes UTR, CDS and Intron while the Subgenic F1 sums up only CDS and Intron. All individual class performances are reported in the Suplementary Material (?). 
+	
 \subsection{Model Architecture and Usage}
 	We use a 4-layer deep stacked BLSTM network with 256 units per layer and layer normalization (citation ? ) between each BLSTM layer to produce the predictions in the form of a base pair wise classification. The model consists of circa 5.4 million parameters and was implemented with the deep learning library keras (citation) on top of TensorFlow (citation). All relevant hyperparameters can be found in Table \ref{Tab:02} or in the Helixer source code repository. 
 	
@@ -87,7 +84,7 @@ The model was trained with 10 bases of genomic sequence as input during each tim
 - overlapping
 - ensembling
 
-\subsection{Evaluation of Augustus}
+\subsection{Evaluation of Augustus} \label{augustus}
 What Marvin did, why we don't use Genic F1 for comparison, etc
 
 
