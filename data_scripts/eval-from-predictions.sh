@@ -23,7 +23,7 @@ for species_folder in $(ls -d "$main_folder"/*/); do
 	species=$(basename $species_folder)
 	cat <<- EOF > $species_folder/$species"_eval.sh"
 	#!/bin/bash
-	#PBS -l select=1:ncpus=1:mem=1gb
+	#PBS -l select=1:ncpus=1:mem=500mb
 	#PBS -l walltime=1:59:00
 	#PBS -A "HelixerOpt"
 
