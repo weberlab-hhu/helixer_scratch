@@ -39,13 +39,21 @@ cd $species
 # we could put this into a config file but for now this should work
 declare -A values
 if [[ "$eval_len" == "20" ]]; then
-	values[__BATCH_SIZE__]="150"
-elif [[ "$eval_len" == "50" ]]; then
-	values[__BATCH_SIZE__]="60"
-elif [[ "$eval_len" == "100" ]]; then
 	values[__BATCH_SIZE__]="30"
+	values[__OVERLAP_OFFSET__]="2500"
+	values[__CORE_LENGTH__]="10000"
+elif [[ "$eval_len" == "50" ]]; then
+	values[__BATCH_SIZE__]="12"
+	values[__OVERLAP_OFFSET__]="6250"
+	values[__CORE_LENGTH__]="25000"
+elif [[ "$eval_len" == "100" ]]; then
+	values[__BATCH_SIZE__]="6"
+	values[__OVERLAP_OFFSET__]="12500"
+	values[__CORE_LENGTH__]="10000"
 elif [[ "$eval_len" == "200" ]]; then
-	values[__BATCH_SIZE__]="15"
+	values[__BATCH_SIZE__]="3"
+	values[__OVERLAP_OFFSET__]="25000"
+	values[__CORE_LENGTH__]="100000"
 else
 	echo "Unknown length $eval_len. exiting."
 	exit
