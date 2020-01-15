@@ -49,7 +49,7 @@ elif [[ "$eval_len" == "50" ]]; then
 elif [[ "$eval_len" == "100" ]]; then
 	values[__BATCH_SIZE__]="80"
 	values[__OVERLAP_OFFSET__]="12500"
-	values[__CORE_LENGTH__]="10000"
+	values[__CORE_LENGTH__]="50000"
 elif [[ "$eval_len" == "200" ]]; then
 	values[__BATCH_SIZE__]="40"
 	values[__OVERLAP_OFFSET__]="25000"
