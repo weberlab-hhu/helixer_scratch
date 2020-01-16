@@ -21,8 +21,17 @@ for i, line in enumerate(open(args.input_file)):
             genome_values[genome].append(value)
 
 for genome, values in genome_values.items():
+    # plot normal gene length plot
     plt.clf()
     plt.title(genome)
     plt.hist(values, bins=200)
-    plt.savefig(f'{genome}_lengths.png')
+    plt.savefig(f'{genome}_lengths.png', dpi=200)
     print(f'saved {genome}_lengths.png')
+
+    # plot loss influence graph per bin
+    bin_values, bin_edges = np.histogram(values)
+    plt.clf()
+    plt.title(genome)
+    plt.plot(bin_values * bin_edges[1:])
+    plt.savefig(f'{genome}_bin_weights.png', dpi=200)
+    print(f'saved {genome}_bin_weights.png')
