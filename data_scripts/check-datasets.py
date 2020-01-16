@@ -9,7 +9,7 @@ import h5py
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', '--folder', type=str, required=True)
+parser.add_argument('folder', type=str)
 parser.add_argument('-sf', '--sub-folder', type=str, default='')
 args = parser.parse_args()
 

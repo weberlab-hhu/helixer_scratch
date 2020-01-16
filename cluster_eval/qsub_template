@@ -24,8 +24,8 @@ cp -r $PBS_O_WORKDIR/* $SCRATCHDIR/.
 cd $SCRATCHDIR
 rm $PBS_JOBNAME"."$PBS_JOBID".log"
 
-##Aufruf
-/home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs __BATCH_SIZE__ -lm __MODEL__ -td __TEST_DATA__ -po $PBS_O_WORKDIR/predictions.h5 --overlap --overlap-offset __OVERLAP_OFFSET__ --core-length __CORE_LENGTH__ 
+##Call, also run again if an error occurs (can happen seemingly at random)
+/home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs __BATCH_SIZE__ -lm __MODEL__ -td __TEST_DATA__ -po $PBS_O_WORKDIR/predictions.h5 --overlap --overlap-offset __OVERLAP_OFFSET__ --core-length __CORE_LENGTH__ || /home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs __BATCH_SIZE__ -lm __MODEL__ -td __TEST_DATA__ -po $PBS_O_WORKDIR/predictions.h5 --overlap --overlap-offset __OVERLAP_OFFSET__ --core-length __CORE_LENGTH__
 
 ##Daten zurück kopieren
 cp -r "$SCRATCHDIR"/* $PBS_O_WORKDIR/.
