@@ -25,13 +25,13 @@ for genome, values in genome_values.items():
     plt.clf()
     plt.title(genome)
     plt.hist(values, bins=200)
-    plt.savefig(f'{genome}_lengths.png', dpi=200)
+    plt.savefig(f'{genome}_lengths.png')
     print(f'saved {genome}_lengths.png')
 
     # plot loss influence graph per bin
-    bin_values, bin_edges = np.histogram(values)
+    bin_values, bin_edges = np.histogram(values, bins=200)
     plt.clf()
     plt.title(genome)
     plt.plot(bin_values * bin_edges[1:])
-    plt.savefig(f'{genome}_bin_weights.png', dpi=200)
+    plt.savefig(f'{genome}_bin_weights.png')
     print(f'saved {genome}_bin_weights.png')
