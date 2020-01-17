@@ -7,34 +7,34 @@
 # concurrency default is set to 16 currently
 
 if [[ $# -lt 1 ]]; then
-	echo "Usage: ./eval-from-predictions.sh main_folder [output file name]"
+	echo "Usage: ./eval-from-predictions.sh main_folder output_file_name [--redo]"
 	exit
 fi
 
 main_folder=$1
-
-if [[ $# -lt 2 ]]; then
-	output_file_name="trials.log"
-else
-	output_file_name=$2
-fi
+output_file_name=$2
 
 for species_folder in $(ls -d "$main_folder"/*/); do
 	species=$(basename $species_folder)
-	cat <<- EOF > $species_folder/$species"_eval.sh"
-	#!/bin/bash
-	#PBS -l select=1:ncpus=1:mem=500mb:arch=skylake
-	#PBS -l walltime=3:59:00
-	#PBS -A "HelixerOpt"
+	output_file_path=$species_folder/$output_file_name
+	if [[ $# -lt 3 || ($3 == '--redo' && (! -f $output_file_path || ! -s $output_file_path)) ]]; then
+		cat <<- EOF > $species_folder/$species"_eval.sh"
+		#!/bin/bash
+		#PBS -l select=1:ncpus=1:mem=500mb
+		#PBS -l walltime=3:59:00
+		#PBS -A "HelixerOpt"
 
-	module load Python/3.6.5
+		module load Python/3.6.5
 
-	/home/festi100/git/helixer_scratch/data_scripts/eval-from-predictions-one-trial.sh $species_folder $output_file_name
-	EOF
+		/home/festi100/git/helixer_scratch/data_scripts/eval-from-predictions-one-trial.sh $species_folder $output_file_name
+		EOF
 
-	echo -n $species" "
-	cd $species_folder
-	qsub $species"_eval.sh"
+		echo -n $species" "
+		cd $species_folder
+		qsub $species"_eval.sh"
+	else
+		echo $species" skipped"
+	fi
 
-	sleep 3 # to check everything
+	sleep 1 # to check everything
 done
