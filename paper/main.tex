@@ -51,7 +51,7 @@ We pre-processed and stored the genomic information by using Geenuff \citealp{De
 The classes are not balanced equally and the tradeoff between the number of intergenic and intronic bases is quite different in both groups of genomes. Table \ref{Tab:statistics} shows the ratio of class occurences, together with other overall metrics.
 
 \begin{table}[!t]
-\processtable{Data group statistics\label{Tab:statistics}} {
+\processtable{Data group statistics for all data\label{Tab:statistics_all}} {
 \begin{tabular}{@{}lll@{}}
 \toprule & EnsemblMetazoa & JGI Phytosome\\
 \midrule
@@ -64,7 +64,21 @@ Average gene length & 23000 (+- 5000) & 3370 (+- 50) \\
 \end{tabular}}{Values are averages across all genomes of a data group}
 \end{table}
 
-During data generation, we only queried for the longest transcript of each gene and did not include FASTA sequences that had no functional annotation (explanation why this is a sign of error?). As Geenuff checks the genomic annotations for potential errors like missing UTR sections and marks areas as potentially erroneous, we were able to effectively blank out those bases during training. For the training, we divided each continous genomic sequence into 20.000 or 30.000 bases long subsequences, which are then used as input or label for the neural network. We appended zero padding if the subsequences are not long enough. If a subsequence is fully marked as erroneous, we do not include it in the training or evaluation datasets.
+\begin{table}[!t]
+\processtable{Data group statistics for our training data\label{Tab:statistics_training}} {
+\begin{tabular}{@{}lll@{}}
+\toprule & EnsemblMetazoa & JGI Phytosome\\
+\midrule
+Fraction of classes  & 0.6, 0.02, 0.1, 0.2 & 0.6, 0.02, 0.1, 0.2 \\
+(Intergenic, UTR, CDS, Intron) & & \\
+Geenuff error rate & 0.1 (+- 0.02) & 0.3 (+- 0.02) \\
+Average genome size in Gbp& 1.1 (+- 0.5) & 0.3 (+- 0.1) \\
+Average gene length & 23000 (+- 5000) & 3370 (+- 50) \\
+\botrule
+\end{tabular}}{Values are averages across all genomes of a data group}
+\end{table}
+
+During data generation, we only queried for the longest transcript of each gene and did not include FASTA sequences that had no functional annotation (explanation why this is a sign of error?). As Geenuff checks the genomic annotations for potential errors like missing UTR sections and marks areas as potentially erroneous, we were able to effectively blank out those bases during training. For the training, we divided each continous genomic sequence into 20.000 bases long subsequences, which are then used as input or label for the neural network. We appended zero padding if the subsequences are not long enough. If a subsequence is fully marked as erroneous, we do not include it in the training or evaluation datasets.
 
 The selection of training genomes requires balancing multiple conflicting tradeoffs. On the one hand, we do want to train with as much data as possible, but not all data has a good enough quality to enable a powerful generalization. It is also very desirable to have a broad spread in phylogenetic distance as well as genome size and average gene length as the model is increasingly unlikely to generalize well beyond the borders given by the training data. However, if the genomic patterns inside the data are too different from each other, it may be difficult for the model to generalize as well. It was also important to us to get experimental results within a couple of days as we tested many different data and model configurations, which limited the overall size of the training set and the model. 
 	
