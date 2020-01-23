@@ -12,6 +12,7 @@ job_folder=$1
 model_file=$2
 data_main_folder="/gpfs/project/festi100/data/plants/single_genomes"
 
+# for data_folder in Alyrata  Csativus  Macuminata  Ppatens  Taestivum  Vcarteri; do
 for data_folder in $(ls -d "$data_main_folder"/*/); do
 	species=$(basename $data_folder)
 	job_subfolder=$job_folder/$species
@@ -33,9 +34,9 @@ for data_folder in $(ls -d "$data_main_folder"/*/); do
 		echo -n $species" "
 		cd $job_subfolder
 		qsub $species".sh"
+
+		# sleep 60 # to check everything and spread out the jobs
 	else
 		echo "Folder $job_subfolder exists. skipping."
 	fi
-
-	sleep 1 # to check everything
 done
