@@ -17,7 +17,7 @@ for species_folder in $(ls -d "$predictions_main_folder"/*/); do
 	species=$(basename $species_folder)
 	output_file_path=$species_folder"/length_wise_eval.log"
 	if [[ $# -lt 2 || ($2 == "--redo" && (! -f $output_file_path || ! -s $output_file_path)) ]]; then
-		log_file="$species_folder/*.sh.o*"
+		log_file="$species_folder/$species.sh.o*"
 		dataset=$(grep "test_data.h5" $log_file| cut -d " " -f3 | tr -d ",'")
 		cat <<- EOF > $species_folder/$species"_length_wise_eval.sh"
 		#!/bin/bash
@@ -34,7 +34,7 @@ for species_folder in $(ls -d "$predictions_main_folder"/*/); do
 		cd $species_folder
 		qsub $species"_length_wise_eval.sh"
 
-		sleep 1
+		sleep 10
 	else
 		echo $species" skipped"
 	fi
