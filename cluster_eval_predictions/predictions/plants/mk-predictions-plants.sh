@@ -4,7 +4,7 @@
 # for the plants, the input length does not vary
 
 if [[ $# -lt 2 ]]; then
-	echo "Usage: ./mk-predictions-plants.sh job_folder model_file"
+	echo "Usage: ./mk-predictions-plants.sh job_folder model_file [--no-overlap]"
 	exit
 fi
 
@@ -19,6 +19,13 @@ for data_folder in $(ls -d "$data_main_folder"/*/); do
 	if [[ ! -d $job_subfolder ]]; then
 		mkdir -p $job_subfolder
 		qsub_file_path=$job_subfolder/$species".sh"
+
+		if [[ $# -eq 3 && $3 == '--no-overlap' ]]; then
+			command="/home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs 400 -lm $model_file -td $data_main_folder/$species/test_data.h5 -po \$PBS_O_WORKDIR/predictions.h5 || home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs 400 -lm $model_file -td $data_main_folder/$species/test_data.h5 -po \$PBS_O_WORKDIR/predictions.h5"
+		else
+			command="/home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs 400 -lm $model_file -td $data_main_folder/$species/test_data.h5 -po \$PBS_O_WORKDIR/predictions.h5 --overlap --overlap-offset 2500 --core-length 10000 || /home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs 400 -lm $model_file -td $data_main_folder/$species/test_data.h5 -po \$PBS_O_WORKDIR/predictions.h5 --overlap --overlap-offset 2500 --core-length 10000"
+		fi
+
 		cat <<- EOF > $qsub_file_path
 		#!/bin/bash
 		#PBS -l select=1:ncpus=1:mem=3gb:ngpus=1:accelerator_model=gtx1080ti
@@ -28,14 +35,14 @@ for data_folder in $(ls -d "$data_main_folder"/*/); do
 		module load TensorFlow/1.10.0
 
 		##Call, also run again if an error occurs (can happen seemingly at random)
-		/home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs 400 -lm $model_file -td $data_main_folder/$species/test_data.h5 -po \$PBS_O_WORKDIR/predictions.h5 --overlap --overlap-offset 2500 --core-length 10000 || /home/festi100/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs 400 -lm $model_file -td $data_main_folder/$species/test_data.h5 -po \$PBS_O_WORKDIR/predictions.h5 --overlap --overlap-offset 2500 --core-length 10000
+		$command
 		EOF
 
 		echo -n $species" "
 		cd $job_subfolder
 		qsub $species".sh"
 
-		# sleep 60 # to check everything and spread out the jobs
+		sleep 90 # to check everything and spread out the jobs
 	else
 		echo "Folder $job_subfolder exists. skipping."
 	fi
