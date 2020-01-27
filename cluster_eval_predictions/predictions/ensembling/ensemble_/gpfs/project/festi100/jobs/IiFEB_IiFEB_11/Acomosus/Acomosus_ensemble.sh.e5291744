@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/festi100/git/HelixerPrep/scripts/ensemble.py", line 31, in <module>
+    h5_ensembled = h5py.File(args.prediction_output_path, 'w')
+  File "/home/festi100/.local/lib/python3.6/site-packages/h5py/_hl/files.py", line 312, in __init__
+    fid = make_fid(name, mode, userblock_size, fapl, swmr=swmr)
+  File "/home/festi100/.local/lib/python3.6/site-packages/h5py/_hl/files.py", line 148, in make_fid
+    fid = h5f.create(name, h5f.ACC_TRUNC, fapl=fapl, fcpl=fcpl)
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 98, in h5py.h5f.create
+OSError: Unable to create file (unable to open file: name = 'ensemble_/gpfs/project/festi100/jobs//IiFEB_IiFEB_11/Acomosus/predictions.h5', errno = 2, error message = 'No such file or directory', flags = 13, o_flags = 242)
