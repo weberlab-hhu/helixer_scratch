@@ -37,11 +37,11 @@ for species_folder in $(ls -d "$job_main_folder/$1"/*/); do
 
 		echo -n $species" "
 		cd $output_species_folder
-		qsub $species"_ensemble.sh"
+		# qsub $species"_ensemble.sh"
 
 		sleep 2
 	else
-		echo "Folder "$output_species_folder" already existing."
+		echo "Folder "$output_species_folder" already exists."
 	fi
 done
 
