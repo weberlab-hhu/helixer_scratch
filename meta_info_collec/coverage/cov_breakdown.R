@@ -52,16 +52,17 @@ paircov_plot <- function(cov,
 	  geom_bar(stat='identity', position=position) + 
           scale_fill_viridis_d(direction=1) +
 	  ylab(ylab_str) +
-          xlab("") +
-
-          #scale_x_discrete(breaks=1:4, labels=c('a   ig\na    ig','a\na','a\na','a\na')) +
-	  ggtitle(paste0(argmax0, " = ", decode[argmax0 + 1], 
-			 ", ", argmax1, " = ", decode[argmax1 + 1],
-			 "\n", covstring))
+          xlab("") 
+#
+#	  ggtitle(paste0(argmax0, " = ", decode[argmax0 + 1], 
+#			 ", ", argmax1, " = ", decode[argmax1 + 1],
+#			 "\n", covstring))
   ypos <- estimate_y_labs(bp)
   print(ypos)
   bp <- bp + annotation_custom(textGrob(" Ref.:\nPred.:"), 
-            xmin=0, xmax=0,ymin=ypos, ymax=ypos) #+
+            xmin=0, xmax=0,ymin=ypos, ymax=ypos) +
+        scale_x_discrete(labels=c('\n', '\n', '\n', '\n')) + 
+        theme(plot.margin=unit(c(8, 8, 24, 16), "pt"))
 #        theme(axis.text.x=element_blank())
   for (i in 1:4){
           bp <- bp + annotation_custom(textGrob(levels(x$ref_pred)[i]), 
