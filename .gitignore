@@ -12,3 +12,4 @@ main.pdf
 main.blg
 .log
 */.ipynb_checkpoints/*
+.nfs*

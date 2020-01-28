@@ -42,7 +42,7 @@ for data_folder in $(ls -d "$data_main_folder"/*/); do
 		cd $job_subfolder
 		qsub $species".sh"
 
-		sleep 90 # to check everything and spread out the jobs
+		sleep 60 # to check everything and spread out the jobs
 	else
 		echo "Folder $job_subfolder exists. skipping."
 	fi

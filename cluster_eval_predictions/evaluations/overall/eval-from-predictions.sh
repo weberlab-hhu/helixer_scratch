@@ -25,7 +25,7 @@ for species_folder in $(ls -d "$main_folder"/*/); do
 
 		module load Python/3.6.5
 
-		/home/festi100/git/helixer_scratch/data_scripts/eval-from-predictions-one-trial.sh $species_folder $output_file_name
+		/home/festi100/git/helixer_scratch/cluster_eval_predictions/evaluations/overall/eval-from-predictions-one-trial.sh $species_folder $output_file_name
 		EOF
 
 		echo -n $species" "
