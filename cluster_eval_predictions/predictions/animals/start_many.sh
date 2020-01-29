@@ -10,7 +10,7 @@ if [[ ! -f "next_line" ]]; then
 	exit
 fi
 
-if [[ $(basename $(pwd)) = "cluster_eval" ]]; then
+if [[ $(basename $(pwd)) = "animals" ]]; then
 	echo "script seems to be run from the repository, which should be an error"
 	exit
 fi

@@ -39,19 +39,19 @@ cd $species
 # we could put this into a config file but for now this should work
 declare -A values
 if [[ "$eval_len" == "20" ]]; then
-	values[__BATCH_SIZE__]="400"
+	values[__BATCH_SIZE__]="200"
 	values[__OVERLAP_OFFSET__]="2500"
 	values[__CORE_LENGTH__]="10000"
 elif [[ "$eval_len" == "50" ]]; then
-	values[__BATCH_SIZE__]="160"
+	values[__BATCH_SIZE__]="80"
 	values[__OVERLAP_OFFSET__]="6250"
 	values[__CORE_LENGTH__]="25000"
 elif [[ "$eval_len" == "100" ]]; then
-	values[__BATCH_SIZE__]="80"
+	values[__BATCH_SIZE__]="40"
 	values[__OVERLAP_OFFSET__]="12500"
 	values[__CORE_LENGTH__]="50000"
 elif [[ "$eval_len" == "200" ]]; then
-	values[__BATCH_SIZE__]="40"
+	values[__BATCH_SIZE__]="24"
 	values[__OVERLAP_OFFSET__]="25000"
 	values[__CORE_LENGTH__]="100000"
 else
