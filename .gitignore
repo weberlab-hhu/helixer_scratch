@@ -13,3 +13,4 @@ main.blg
 .log
 */.ipynb_checkpoints/*
 .nfs*
+output.csv
