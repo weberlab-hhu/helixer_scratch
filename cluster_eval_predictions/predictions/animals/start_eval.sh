@@ -4,6 +4,12 @@
 # fills the qsub template according to the content of that line
 # and qsubs a job
 
+increase_line_number() {
+	# increment line number
+	echo -n $((line_offset+1)) > next_line
+	echo "line number incremented"
+}
+
 if [[ $# -lt 2 ]]; then
 	echo "Usage: ./start_eval model_path datasets_basepath"
 	exit
@@ -28,6 +34,7 @@ eval_len=$(echo -n $line_content | cut -d "," -f2)
 
 if [[ -d $species ]]; then
 	echo "$species directory already existing. exiting."
+	increase_line_number
 	exit
 fi
 
@@ -81,7 +88,6 @@ echo "line offset: $line_offset"
 # qsub
 qsub $species".sh"
 echo "job queued"
+cd ..
 
-# increment line number
-echo -n $((line_offset+1)) > ../next_line
-echo "line number incremented"
+increase_line_number

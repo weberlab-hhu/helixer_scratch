@@ -15,13 +15,13 @@ if [[ $(basename $(pwd)) = "animals" ]]; then
 	exit
 fi
 
-if [[ $(basename -s ".h5" $model_file) != $(basename main_data_folder) ]]; then
-	echo "job folder does not match model file. could mean something is wrong, exiting"
-	exit
-fi
-
 model_file=$1
 main_data_folder=$2
+
+if [[ $(basename -s ".h5" $model_file) != $(basename $(pwd)) ]]; then
+	echo "current job folder does not match model file name. could mean something is wrong, exiting"
+	exit
+fi
 
 line_offset=$(<next_line)
 n_lines=$(cat datasets | wc -l)
