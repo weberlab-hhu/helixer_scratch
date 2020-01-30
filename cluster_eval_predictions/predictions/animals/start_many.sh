@@ -15,6 +15,11 @@ if [[ $(basename $(pwd)) = "animals" ]]; then
 	exit
 fi
 
+if [[ $(basename -s ".h5" $model_file) != $(basename main_data_folder) ]]; then
+	echo "job folder does not match model file. could mean something is wrong, exiting"
+	exit
+fi
+
 model_file=$1
 main_data_folder=$2
 
@@ -28,5 +33,5 @@ fi
 
 for i in $(seq 1 $n_qsubs); do
 	./start_eval.sh $model_file $main_data_folder
-	sleep 30
+	sleep 20
 done
