@@ -8,6 +8,7 @@ while true; do
 		job_folder=/gpfs/project/festi100/jobs/$job
 		cd $job_folder
 		for species_folder in $(ls -d $job_folder/*/); do
+			# if [[ -f $species_folder/*.sh.o* && ! -f $species_folder/predictions.h5 ]]; then
 			if [[ ! -f $species_folder/predictions.h5 ]]; then
 				rm -rv $species_folder
 			fi
