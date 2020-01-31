@@ -11,19 +11,19 @@ increase_line_number() {
 }
 
 if [[ $# -lt 2 ]]; then
-	echo "Usage: ./start_eval model_path datasets_basepath"
-	exit
+	echo "Usage: ./start_eval model_path datasets_basepath [sleep time in s]"
+	exit 1
 fi
 
 if [[ ! -f "next_line" ]]; then
 	echo "next_line file not found. Script has to be run from the root dir."
-	exit
+	exit 1
 fi
 
 line_offset=$(<next_line)
 if [[ $line_offset -gt $(cat datasets | wc -l) ]]; then
 	echo "Line offset $line_offset is too large. Maybe everything is done already."
-	exit
+	exit 1
 fi
 
 model=$1
@@ -35,7 +35,7 @@ eval_len=$(echo -n $line_content | cut -d "," -f2)
 if [[ -d $species ]]; then
 	echo "$species directory already existing. exiting."
 	increase_line_number
-	exit
+	exit 2
 fi
 
 mkdir $species
@@ -63,7 +63,7 @@ elif [[ "$eval_len" == "200" ]]; then
 	values[__CORE_LENGTH__]="100000"
 else
 	echo "Unknown length $eval_len. exiting."
-	exit
+	exit 1
 fi
 
 # general params
@@ -89,5 +89,9 @@ echo "line offset: $line_offset"
 qsub $species".sh"
 echo "job queued"
 cd ..
+
+if [[ $# -gt 2 ]]; then
+	sleep $3
+fi
 
 increase_line_number

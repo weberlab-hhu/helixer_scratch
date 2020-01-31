@@ -33,5 +33,4 @@ fi
 
 for i in $(seq 1 $n_qsubs); do
 	./start_eval.sh $model_file $main_data_folder
-	sleep 20
 done
