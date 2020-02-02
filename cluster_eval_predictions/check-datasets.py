@@ -10,13 +10,16 @@ import argparse
 import shutil
 
 parser = argparse.ArgumentParser()
-parser.add_argument('folder', type=str)
+parser.add_argument('job_id', type=str)
+parser.add_argument('-jb', '--job-base-folder', type=str, default='/gpfs/project/festi100/jobs')
 parser.add_argument('-sf', '--sub-folder', type=str, default='')
 parser.add_argument('-del', '--delete', action='store_true', help='Remove folders with errors')
 args = parser.parse_args()
 
-for genome_folder in os.listdir(args.folder):
-    folder = os.path.join(args.folder, genome_folder)
+job_folder = os.path.join(args.job_base_folder, args.job_id)
+
+for genome_folder in os.listdir(job_folder):
+    folder = os.path.join(job_folder, genome_folder)
     if os.path.isdir(folder):
         if args.sub_folder == '':
             h5_files = glob.glob(os.path.join(folder, '*.h5'))
