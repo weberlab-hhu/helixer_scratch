@@ -47,5 +47,5 @@ for line in $(egrep "microcebus_murinus|dromaius_novaehollandiae|esox_lucius|mol
 	/home/felix/git/HelixerPrep/helixerprep/prediction/LSTMModel.py -v -bs $batch_size -lm $model -td $data_dir/test_data.h5 -po $predictions_dir/predictions.h5 --overlap --overlap-offset $overlap_offset --core-length $core_length
 
 	# upload to the cluster in the background
-	rsync $predictions_dir/predictions.h5 festi100@hpc.rz.uni-duesseldorf.de:/gpfs/project/festi100/jobs/$job_id/$species/predictions.h5 &
+	rsync -r -v $predictions_dir festi100@hpc.rz.uni-duesseldorf.de:/gpfs/project/festi100/jobs/$job_id/ &
 done
