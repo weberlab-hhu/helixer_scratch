@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [[ $# -lt 3 ]]; then
-	echo "Usage: ./start_many.sh model_file main_data_folder n_qsubs"
+	echo "Usage: ./start_many.sh model_file main_data_folder n_qsubs [sleep time in s]"
 	exit
 fi
 
@@ -32,6 +32,5 @@ else
 fi
 
 for i in $(seq 1 $n_qsubs); do
-	./start_eval.sh $model_file $main_data_folder
-	sleep 20
+	./start_eval.sh $model_file $main_data_folder $4
 done
