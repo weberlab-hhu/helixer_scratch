@@ -61,7 +61,7 @@ Geenuff error rate & 0.1 (+- 0.02) & 0.3 (+- 0.02) \\
 Average genome size in Gbp& 1.1 (+- 0.5) & 0.3 (+- 0.1) \\
 Average gene length & 23000 (+- 5000) & 3370 (+- 50) \\
 \botrule
-\end{tabular}}{Values are averages across all genomes of a data group}
+\end{tabular}}{Values are averages across all genomes of a data group. The genome size is excluding FASTA sequences without a gene and subsequences that were masked as completely erroneous.}
 \end{table}
 
 \begin{table}[!t]
@@ -75,7 +75,7 @@ Geenuff error rate & 0.1 (+- 0.02) & 0.3 (+- 0.02) \\
 Average genome size in Gbp& 1.1 (+- 0.5) & 0.3 (+- 0.1) \\
 Average gene length & 23000 (+- 5000) & 3370 (+- 50) \\
 \botrule
-\end{tabular}}{Values are averages across all genomes of a data group}
+\end{tabular}}{Values are averages across all genomes of a data group. The genome size is excluding FASTA sequences without a gene and subsequences that were masked as completely erroneous.}
 \end{table}
 
 During data generation, we only queried for the longest transcript of each gene and did not include FASTA sequences that had no functional annotation (explanation why this is a sign of error?). As Geenuff checks the genomic annotations for potential errors and is able to mark those areas, we were able to effectively blank out those bases during training. The vast majority of bases masked lie in the intergenic region as the most prevelant error is a missing UTR and Geenuff marks a potentially large intergenic region for it. Table \ref{Tab:statistics_all} and \ref{Tab:statistics_training} show statistics about the masking. For the training, we divided each continous genomic sequence into 20.000 bases long subsequences, which are then used as input or label for the neural network. We appended zero padding if the subsequences are not long enough. If a subsequence is fully marked as erroneous, we do not include it in the training or evaluation datasets.
@@ -166,6 +166,7 @@ Text Text  Text Text Text Text Text Text.
 \toprule & EnsemblMetazoa & JGI Phytosome\\
 \midrule
 Augustus & 0.62 (+-0.02) & 0.83 (+- 0.03)\\
+Dilated CNN Baseline & 0.62 (+-0.02) & 0.83 (+- 0.03)\\
 Best Helixer model & 0.62 (+-0.02) & 0.72 (+-0.02) \\
 Best model + varied input length & 0.62 (+-0.02) & 0.72 (+-0.02) \\
 Best model + varied input length + overlapping & 0.62 (+-0.02) & 0.72 (+-0.02) \\
@@ -178,6 +179,10 @@ Text Text Text Text Text Text  Text Text Text Text Text Text Text
 Text Text  Text Text Text Text Text Text.
 Figure~2\vphantom{\ref{fig:02}} shows that the above method  Text
 \citealp{Boffelli03} might want to know about  text text text text
+
+\section{Results}
+
+We propose a framework to develop a gene calling model that is both more general in the range genomes it can annotate and also outperforms traditional methods on a base pair wise evaluation. The overall results of Helixer, Augustus and a baseline build with dilated convolutional layers are shown in table \ref{Tab:03}.
 
 
 \section{Discussion}
