@@ -1,16 +1,26 @@
 #! /bin/bash
 
 # make local predictions on a set of animals
+# skip the 200k long ones
 
+if [[ $# -lt 1 ]]; then
+	echo "Usage: ./mk_predictions.sh jobid"
+	exit
+fi
+
+job_id=$1
 animals_datasets_base="/mnt/data/datasets/animals/"
-job_id="duZo1"
 model="/home/felix/Desktop/models/animals_final/"$job_id".h5"
 predictions_folder_base="/mnt/data/predictions/"$job_id
 
-# for line in $(<~/git/helixer_scratch/cluster_eval_predictions/predictions/animals/cluster/datasets); do
-for line in $(egrep "microcebus_murinus|dromaius_novaehollandiae|esox_lucius|mola_mola|lepisosteus_oculatus|erpetoichthys_calabaricus|saimiri_boliviensis_boliviensis" ~/git/helixer_scratch/cluster_eval_predictions/predictions/animals/cluster/datasets); do
+for line in $(<~/git/helixer_scratch/cluster_eval_predictions/predictions/animals/cluster/datasets); do
+# for line in $(egrep "microcebus_murinus|dromaius_novaehollandiae|esox_lucius|mola_mola|lepisosteus_oculatus|erpetoichthys_calabaricus|saimiri_boliviensis_boliviensis" ~/git/helixer_scratch/cluster_eval_predictions/predictions/animals/cluster/datasets); do
 	species=$(echo -n $line | cut -d, -f1)
 	length=$(echo -n $line | cut -d, -f2)
+
+	if [[ $length -eq 200 ]]; then
+		continue
+	fi
 
 	data_dir=$animals_datasets_base"/single_genomes_"$length"k/"$species
 	predictions_dir=$predictions_folder_base/$species
