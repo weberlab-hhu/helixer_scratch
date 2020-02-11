@@ -56,14 +56,14 @@ The classes are not balanced equally and the tradeoff between the number of inte
 \toprule & Animals & Plants\\
 \midrule
 Average genome size in Gbp& 2.936 (+- 1.562) & 0.787 (+- 0.995) \\
-Average gene length & tbd & tbd \\
+Average gene length & 31,223 (+- 13,974)& 3,368 (+- 1,510)\\
 Geenuff error rate & 0.311 (+- 0.129) & 0.351 (+- 0.249) \\
 Fraction of class Intergenic  & 0.777 (+- 0.042) & 0.799 (+- 0.089) \\
 Fraction of class UTR & 0.006 (+- 0.006) & 0.017 (+- 0.016) \\
 Fraction of class CDS & 0.016 (+- 0.014) & 0.085 (+- 0.071) \\
 Fraction of class Intron & 0.201 (+- 0.035) & 0.099 (+- 0.057) \\
 \botrule
-\end{tabular}}{Values are averages of the individual values of each genome in a data group. All statistics except the average gene lengths are excluding FASTA sequences without a gene and subsequences that were masked as completely erroneous. Each strand of DNA was counted seperately. The standart deviation is shown in the brackets.}
+\end{tabular}}{Values are averages of the individual values of each genome in a data group. All statistics except the average gene lengths are excluding FASTA sequences without a gene and subsequences that were masked as completely erroneous. Each strand of DNA was counted seperately. The average gene length was determined by the average length of the longest transcript by cumulative exon length, which is how we query for genes during data generation. Brackets show the standart deviation.}
 \end{table}
 
 \begin{table}[!t]
@@ -72,14 +72,14 @@ Fraction of class Intron & 0.201 (+- 0.035) & 0.099 (+- 0.057) \\
 \toprule & Animals & Plants\\
 \midrule
 Average genome size in Gbp& 2.489 (+- 2.073) & 0.914 (+- 0.934) \\
-Average gene length & tbd & tbd \\
+Average gene length & 25,672 (+- 16,605) & 3,509 (+- 906)\\
 Geenuff error rate & 0.253 (+- 0.138) & 0.134 (+- 0.072) \\
 Fraction of class Intergenic & 0.752 (+- 0.05) & 0.808 (+- 0.106) \\
 Fraction of class UTR & 0.013 (+- 0.011) & 0.033 (+- 0.023) \\
 Fraction of class CDS & 0.028 (+- 0.028) & 0.077 (+- 0.052) \\
 Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 \botrule
-\end{tabular}}{Values are averages of the individual values of each genome in a data group. All statistics except the average gene lengths are excluding FASTA sequences without a gene and subsequences that were masked as completely erroneous. Each strand of DNA was counted seperately. The standart deviation is shown in the brackets.}
+\end{tabular}}{The description of Table \ref{Tab:statistics_all} applies here as well.}
 \end{table}
 
 During data generation, we only queried for the longest transcript of each gene and did not include FASTA sequences that had no functional annotation (explanation why this is a sign of error?). As Geenuff checks the genomic annotations for potential errors and is able to mark those areas, we were able to effectively blank out those bases during training. The vast majority of bases masked lie in the intergenic region as the most prevelant error is a missing UTR and Geenuff marks a potentially large intergenic region for it. Table \ref{Tab:statistics_all} and \ref{Tab:statistics_training} show statistics about the masking. For the training, we divided each continous genomic sequence into 20.000 bases long subsequences, which are then used as input or label for the neural network. We appended zero padding if the subsequences are not long enough. If a subsequence is fully marked as erroneous, we do not include it in the training or evaluation datasets.
