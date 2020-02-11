@@ -1,56 +1,72 @@
+SELECT genome.species, round(avg(abs(feature.start - feature.end))) avg_transcript_length from feature
+JOIN coordinate ON feature.coordinate_id = coordinate.id
+JOIN association_transcript_piece_to_feature ON association_transcript_piece_to_feature.feature_id = feature.id
+JOIN transcript_piece ON association_transcript_piece_to_feature.transcript_piece_id = transcript_piece.id
+JOIN transcript ON transcript_piece.transcript_id = transcript.id
+JOIN genome ON genome.id = coordinate.genome_id
+JOIN super_locus on transcript.super_locus_id = super_locus.id
+WHERE super_locus.type = 'gene' and transcript.type = 'mRNA' and transcript.longest = 1 and feature.type = 'geenuff_transcript'
+GROUP BY genome.id;
+
 species                                   avg_transcript_lengt
 ----------------------------------------  --------------------
-Dsalina                                   10860.0             
-Aofficinalis                              6835.0              
-Tcacao                                    5711.0              
-Atrichopoda                               5665.0              
-Creinhardtii                              5336.0              
 Acomosus                                  4894.0              
 Ahypochondriacus                          4857.0              
-Cquinoa                                   4798.0              
-Vvinifera                                 4462.0              
-Zmays                                     4065.0              
-Slycopersicum                             4007.0              
-Hvulgare                                  3989.0              
-Gmax                                      3950.0              
-Hannuus                                   3828.0              
-Mpolymorpha                               3729.0              
-Sbicolor                                  3675.0              
-CsubellipsoideaC169                       3520.0              
-Mesculenta                                3480.0              
-Spolyrhiza                                3458.0              
-Zmarina                                   3342.0              
+Aofficinalis                              6835.0              
+Athaliana                                 2188.0              
+Atrichopoda                               5665.0              
 Bdistachyon                               3327.0              
-Ppersica                                  3199.0              
-Graimondii                                3160.0              
-Sitalica                                  3154.0              
-Ptrichocarpa                              3112.0              
-Dcarota                                   3105.0              
-Egrandis                                  3082.0              
-Mdomestica                                3079.0              
+Boleraceacapitata                         1769.0              
 Carietinum                                3055.0              
 Cclementina                               3032.0              
-Kfedtschenkoi                             2853.0              
-Osativa                                   2842.0              
-Fvesca                                    2807.0              
-Oeuropaea                                 2769.0              
-Csinensis                                 2747.0              
-Othomaeum                                 2729.0              
-Mguttatus                                 2722.0              
-Lsativa                                   2666.0              
-Mtruncatula                               2597.0              
-Czofingiensis                             2496.0              
-Stuberosum                                2468.0              
-Cpapaya                                   2356.0              
-Lusitatissimum                            2308.0              
-Rcommunis                                 2262.0              
 Cgrandiflora                              2233.0              
+Cpapaya                                   2356.0              
+Cquinoa                                   4798.0              
+Creinhardtii                              5336.0              
 Crubella                                  2226.0              
+Csinensis                                 2747.0              
+CsubellipsoideaC169                       3520.0              
+Czofingiensis                             2496.0              
+Dcarota                                   3105.0              
+Dsalina                                   10860.0             
+Egrandis                                  3082.0              
 Esalsugineum                              2205.0              
-Athaliana                                 2188.0              
-Pumbilicalis                              1829.0              
-Boleraceacapitata                         1769.0              
-Smoellendorffii                           1702.0              
-MspRCC299                                 1624.0              
+Fvesca                                    2807.0              
+Gmax                                      3950.0              
+Graimondii                                3160.0              
+Hannuus                                   3828.0              
+Hvulgare                                  3989.0              
+Kfedtschenkoi                             2853.0              
+Lsativa                                   2666.0              
+Lusitatissimum                            2308.0              
+Mdomestica                                3079.0              
+Mesculenta                                3480.0              
+Mguttatus                                 2722.0              
+Mpolymorpha                               3729.0              
 MpusillaCCMP1545                          1588.0              
+MspRCC299                                 1624.0              
+Mtruncatula                               2597.0              
+Oeuropaea                                 2769.0              
 Olucimarinus                              1309.0              
+Osativa                                   2842.0              
+Othomaeum                                 2729.0              
+Ppersica                                  3199.0              
+Ptrichocarpa                              3112.0              
+Pumbilicalis                              1829.0              
+Rcommunis                                 2262.0              
+Sbicolor                                  3675.0              
+Sitalica                                  3154.0              
+Slycopersicum                             4007.0              
+Smoellendorffii                           1702.0              
+Spolyrhiza                                3458.0              
+Stuberosum                                2468.0              
+Tcacao                                    5711.0              
+Vvinifera                                 4462.0              
+Zmarina                                   3342.0              
+Zmays                                     4065.0              
+Alyrata                                   2330.0              
+Csativus                                  3485.0              
+Macuminata                                3804.0              
+Ppatens                                   3067.0              
+Taestivum                                 2338.0              
+Vcarteri                                  5998.0              
