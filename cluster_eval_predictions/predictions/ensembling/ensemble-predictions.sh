@@ -27,7 +27,7 @@ for species_folder in $(ls -d "$job_main_folder/$1"/*/); do
 		cat <<- EOF > $output_species_folder/$species"_ensemble.sh"
 		#!/bin/bash
 		#PBS -l select=1:ncpus=1:mem=200mb
-		#PBS -l walltime=3:59:00
+		#PBS -l walltime=7:59:00
 		#PBS -A "HelixerOpt"
 
 		module load Python/3.6.5
