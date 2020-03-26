@@ -40,7 +40,7 @@ online.}
 \end{itemize}
 
 \section{Approach}
-Helixer is a prototype software for training and utilizing a general purpose gene annotation model for large eukaryotic genomes. We demonstrate the effectiveness of this approach by training a single model for animals (phylogenetic names?) and plants respectively, which was then evaluated on 192 genomes in the animal case and 60 genomes for the plant model. We leverage modelling techniques from the field of deep learning, which has been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods in a variety of fields. Our model expects the raw genomic sequence as main input and produces functional predictions on a base pair wise level. The source code and all data is publically available.
+Helixer is a prototype software for training and utilizing a general purpose model for the functional annotation of large eukaryotic genomes. We demonstrate the effectiveness of this approach by training a single model for animals (phylogenetic names?) and plants respectively, which was then evaluated on 192 genomes in the animal case and on 60 plant genomes. We use modelling techniques from the field of deep learning, which has been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods in a variety of fields. Our model expects the raw genomic sequence as main input and produces functional predictions on a base pair wise level. The source code and all data is publically available.
 
 \begin{methods}
 \section{Methods}
@@ -116,7 +116,6 @@ Input & Genomic sequence in a one hot encoding\\
 	  & for (A, T, C, G), otherwise different, see suplementary .. ()\\
 Output & Labels in a 4-dimensional one hot encoding \\
 Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
-Gene lengths & The length of a gene at a base or 0 if intergenic \\
 RNASeq score & A score in the interval $...$ to rank the coherence of the \\
 		     & annotation with RNASeq information \\
 \botrule
