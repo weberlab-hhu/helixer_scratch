@@ -14,3 +14,4 @@ main.blg
 */.ipynb_checkpoints/*
 .nfs*
 output.csv
+plots/phylogenetic_trees/plot.png
