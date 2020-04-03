@@ -15,3 +15,4 @@ main.blg
 .nfs*
 output.csv
 plots/phylogenetic_trees/plot.png
+plots/phylogenetic_trees/animals.png
