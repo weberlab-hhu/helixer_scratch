@@ -8,7 +8,8 @@ tree = read.nhx('all_species.tre')
 
 
 f1_difference = read.csv('f1_difference.csv', header=TRUE)
-p = ggtree(tree) + geom_tiplab(size=4)
+sets = read.csv('sets.csv', header=TRUE)
+p = ggtree(tree) %<+% sets + geom_tiplab(size=4, offset=.3) + geom_tippoint(aes(color=set))
 
 png('animals.png', width=800, height=2000)
 gheatmap(p, f1_difference, width=.3, high='darkgreen', low='red', colnames=F, offset=9)
