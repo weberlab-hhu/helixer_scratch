@@ -82,9 +82,9 @@ We use metrics two metrics to judge model performance. The {\it Genic F1} is our
 \label{sec:model}
 We use a 4-layer deep stacked BLSTM network with 256 units per layer and layer normalization (citation ? ) between each BLSTM layer to produce the predictions in the form of a base pair wise classification. The model consists of circa 5.4 million parameters and was implemented with the deep learning library keras (citation) on top of TensorFlow (citation). We tested multiple different architectures before arriving at this model configuration, including convolutional neural networks (CNN) and hybrid architectures. The hyperparameters were determined by a combination of manual and automatic hyperparameter optimization (talk about TPE?, quote nni?). All relevant hyperparameters can be found in Table \ref{tab:params} or in the Helixer source code repository. 
 
-We also implemented a dilated CNN baseline as this kind of architecture is widely used when working with DNA data as input. Details of the neural architecture search are given in Section \ref{sec:dcnn} and results are shown in Table \ref{tab:results}.
+We also implemented a dilated CNN (dCNN) baseline as this kind of architecture is widely used when working with DNA data as input. Details of the neural architecture search are given in Section \ref{sec:dcnn}.
 	
-The model was trained with 10 bases of genomic sequence as input during each time step and produces individual predictions for each of those 10 bases simultaneously. This grouping enabled us to train effectively with far longer sequences than usual. A class wise evaluation including the calculation of the Genic F1 score is performed on the validation set after every epoch.
+Our final model was trained with 10 bases of genomic sequence as input during each time step and produces individual predictions for each of those 10 bases simultaneously. This grouping enabled us to train effectively with far longer sequences than usual. A class wise evaluation including the calculation of the Genic F1 score is performed on the validation set after every epoch.
 
 We also used multiple techniques to improve the prediction quality after the training was done. One very effective way for genomes with larger genes was to input longer sequences during inference time than during training. This was done for all animal genomes except the invertebrates. The input sequences were up to 10 times larger, depending on species group and assembly quality. This also demonstrates ability of our model to generalize as it is able to make successful prediction on far longer sequences than it has ever seen. The sequence length during inference can be any of 20.000, 50.000, 100.000 or 200.000 and is determined by the species family(?). Families that tend to have longer genes get assigned longer sequences. For more implementation details on this see Section \ref{sec:longer} or the source code.
 	
@@ -169,13 +169,40 @@ Howe KL, Contreras-Moreira B, De Silva N, Maslen G, Akanni W, Allen J, Alvarez-J
 \newpage
 
 \section{Supplementary Material}
+
 \subsection{Dilated CNN Baseline Network Search}
 \label{sec:dcnn}
+\begin{table}[!t]
+\processtable{Parameter search space for the dilated CNN baseline\label{tab:dcnn}} {
+\begin{tabular}{@{}ll@{}}
+\toprule Name & Value \\
+\midrule
+Layers & 4\\
+Units per layer & 256\\
+Learning rate & 1e-4\\
+Optimizer & Adam\\
+\botrule
+\end{tabular}}{Above are all parameters used during neural architecture search for the dilated CNN baseline. The same overall space was used for plant and animal data. We did, however, run multiple distinct searches that sometimes only operated over a subset of the given parameters. This was done as those seemed to be the most promising. We for example restricted the search space of the number of LSTM layers to the highest 3 values in later runs. Decisions were guided by the Genic F1 on the validation set of exactly the same data we trained our final LSTM models with.}
+\end{table}
+
+\begin{table}[!t]
+\processtable{Final Parameters of dilated CNN baseline\label{tab:dcnn_best}} {
+\begin{tabular}{@{}ll@{}}
+\toprule Name & Animal Value & Plant Value\\
+\midrule
+Layers & 4 & \\
+Units per layer & 256 & \\
+Learning rate & 1e-4 & \\
+Optimizer & Adam & \\
+\botrule
+\end{tabular}}{The parameters of the dilated CNN model that performed the best according to the Genic F1 of the validation data of the respective training genomes.}
+\end{table}
+
 
 \subsection{Input Data Encoding}
 
-\subsection{Hyperparameters}
 
+\subsection{Hyperparameters}
 \begin{table}[!t]
 \processtable{Hyperparameters\label{tab:params}} {
 \begin{tabular}{@{}ll@{}}
@@ -191,7 +218,6 @@ Optimizer & Adam\\
 
 \subsection{Training Data statistics}
 \label{sec:training_data}
-
 \begin{table}[!t]
 \processtable{Data group statistics for our training data\label{tab:statistics_training}} {
 \begin{tabular}{@{}lll@{}}
