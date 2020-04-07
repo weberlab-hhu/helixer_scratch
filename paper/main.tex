@@ -183,7 +183,7 @@ Number of Layers Before Doubling Filter Count & \{1, 2\}\\
 Dilation Multiplier & \{2, 3\}\\
 Number of Convolutional Layers & \{2, 3, 4, 5, 6, 7, 8\}\\
 Number of Hidden Fully Connected (FC) Layers & \{0, 1, 2\}\\	
-Dropout Used on FC Output & \{0.0, 0.01, 0.1, 0.2, 0.3\}\\
+Dropout Used on FC and Final Conv Layer Output & \{0.0, 0.01, 0.1, 0.2, 0.3\}\\
 Learning Rate & \{1e-3, 1e-4\}\\
 
 \botrule
@@ -193,12 +193,16 @@ Learning Rate & \{1e-3, 1e-4\}\\
 \begin{table}[!t]
 \processtable{Final Parameters of dilated CNN baselines\label{tab:dcnn_best}} {
 \begin{tabular}{@{}lll@{}}
-\toprule Parameter & Possible Animal Values & Possible Plant Values\\
+\toprule Parameter & Animals & Plants\\
 \midrule
-Layers & 4 & \\
-Units per layer & 256 & \\
-Learning rate & 1e-4 & \\
-Optimizer & Adam & \\
+Kernel Size & 16 & 16\\
+Initial Filter Depth & 96 & 32\\
+Number of Layers Before Doubling Filter Count & 2 & 2\\
+Dilation Multiplier & 3 & 3\\
+Number of Convolutional Layers & 6 & 8\\
+Number of Hidden Fully Connected (FC) Layers & 2 & 0\\
+Dropout Used on FC Output & 0.0 & 0.0\\
+Learning Rate & 1e-4 & 1e-3\\
 \botrule
 \end{tabular}}{The parameters of the dilated CNN model that performed the best according to the Genic F1 of the validation data of the respective training genomes. }
 \end{table}
