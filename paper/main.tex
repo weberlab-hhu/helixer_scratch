@@ -173,22 +173,23 @@ Howe KL, Contreras-Moreira B, De Silva N, Maslen G, Akanni W, Allen J, Alvarez-J
 \subsection{Dilated CNN Baseline Network Search}
 \label{sec:dcnn}
 \begin{table}[!t]
-\processtable{Parameter search space for the dilated CNN baseline\label{tab:dcnn}} {
+\processtable{Parameter search space for the dilated CNN baselines\label{tab:dcnn}} {
 \begin{tabular}{@{}ll@{}}
-\toprule Name & Value \\
+\toprule Parameter & Possible Values \\
 \midrule
-Layers & 4\\
-Units per layer & 256\\
-Learning rate & 1e-4\\
-Optimizer & Adam\\
+Kernel size & \{4, 8, 12, 16\}\\
+Initial Filter depth & \{32, 64, 96, 128\}\\
+Number of Layers before doubling filter count & \{1, 2\}\\
+Dilation Multiplier& \{2, 3\}\\
+
 \botrule
-\end{tabular}}{Above are all parameters used during neural architecture search for the dilated CNN baseline. The same overall space was used for plant and animal data. We did, however, run multiple distinct searches that sometimes only operated over a subset of the given parameters. This was done as those seemed to be the most promising. We for example restricted the search space of the number of LSTM layers to the highest 3 values in later runs. Decisions were guided by the Genic F1 on the validation set of exactly the same data we trained our final LSTM models with.}
+\end{tabular}}{Above are all parameters used during neural architecture search for the dilated CNN baseline. The same overall space was used for plant and animal data. We did, however, run multiple distinct searches that sometimes only operated over a subset of the given parameters. This was done as those seemed to be the most promising. We for example restricted the search space of the number of LSTM layers to the highest 3 values in later runs. Decisions were guided by the Genic F1 on the validation set of exactly the same data we trained our final LSTM models with. Run with a Genic F1 below 0.5 after 10 epochs were stopped at that point and the overall maximum epoch was 15. The batch size used for almost all runs was 32 and the dilation was capped to 81. The performances seemed to be leveling of well before that. The implementation and parameter space is very roughly based on (paper we looked at?) and can be found in the Helixer source code repository. In total, we ran (?) runs for the plant and (?) runs with the animal data.}
 \end{table}
 
 \begin{table}[!t]
-\processtable{Final Parameters of dilated CNN baseline\label{tab:dcnn_best}} {
-\begin{tabular}{@{}ll@{}}
-\toprule Name & Animal Value & Plant Value\\
+\processtable{Final Parameters of dilated CNN baselines\label{tab:dcnn_best}} {
+\begin{tabular}{@{}lll@{}}
+\toprule Parameter & Possible Animal Values & Possible Plant Values\\
 \midrule
 Layers & 4 & \\
 Units per layer & 256 & \\
@@ -203,6 +204,7 @@ Optimizer & Adam & \\
 
 
 \subsection{Hyperparameters}
+
 \begin{table}[!t]
 \processtable{Hyperparameters\label{tab:params}} {
 \begin{tabular}{@{}ll@{}}
@@ -215,6 +217,17 @@ Optimizer & Adam\\
 \botrule
 \end{tabular}}{}
 \end{table}
+
+\begin{table}[!t]
+\processtable{Class weights\label{tab:params_cw}} {
+\begin{tabular}{@{}lll@{}}
+\toprule Class & Animal Value & Plant Value \\
+\midrule
+[0.7, 1.6, 1.2, 1.2] & 4 &\\
+\botrule
+\end{tabular}}{see data statistics tables..}
+\end{table}
+
 
 \subsection{Training Data statistics}
 \label{sec:training_data}
