@@ -30,14 +30,9 @@ online.}
 \maketitle
 
 \section{Introduction}
-\begin{itemize}
-	\item Calling genes correctly is very important
-	\item but also very difficult in eukaryotes
-	\item All current state of the art gene callers work based on HMMs
-	\item The structure of the HMMs is finely tuned and engineered
-	\item Actual learning is very limited, and with that generalization across different genomes 
-	\item (Also have problems with genes that contain long introns, common in mammals)
-\end{itemize}
+For many tasks, it is necessary to have DNA regions labeled according to their function. This process is called gene annotation and it can be performed in different levels of precision, from simple coding -- non-coding classification to detailed structural labeling, such as enhancer regions or long non-coding RNA sequences in eukaryotes. In this work on eucaryotic genomes, we differentiate between Intergenic regions, Untranslated regions (UTRS, parts at the beginning and end of gene, that are transcribed but not translated), Coding sequences (CDS) and Introns. Because of the sheer size of genomes alone, gene annotation is a very labour intensive process and genomic database providers like NCBI [\citealp{NCBI13}] and Ensembl [\citealp{Ensembl16}] offer gene annotation pipelines. These pipelines integrate experimental data (from e.g. RNA-seq or proteogenomics) with homolog sequences in the database and ab-initio gene predictions. The latter is an attractive approach, because it is cheap and fast. State of the art performance ab-initio gene prediction is achieved by higher order hidden markov models (HMMs), such as Genscan [\citealp{Genscan}] or Augustus [\citealp{Augustus}] but their accuracy leaves room for improvement. By choosing possible states and transitions, designers of HMMs assume structure in the sequence that may limit its predictive power. Indeed, in practice HMMs have problems with generalizing across species and it seems actual learning of underlying patterns is limited. In the last decade, deep neural networks have been applied with tremendous success in many areas of statistical modelling. For sequence data, such as DNA, recurrent neural networks (RNN) in the form of long-short term memory (LSTM) are an established architecture and here, we employ them to improve on HMMs for ab-initio genome annotation.
+
+RNNs have already shown promising results in related, but generally more limited investigations. [\citealp{Choudhary17}] carries out preliminary explorations on the potential of BLSTMs for cross species gene prediction, but trains his model on human genes only and tests it on two more species. DeepAnnotator [\citealp{DeepAnnotator}] uses bidirectional LSTMs (BLSTM) for gene finding in prokaryotes. Gene prediction in prokaryotes is considered more amenable than in eukaryotes, as genes in prokaryotes are proportionately more frequent in the genome, feature simpler control structures and do not use splicing [\citealp{Zhuo04}]. DanQ [\citealp{DanQ}] proposes the use of a BLSTM after a concurrent neural net (CNN) to find detailed motifs in the human genome. DeePromotor[\citealp{DeePromotor}] trains a similar architecture for the recognition of promotor regions. Recently, several groups [\citealp{SpliceAi}, \citealp{SpliceFinder}] successfully used CNNs to find splicing sites.
 
 \section{Approach}
 Helixer is a prototype software for training and utilizing a general purpose model for the functional annotation of large eukaryotic genomes. We demonstrate the effectiveness of this approach by training a single model for animals (phylogenetic names?) and plants respectively, which was then evaluated on 192 genomes in the animal case and on 60 plant genomes. We use modelling techniques from the field of deep learning, which has been shown to have the potential to be superior in flexibility and accuracy to traditional machine learning methods in a variety of fields. Our model expects the raw genomic sequence as main input and produces functional predictions on a base pair wise level. The source code and all data is publically available.
@@ -157,6 +152,39 @@ This work has been supported by the... Text Text  Text Text.\vspace*{-12pt}
 
 
 \begin{thebibliography}{}
+
+\bibitem[Thibaud-Nissen {\it et~al}, 2013]{NCBI13}
+Thibaud-Nissen,F., Souvorov,A., Murphy,T., DiCuccio,M., Kitts,P. (2013) Eukaryotic Genome Annotation Pipeline{\it The NCBI Handbook, 2nd}
+
+\bibitem[Aken {\it et~al}, 2016]{Ensembl16}
+Aken,B., Ayling,S., Barrell,D., Clarke,L., {\it et~al.} (2016) The Ensembl gene annotation system, {\it Database}, {\bf 2016}, baw093
+
+\bibitem[Burge {\it et} Karlin, 1997]{Genscan}
+Burge,C., Karlin,S. (1997) Prediction of complete gene structures in human genomic DNA, {\it Journal of Molecular Biology}, {\bf 268-1}, 78-94
+
+\bibitem[Stanke {\it et} Waack, 2003]{Augustus}
+	Stanke,M., Waack,S., (2003) Gene prediction with a hidden Markov model and a new intron submodel, {\it Bioinformatics}, {\bf 19 Suppl.2}, ii215–ii225
+
+\bibitem[Zhuo {\it et~al}., 2004]{Zhuo04}
+Zhuo,W., Yazhu,C., Yixue,L. (2004) A Brief Review of Computational Gene Prediction Methods, {\it Genomics, Proteomics \& Bioinformatics}, 216-221
+
+\bibitem[Amin {\it et~al}., 2018]{DeepAnnotator}
+Amin,M., Yurovsky,A., Tian,Y., Skiena,S. (2018) DeepAnnotator: Genome Annotation with Deep Learning, {\it Proceedings of the 2018 ACM International Conference on Bioinformatics, Computational Biology, and Health Informatics}, 254-259.
+
+\bibitem[Choudhary, 2017]{Choudhary17}
+Choudhary,S. (2017) Predicting protein coding boundaries using RNNs, http://www.saket-choudhary.me/rnn-cds-prediction/predicting-protein-coding.pdf (accessed 2020-04-11)
+
+\bibitem[Daniel {\it et~al}., 2016]{DanQ}
+Daniel,Q., Xiaohui,X., (2016) DanQ: a hybrid convolutional and recurrent deep neural network for quantifying the function of DNA sequences, {\it Nucleic Acids Research}, {\bf 44-11}, e107
+
+\bibitem[Oubounyt {\it et~al}., 2019]{DeePromotor}
+Oubounyt,M., Louadi,Z., Tayara,H., Chong2,K. (2019) DeePromoter: Robust Promoter Predictor Using Deep Learning., {\it Frontiers in genetics}, {\bf 10}, 286
+
+\bibitem[Jaganathan {\it et~al}., 2019]{SpliceAi}
+Jaganathan,K., Panagiotopoulou,S., McRae,J., Darbandi,S., et.al., Predicting Splicing from Primary Sequence with Deep Learning, {\it Cell}, {\bf 176-3}, 535-548.e24
+
+\bibitem[Wang {\it et~al}., 2019]{SpliceFinder}
+Wang,R., Wang,Z., Wang,J. (2019) SpliceFinder: ab initio prediction of splice sites using convolutional neural network, {\it BMC Bioinformatics}, {\bf 20}, 652
 
 \bibitem[Denton {\it et~al}., 2019]{Denton19}
 Denton,A., Stiehler,F. (2019) Article title, {\it Journal Name}, {\bf 199}, 133-154.
