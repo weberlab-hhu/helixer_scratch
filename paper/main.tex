@@ -215,7 +215,7 @@ Dropout Used on FC and Final Conv Layer Output & \{0.0, 0.01, 0.1, 0.2, 0.3\}\\
 Learning Rate & \{1e-3, 1e-4\}\\
 
 \botrule
-\end{tabular}}{Above are all parameters used during neural architecture search for the dilated CNN baseline. The same overall space was used for plant and animal data. We did, however, run multiple distinct searches that sometimes only operated over a subset of the given parameters. This was done as those seemed to be the most promising. We for example restricted the search space of the number of LSTM layers to the highest 3 values in later runs. Decisions were guided by the Genic F1 on the validation set of exactly the same data we trained our final LSTM models with. Runs with a Genic F1 below 0.5 after 10 epochs were stopped and the overall maximum epoch was 15. The performances seemed to be leveling off well before that. The batch size used for almost all runs was 32, the dilation was capped to 81 and the size of each fully connected layer was fixed at 128. New parameters where chosen at random. The implementation and parameter space is very roughly based on (paper we looked at?) and can be found in the Helixer source code repository. In total, we ran (?) runs for the animals and (?) runs with the plant data.}
+\end{tabular}}{Above are all parameters used during neural architecture search for the dilated CNN baseline. The same overall space was used for plant and animal data. We did, however, run multiple distinct searches that sometimes only operated over a subset of the given parameters. This was done as those seemed to be the most promising. We for example restricted the search space of the number of LSTM layers to the highest 3 values in later runs. Decisions were guided by the Genic F1 on the validation set of exactly the same data we trained our final LSTM models with. Runs with a Genic F1 below 0.5 after 10 epochs were stopped and the overall maximum epoch was 15. The performances seemed to be leveling off well before that. The batch size used for almost all runs was 32, the dilation was capped to 81 and the size of each fully connected layer was fixed at 128. New parameters where chosen at random. The implementation and parameter space is very roughly based on (paper we looked at?) and can be found in the Helixer source code repository. In total, we trained 30 models for the animals and (?) with the plant data.}
 \end{table}
 
 \begin{table}[!t]
@@ -232,7 +232,7 @@ Number of Hidden Fully Connected (FC) Layers & 2 & 0\\
 Dropout Used on FC Output & 0.0 & 0.0\\
 Learning Rate & 1e-4 & 1e-3\\
 \botrule
-\end{tabular}}{The parameters of the dilated CNN model that performed the best according to the Genic F1 of the validation data of the respective training genomes. The best animal model was determined by 7+ runs and has circa 4.6 million parameters; the best plant model has around 2.1 million and .}
+\end{tabular}}{The parameters of the dilated CNN model that performed the best according to the Genic F1 of the validation data of the respective training genomes. The best animal model has circa 4.6 million parameters; the best plant model around 2.1 million.}
 \end{table}
 
 
