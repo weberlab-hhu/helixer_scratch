@@ -71,7 +71,7 @@ We employed an iterative approach to effectively select a proper set of training
 
 Once a set of training genomes was selected, we split it up again into a {\it training and validation set}. This split of the training genomes was done to get a quicker sense of the generalization capabilities and was used primarily during training. We split of the validation set by selecting 20\% of the FASTA sequences above and below the N90 of each training genome, ensuring a proper distribution of large and short sequences in both sets and a split on the chromosome level. Evaluation of the annotations on all training and validation genomes was done regularly after a promising model candidate was found based on its validation set performance. Ultimately we only cared about the cross-species performance of a model.
 
-We use metrics two metrics to judge model performance. The {\it Genic F1} is our primary metric that provides the most comprehensive picture of annotation quality in one number. The {\it Subgenic F1} is similar to the Genic F1, except that it does not take UTR predictions into account. This is done for comparability with Augustus and further explained in Chapter \ref{augustus}. Both metrics work by summing up True Positives (TP), False Positives (FP) and False Negatives (FN) of each considered class before calculating precision and recall from these values and combining the two into a F1 score. Both metrics do not take the values of the intergenic class into account, as this class is very abundant and appears to be by far the easiest to predict. In the case of the Genic F1, this means that effectively only the TP of the intergenic class are disregarded. The metrics essentially provide a weighted mean of the performances in the considered classes. All individual class performances are reported in Supplementary Material (?). 
+We use metrics two metrics to judge model performance. The {\it Genic F1} is our primary metric that provides the most comprehensive picture of annotation quality in one number. The {\it Subgenic F1} is similar to the Genic F1, except that it does not take UTR predictions into account. This is done for comparability with AUGUSTUS and further explained in Chapter \ref{augustus}. Both metrics work by summing up True Positives (TP), False Positives (FP) and False Negatives (FN) of each considered class before calculating precision and recall from these values and combining the two into a F1 score. Both metrics do not take the values of the intergenic class into account, as this class is very abundant and appears to be by far the easiest to predict. In the case of the Genic F1, this means that effectively only the TP of the intergenic class are disregarded. The metrics essentially provide a weighted mean of the performances in the considered classes. All individual class performances are reported in Supplementary Material (?). 
 	
 \subsection{Model Architecture and Usage}
 \label{sec:model}
@@ -87,7 +87,7 @@ The final predictions of a single model are constructed by overlapping predictio
 
 A model ensemble with 8 components was used to generate the final predictions for each species. For this, we trained 4 seperate animal and plant models and also used a model from an epoch that did not have the highest Genic F1 on the validation set. Depending on the results, we used the model iteration with either the highest genic recall or precision. The model with the best Genic F1 was always best in one of those. This was done to increase the diversity of the model ensemble. As with the overlapping, the fusion of the 8 individual predictions was done by averaging the softmax values of each base pair prediction.
 
-\subsection{Evaluation of Augustus} \label{augustus}
+\subsection{Evaluation of AUGUSTUS} \label{sec:augustus}
 What Marvin did, why we don't use Genic F1 for comparison, etc
 
 
@@ -113,7 +113,7 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 
 \begin{figure}[!tpb]
 	\centerline{\includegraphics[width=0.45\textwidth]{images/overall_boxplot}}
-\caption{Caption, caption.}\label{fig:boxplot}
+	\caption{Subgenic F1 scores for all animal and plant genomes that were not used during training of Helixer, which is equivalent to all validation and test genomes. Results are given for Helixer and AUGUSTUS with the median predictions scores being denoted by the red lines. Details of how AUGUSTUS was used are given in Section \ref{sec:augustus}.}\label{fig:boxplot}
 \end{figure}
 
 \begin{table}[!t]
@@ -121,14 +121,14 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 \begin{tabular}{@{}lll@{}}
 \toprule & Animals & Plants\\
 \midrule
-Augustus & 0.632 (+-0.089) & 0.749 (+-0.161)\\
+AUGUSTUS & 0.632 (+-0.089) & 0.749 (+-0.161)\\
 Dilated CNN Baseline & - (+-) & - (+-)\\
 Best Helixer model & - (+-) & - (+-) \\
 Best model + varied input length & - (+-) & - \\
 Best model (+ varied input length) + overlapping &  0.85 (+-0.068) & 0.843 (+-0.151) \\
 (Varied input length +) overlapping + ensembling & 0.868 (+-0.064) & 0.863 (+-0.148) \\
 \botrule
-\end{tabular}}{Values are the median in Subgenic F1 across all validation and test genomes of the respective group. Varied input length was only used in the animal case. The best model was chosen out of the eight models of the ensemble for having the best performance in the reported setup. The Augustus result is the median score for all genomes.}
+\end{tabular}}{Values are the median in Subgenic F1 across all validation and test genomes of the respective group. Varied input length was only used in the animal case. The best model was chosen out of the eight models of the ensemble for having the best performance in the reported setup. The AUGUSTUS result is the median score for all genomes.}
 \end{table}
 
 \section{Results}
