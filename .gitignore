@@ -20,3 +20,5 @@ plots/phylogenetic_trees/ggtree/animals.png
 .Rhistory
 plots/Animals_overall_boxplot.png
 plots/Plants_overall_boxplot.png
+paper/images/overlapping/plants/*.png
+paper/images/overlapping/animals/*.png

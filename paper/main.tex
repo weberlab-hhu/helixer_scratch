@@ -107,7 +107,7 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 \end{methods}
 
 \begin{figure}[!tpb]
-	\centerline{\includegraphics[width=0.45\textwidth]{images/length_wise_bias}}
+\centerline{\includegraphics[width=0.45\textwidth]{images/overlapping/both_species_overlapping_aggregate_comparison}}
 \caption{Caption, caption.}\label{fig:length_wise_bias}
 \end{figure}
 
@@ -132,7 +132,9 @@ Best model (+ varied input length) + overlapping &  0.85 (+-0.068) & 0.843 (+-0.
 \end{table}
 
 \section{Results}
-Figure \ref{fig:boxplot} shows the side-by-side comparison of the distribution of performances on all non-training genomes in the animal and plant case by Subgenic F1. In the case of Helixer, these scores represent cross-species predictions. We also compare the average performances of different configurations of Helixer with Augustus and a dilated CNN baseline in Table \ref{tab:results}. The results show a clear improvement over the AUGUSTUS both in median performance and spread. We also significantly outperform the dilated CNN baseline and demonstrated the effectiveness of two techniques used during inference with the usage of longer input lengths being enabled by our LSTM stack without any fully connected layers on top. To our knowledge, this technique was not used before with a model used for gene annotation.
+Figure \ref{fig:boxplot} shows the side-by-side comparison of the distribution of performances on all non-training genomes in the animal and plant case by Subgenic F1. In the case of Helixer, these scores represent cross-species predictions. We also compare the median performances of different configurations of Helixer with AUGUSTUS and a dilated CNN baseline in Table \ref{tab:results}. The results show a clear improvement over the AUGUSTUS both in median performance and spread. We also significantly outperform a baseline constructed of a dilated CNN architecture. 
+
+Two techniques were used during inference to improve performance and limit model bias. The usage of longer input lengths helped especially for genomes that tend to have longer genes and was enabled by our model architecture being a relatively simple LSTM stack without any fully connected layers on top. We also constructed the final predictions out of a overlapping ones, which greatly helped to reduce prediction bias in most genomes. To our knowledge, both techniques were not used before in a model developed for gene annotation. 
 
 \section{Conclusion}
 We propose a gene calling model that is able to perform cross-species genomic annotiation for a wide variety of large eucaryotic genomes. Our model does this while outperforming AUGUSTUS on a base pair wise level and withstanding RNASeq data based scrutiny. 
@@ -297,6 +299,13 @@ Implementation detail:
 If the N75 of a species is less than twice as high as the supposed sequence length it is lowered until either this criteria is met or a length of 50.000 is reached. 
 
 Table of species with their length.
+
+\subsection{Overlapping evaluation by species}
+\begin{figure}[!tpb]
+\centerline{\includegraphics[height=0.01\paperheight]{images/overlapping/animals_overlapping}}
+\caption{Caption, caption.}\label{fig:animals_overlapping}
+\end{figure}
+
 
 
 
