@@ -18,3 +18,5 @@ plots/phylogenetic_trees/ete3/plot.png
 plots/phylogenetic_trees/ggtree/animals.png
 .RData
 .Rhistory
+plots/Animals_overall_boxplot.png
+plots/Plants_overall_boxplot.png

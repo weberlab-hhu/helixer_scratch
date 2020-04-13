@@ -111,6 +111,11 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 \caption{Caption, caption.}\label{fig:length_wise_bias}
 \end{figure}
 
+\begin{figure}[!tpb]
+	\centerline{\includegraphics[width=0.45\textwidth]{images/overall_boxplot}}
+\caption{Caption, caption.}\label{fig:boxplot}
+\end{figure}
+
 \begin{table}[!t]
 \processtable{Experimental Results and Comparison\label{tab:results}} {
 \begin{tabular}{@{}lll@{}}
@@ -127,7 +132,7 @@ Best model (+ varied input length) + overlapping &  0.85 (+-0.068) & 0.843 (+-0.
 \end{table}
 
 \section{Results}
-We evaluate our performance based on the average cross-species Subgenic F1 for all genomes except the few used during training. The results are displayed in Table \ref{tab:results} and show a clear improvement over the AUGUSTUS and dilated CNN baselines. We also demonstrate the effectiveness of two techniques used during inference with the usage of longer input lengths being enabled by our LSTM stack without any fully connected layers on top. To our knowledge, this technique was not used before with a model used for gene annotation.
+Figure \ref{fig:boxplot} shows the side-by-side comparison of the distribution of performances on all non-training genomes in the animal and plant case by Subgenic F1. In the case of Helixer, these scores represent cross-species predictions. We also compare the average performances of different configurations of Helixer with Augustus and a dilated CNN baseline in Table \ref{tab:results}. The results show a clear improvement over the AUGUSTUS both in median performance and spread. We also significantly outperform the dilated CNN baseline and demonstrated the effectiveness of two techniques used during inference with the usage of longer input lengths being enabled by our LSTM stack without any fully connected layers on top. To our knowledge, this technique was not used before with a model used for gene annotation.
 
 \section{Conclusion}
 We propose a gene calling model that is able to perform cross-species genomic annotiation for a wide variety of large eucaryotic genomes. Our model does this while outperforming AUGUSTUS on a base pair wise level and withstanding RNASeq data based scrutiny. 
