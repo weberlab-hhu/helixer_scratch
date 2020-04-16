@@ -22,7 +22,7 @@ for grp in ['scores', 'data', 'evaluation']:
                             dtype=odat[key].dtype,
                             compression='lzf',
                             shuffle=odat[key].shuffle)
-        
+    by = 500
     for i in range(0, f['data/y'].shape[0], by):
         submask = mask[i:(i + by)]
         n_seqs = np.sum(submask)
@@ -38,6 +38,7 @@ for grp in ['scores', 'data', 'evaluation']:
     newf.flush()
 
 # copy over the metadata, start_end_i will be wrong, everything else should be OK
+newf.create_group('meta')
 for key in f['meta'].keys():
 
     bkey = key.encode('utf-8')
