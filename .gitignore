@@ -15,7 +15,7 @@ main.blg
 .nfs*
 output.csv
 plots/phylogenetic_trees/ete3/plot.png
-plots/phylogenetic_trees/ggtree/animals.png
+plots/phylogenetic_trees/ggtree/*.png
 .RData
 .Rhistory
 plots/Animals_overall_boxplot.png
