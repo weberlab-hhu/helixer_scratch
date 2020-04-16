@@ -16,7 +16,7 @@ Astatotilapia_calliptera,0.1756
 Astyanax_mexicanus,0.1666
 Betta_splendens,0.1341
 Bison_bison_bison,0.3549
-Bos_indicus_hybrid,0.3965
+Bos_indicus,0.3965
 Bos_mutus,0.3322
 Bos_taurus,0.4093
 Caenorhabditis_elegans,-0.1811
@@ -24,7 +24,7 @@ Calidris_pugnax,0.2061
 Calidris_pygmaea,0.1869
 Callithrix_jacchus,0.3253
 Callorhinchus_milii,0.1189
-Canis_familiaris,0.2915
+Canis_lupus_familiaris,0.2915
 Canis_lupus_dingo,0.2657
 Capra_hircus,0.3777
 Carlito_syrichta,0.2226
@@ -44,7 +44,7 @@ Clupea_harengus,0.1537
 Colobus_angolensis_palliatus,0.3096
 Cottoperca_gobio,0.1925
 Coturnix_japonica,0.2425
-Cricetulus_griseus_picr,0.255
+Cricetulus_griseus,0.255
 Crocodylus_porosus,0.2007
 Cyanistes_caeruleus,0.1807
 Cynoglossus_semilaevis,0.1312
@@ -75,7 +75,7 @@ Gopherus_agassizii,0.0864
 Gorilla_gorilla,0.3144
 Gouania_willdenowi,0.1638
 Haplochromis_burtoni,0.144
-Heterocephalus_glaber_female,0.337
+Heterocephalus_glaber,0.337
 Hippocampus_comes,0.096
 Homo_sapiens,0.37
 Hucho_hucho,0.2203
