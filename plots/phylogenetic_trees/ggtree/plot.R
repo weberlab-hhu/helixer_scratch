@@ -33,7 +33,7 @@ tree = read.nhx('plants/all_species.tre')
 # sets = read.csv('plants/sets.csv', header=TRUE)
 
 # p = ggtree(tree) %<+% sets + geom_tiplab(size=4, offset=.3) + geom_tippoint(aes(color=set, shape=set, size=.5)) 
-ggtree(tree) # %<+% sets + geom_tiplab(size=4, offset=.3) + geom_tippoint(aes(color=set, shape=set, size=.5)) 
+ggtree(tree) + geom_tiplab(size=4, offset=.3) # + geom_tippoint(aes(color=set, shape=set, size=.5)) 
 quit()
 # p = p + geom_label(aes(label=node), fill='steelblue')
 # p = p + geom_cladelabel(node=201, label="Mammalia", align=T, geom='label', offset=12)
