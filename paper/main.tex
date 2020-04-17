@@ -107,8 +107,9 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 \end{methods}
 
 \begin{figure}[!tpb]
-\centerline{\includegraphics[width=0.45\textwidth]{images/overlapping/both_species_overlapping_aggregate_comparison}}
-\caption{Caption, caption.}\label{fig:length_wise_bias}
+\label{fig:length_wise_bias}
+\centerline{\includegraphics[width=0.45\textwidth]{images/length_wise_bias}}
+\caption{Average Genic F1 and basepair wise accuracy with respect to the position in the 20000 basepair long input sequences of all animals on top and all plant genomes below shown with and without overlapping. Each value is the average performance of a 200 basepair long chunk. The regular metrics show a significant negative bias towards the borders of each sequence. Overlapping the predictions helps to mitigate a lot of that while showing no negative side effects elsewhere on average. See Section \ref{sec:overlapping} for a breakout of the effect of overlapping by each individual species.}
 \end{figure}
 
 \begin{figure}[!tpb]
@@ -304,6 +305,7 @@ If the N75 of a species is less than twice as high as the supposed sequence leng
 Table of species with their length.
 
 \subsection{Overlapping evaluation by species}
+\label{sec:overlapping}
 \begin{figure}[!tpb]
 % \centerline{\includegraphics[height=0.01\paperheight]{images/overlapping/animals_overlapping}}
 \caption{Caption, caption.}\label{fig:animals_overlapping}
