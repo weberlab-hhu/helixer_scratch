@@ -16,14 +16,12 @@ p = ggtree(tree) %<+% sets + geom_tiplab(size=4, offset=.3) + geom_tippoint(aes(
 # p = p + geom_cladelabel(node=201, label="Mammalia", align=T, geom='label', offset=12)
 
 png('animals_differences.png', width=1200, height=3000)
-gheatmap(p, differences, width=.1, low="red", mid="white", high="blue", midpoint=0.0, use_scale_fill_gradient2=T, colnames=F, offset=5) 
+gheatmap(p, differences, width=.1, low="red", mid="white", high="blue", midpoint=0.0, use_scale_fill_gradient2=T, colnames=F, offset=5, legend_title="Subgenic F1") 
 dev.off()
 
 png('animals_f1_scores.png', width=1200, height=3000)
-gheatmap(p, f1_scores, width=.1, low="red", high="darkgreen", colnames=F, offset=5) 
+gheatmap(p, f1_scores, width=.1, colnames=F, offset=5, use_scale_fill_viridis_d=T, legend_title="Subgenic F1") 
 dev.off()
-
-
 
 # plants
 tree = read.nhx('plants/all_species.tre')
@@ -37,9 +35,9 @@ p = ggtree(tree) %<+% sets + geom_tiplab(size=4, offset=.3) + geom_tippoint(aes(
 # p = p + geom_cladelabel(node=201, label="Mammalia", align=T, geom='label', offset=12)
 
 png('plants_differences.png', width=600, height=1000)
-gheatmap(p, differences, width=.15, low="red", mid="white", high="blue", midpoint=0.0, use_scale_fill_gradient2=T, colnames=F, offset=5) 
+gheatmap(p, differences, width=.15, low="red", mid="white", high="blue", midpoint=0.0, use_scale_fill_gradient2=T, colnames=F, offset=5, legend_title="Subgenic F1") 
 dev.off()
 
 png('plants_f1_scores.png', width=600, height=1000)
-gheatmap(p, f1_scores, width=.15, low="red", high="darkgreen", colnames=F, offset=5) 
+gheatmap(p, f1_scores, width=.15, colnames=F, offset=5, use_scale_fill_viridis_d=T, legend_title="Subgenic F1") 
 dev.off()
