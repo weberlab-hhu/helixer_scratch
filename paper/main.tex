@@ -79,16 +79,16 @@ We use two metrics to judge model performance. The {\it Genic F1} is our primary
 \subsection{Model Architecture and Usage}
 \label{sec:model}
 We use a 4-layer deep stacked BLSTM network with 256 units per layer and layer normalization \citep{ba2016layer} between each BLSTM layer to produce the predictions in the form of a base pair wise classification. The model consists of circa 5.4 million parameters and was implemented with the deep learning library keras \citep{chollet2015keras} on top of TensorFlow \citep{abadi2016tensorflow}. We tested multiple different architectures before arriving at this model configuration, including convolutional neural networks (CNN) and hybrid architectures. The hyperparameters were optimized by a combination of manual and automatic optimization. Automatic optimization was carried out by using either the TPE algorithm \citep{bergstra2011algorithms}, random search or grid search depending on the situation. We used NNI \citep{nni2019} to facilitate the search. All relevant hyperparameters can be found in Table \ref{tab:params} or in the Helixer source code repository. 
-
-We also implemented a dilated CNN (dCNN) baseline as this kind of architecture is widely used when working with DNA data as input. Details of the neural architecture search are given in Section \ref{sec:dcnn}.
 	
 Our final model was trained with 10 bases of genomic sequence as input during each time step and produces individual predictions for each of those 10 bases simultaneously. This grouping enabled us to train effectively with far longer sequences than usual. A class wise evaluation including the calculation of the Genic F1 score is performed on the validation set after every epoch.
 
-We also used multiple techniques to improve the prediction quality after the training was done. One very effective way for genomes with larger genes was to input longer sequences during inference time than during training. This was done for all animal genomes except the invertebrates. The input sequences were up to 10 times larger, depending on species group and assembly quality. This also demonstrates ability of our model to generalize as it is able to make successful prediction on far longer sequences than it has ever seen. The sequence length during inference can be any of 20.000, 50.000, 100.000 or 200.000 and is determined by the species family(?). Families that tend to have longer genes get assigned longer sequences. For more implementation details on this see Section \ref{sec:longer} or the source code.
+We also used multiple techniques to improve the prediction quality after the training was done. One very effective way for genomes with larger genes was to input longer sequences during inference time than during training. This was done for all animal genomes except the invertebrates. The input sequences were up to 10 times larger, depending on species group and assembly quality. This also demonstrates the ability of our model to generalize as it is able to make successful prediction on far longer sequences than it has ever seen. The sequence length during inference can be any of 20.000, 50.000, 100.000 or 200.000 and is determined by the phylogenetic class. The assignment was chosen to keep the average gene length roughly proportional to the length of the sequence input. For more implementation details on this see Section \ref{sec:longer} or the source code.
 	
 The final predictions of a single model are constructed by overlapping predictions, that were made from a sliding window and then cut to a core sequence. This was done to strongly reduce a typical drop in performance of the models towards the beginning and end of each sequence (see figure \ref{fig:length_wise_bias}) and also to improve model performance in general by providing the model with multiple different starting points. The different overlapping sequences were recombined by averaging the individual softmax values of each base. Supplementary Material (?) contains the influence on overlapping with respect to the position in a sequence for each genome, ordered by N75. We found that overlapping works best if the genomes are not very fragmented.
 
 A model ensemble with 8 components was used to generate the final predictions for each species. For this, we trained 4 seperate animal and plant models and also used a model from an epoch that did not have the highest Genic F1 on the validation set. Depending on the results, we used the model iteration with either the highest genic recall or precision. The model with the best Genic F1 was always best in one of those. This was done to increase the diversity of the model ensemble. As with the overlapping, the fusion of the 8 individual predictions was done by averaging the softmax values of each base pair prediction.
+
+We also implemented a dilated CNN (dCNN) baseline as this kind of architecture is widely used when working with DNA data as input. Details of the neural architecture search are given in Section \ref{sec:dcnn}.
 
 \subsection{Evaluation of AUGUSTUS} 
 \label{sec:augustus}
@@ -258,10 +258,23 @@ Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 
 \subsection{Longer Sequence Input}
 \label{sec:longer}
-Implementation detail:
-If the N75 of a species is less than twice as high as the supposed sequence length it is lowered until either this criteria is met or a length of 50.000 is reached. 
-
-Table of species with their length.
+\begin{table}[!t]
+\processtable{Input Sequence Length by Animal Class\label{tab:input_lengths}} {
+\begin{tabular}{@{}lll@{}}
+\toprule Class & Input Length in bp\\
+\midrule
+Mammalia & 200.000 \\
+Reptilia (excluding Aves) & 200.000 \\
+Aves & 100.000 \\
+Amphibia & 100.000 \\
+Actinopterygii & 50.000 \\
+Chondrichthyes & 50.000 \\
+Actinistia & 50.000 \\
+Ascidiacea & 20.000 \\
+Insecta & 20.000 \\
+\botrule
+\end{tabular}}{{\it Note:} Input sequence length for each phylogenetic class present in our animal dataset. As a rule of thumb, we found the input length should be proportional to the average gene length of the class while staying in the interval [20.000, 200.000]. If the N75 of a specific species was less than twice as high as the supposed sequence length it was lowered until either this criteria as met or a length of 50.000 was reached. }
+\end{table}
 
 \subsection{Overlapping evaluation by species}
 \label{sec:overlapping}
