@@ -143,7 +143,7 @@ Figure \ref{fig:boxplot} shows the side-by-side comparison of the distribution o
 
 Two techniques were used during inference to improve performance and limit model bias. The usage of longer input lengths helped especially for genomes that tend to have longer genes and was enabled by our model architecture being a relatively simple LSTM stack without any fully connected layers on top. We also constructed the final predictions out of a overlapping ones, which greatly helped to reduce prediction bias in most genomes. To our knowledge, both techniques were not used before in a model developed for gene annotation. 
 
-\section{Conclusion}
+\section{Discussion}
 We propose a gene calling model that is able to perform cross-species genomic annotiation for a wide variety of large eucaryotic genomes. Our model does this while outperforming AUGUSTUS on a base pair wise level and withstanding RNASeq data based scrutiny. 
 
 \section*{Acknowledgements}

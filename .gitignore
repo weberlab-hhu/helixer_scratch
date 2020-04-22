@@ -10,6 +10,11 @@ main.aux
 main.bbl
 main.pdf
 main.blg
+supplements.log
+supplements.aux
+supplements.bbl
+supplements.pdf
+supplements.blg
 .log
 */.ipynb_checkpoints/*
 .nfs*
