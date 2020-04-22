@@ -10,7 +10,7 @@
 
 \subtitle{Genome analysis}
 
-\title[short Title]{Helixer: Cross-Species Gene Annotation Of Large Eucaryotic Genomes Using Deep Learning}
+\title[short Title]{Helixer: Cross-species Gene Annotation Of Large Eucaryotic Genomes Using Deep Learning}
 \author[Sample \textit{et~al}.]{Felix Stiehler\,$^{\text{\sfb 1,}}$$^\dagger$, Alisandra Denton\,$^{\text{\sfb 1,}}$$^\dagger$\, Marvin Steinborn\,$^{\text{\sfb 1}}$, Stephan Scholz, Andreas Weber\,$^{\text{\sfb 1,}*}$}
 \address{$^{\text{\sf 1}}$Institue for Plant Biochemistry, Heinrich-Heine-University, Dusseldorf, D-40225, Germany}
 
@@ -114,13 +114,13 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 
 \begin{figure}[!tpb]
 \label{fig:length_wise_bias}
-\centerline{\includegraphics[width=0.45\textwidth]{images/length_wise_bias}}
+\centerline{\includegraphics[width=0.42\textwidth]{images/length_wise_bias}}
 \caption{Average Genic F1 and basepair wise accuracy with respect to the position in the 20000 basepair long input sequences of all animals on top and all plant genomes below shown with and without overlapping. Each value is the average performance of a 200 basepair long chunk by one of the final ensemble models. The regular metrics show a significant negative bias towards the borders of each sequence. Overlapping the predictions helps to mitigate a lot of that while showing no negative side effects elsewhere on average. See Section \ref{sec:overlapping} for a breakout of the effect of overlapping by each individual species.}
 \end{figure}
 
 \begin{figure}[!tpb]
-	\centerline{\includegraphics[width=0.45\textwidth]{images/overall_boxplot}}
-	\caption{Boxplots comparing the Subgenic F1 scores for all animal and plant genomes that were not used during training of Helixer, which is equivalent to all validation and test genomes. Results are given for Helixer and AUGUSTUS with the median predictions scores being denoted by the red lines. Details of how AUGUSTUS was used are given in Section \ref{sec:augustus}.}\label{fig:boxplot}
+\centerline{\includegraphics[width=0.45\textwidth]{images/overall_boxplot}}
+\caption{Boxplots comparing the Subgenic F1 scores for all animal and plant genomes that were not used during training of Helixer, which is equivalent to all validation and test genomes. Results are given for Helixer and AUGUSTUS with the median predictions scores being denoted by the red lines. Details of how AUGUSTUS was used are given in Section \ref{sec:augustus}.}\label{fig:boxplot}
 \end{figure}
 
 \begin{table}[!t]
