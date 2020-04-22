@@ -2,10 +2,18 @@
 \usepackage{graphicx}
 \usepackage{authblk}
 \usepackage{natbib}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
 
 \begin{document}
 
-\title{Supplemental Material for \\ Helixer: Cross-species gene annotation of large eucaryotic genomes using deep learning}
+\title{Supplemental Material for \\ Helixer: Cross-species Gene Annotation of Large Eucaryotic Genomes Using Deep Learning}
 
 \author[1]{Felix Stiehler}
 \author[1]{Alisandra Denton}
@@ -20,6 +28,119 @@
 
 \date{}
 \maketitle
+\tableofcontents
+
+\newpage
+\section{In-depth model performance}
+
+\begin{table}[!h]
+\renewcommand\thetable{S1}
+\centering
+\begin{tabular}{@{}lll@{}}
+\hline
+Class & Animal Value & Plant Value \\ [0.5ex]
+\hline
+Intergenic & 0.7 & 0.3 \\
+UTR & 1.6 & 1.0 \\
+CDS & 1.2 & 0.9 \\
+Intron & 1.2 & 0.3 \\
+\hline
+\end{tabular}
+\caption{}
+\end{table}
+
+\newpage
+\section{Hyperparameters}
+
+\begin{table}[!h]
+\renewcommand\thetable{S1}
+\centering
+\begin{tabular}{@{}ll@{}}
+\hline
+Parameter & Value \\ [0.5ex]
+\hline
+Layers & 4\\
+Units per layer & 256\\
+Learning rate & 1e-4\\
+Optimizer & Adam\\
+\hline
+\end{tabular}
+\caption{All hyperparameters used for the }
+\label{suptab:params}
+\end{table}
+
+\begin{table}[!h]
+\renewcommand\thetable{S1}
+\centering
+\begin{tabular}{@{}lll@{}}
+\hline
+Class & Animal Value & Plant Value \\ [0.5ex]
+\hline
+Intergenic & 0.7 & 0.3 \\
+UTR & 1.6 & 1.0 \\
+CDS & 1.2 & 0.9 \\
+Intron & 1.2 & 0.3 \\
+\hline
+\end{tabular}
+\caption{The class weights are the only hyperparameters that are different for animals and plants. The exact weights were determined manually and partially reflect the difference in the class distributions of both datasets (see Table [?]).}
+\end{table}
+
+
+\newpage
+\section{Longer Sequence Input}
+\label{sec:longer}
+\begin{table}[!h]
+\renewcommand\thetable{S1}
+\centering
+\begin{tabular}{@{}lll@{}}
+\hline
+Class & Input Length in bp\\ [0.5ex]
+\hline
+Mammalia & 200.000 \\
+Reptilia (excluding Aves) & 200.000 \\
+Aves & 100.000 \\
+Amphibia & 100.000 \\
+Actinopterygii & 50.000 \\
+Chondrichthyes & 50.000 \\
+Actinistia & 50.000 \\
+Ascidiacea & 20.000 \\
+Insecta & 20.000 \\
+\hline
+\end{tabular}
+\caption{Input sequence length for each phylogenetic class present in our animal dataset. As a rule of thumb, we found the input length should be proportional to the average gene length of the class while staying in the interval [20.000, 200.000]. If the N75 of a specific species was less than twice as high as the supposed sequence length it was lowered until either this criteria as met or a length of 50.000 was reached. }
+\end{table}
+
+\newpage
+\section{Overlapping Evaluation by Species}
+\label{sec:overlapping}
+\begin{figure}[!h]
+% \centerline{\includegraphics[height=0.01\paperheight]{images/overlapping/animals_overlapping}}
+\caption{Caption, caption.}\label{fig:animals_overlapping}
+\end{figure}
+
+
+\newpage
+\section{Training Data statistics}
+\label{sec:training_data}
+\begin{table}[!h]
+\renewcommand\thetable{S1}
+\centering
+\begin{tabular}{@{}lll@{}}
+\hline
+& Animals & Plants\\ [0.5ex]
+\hline
+Average genome size in Gbp& 2.489 (+- 2.073) & 0.914 (+- 0.934) \\
+Average gene length & 25,672 (+- 16,605) & 3,509 (+- 906)\\
+Geenuff error rate & 0.253 (+- 0.138) & 0.134 (+- 0.072) \\
+Fraction of class Intergenic & 0.752 (+- 0.05) & 0.808 (+- 0.106) \\
+Fraction of class UTR & 0.013 (+- 0.011) & 0.033 (+- 0.023) \\
+Fraction of class CDS & 0.028 (+- 0.028) & 0.077 (+- 0.052) \\
+Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
+\hline
+\end{tabular}
+\caption{The description of Table [?] applies here as well.}
+\end{table}
+
 
 \newpage
 \section{Dilated CNN Baseline Network Search}
@@ -64,116 +185,6 @@ Learning Rate & 1e-4 & 1e-3\\
 \end{table}
 
 
-\newpage
-\section{Hyperparameters}
-
-\begin{table}[!h]
-\renewcommand\thetable{S1}
-\centering
-\begin{tabular}{@{}ll@{}}
-\hline
-Parameter & Value \\ [0.5ex]
-\hline
-Layers & 4\\
-Units per layer & 256\\
-Learning rate & 1e-4\\
-Optimizer & Adam\\
-\hline
-\end{tabular}
-\caption{}
-\label{suptab:params}
-\end{table}
-
-\begin{table}[!h]
-\renewcommand\thetable{S1}
-\centering
-\begin{tabular}{@{}lll@{}}
-\hline
-Class & Animal Value & Plant Value \\ [0.5ex]
-\hline
-Intergenic & 0.7 & 0.3 \\
-UTR & 1.6 & 1.0 \\
-CDS & 1.2 & 0.9 \\
-Intron & 1.2 & 0.3 \\
-\hline
-\end{tabular}
-\caption{The class weights are the only hyperparameters that are different for animals and plants. The exact weights were determined manually and partially reflect the difference in the class distributions of both datasets (see Table [?]).}
-\end{table}
-
-
-\newpage
-\section{Training Data statistics}
-\label{sec:training_data}
-\begin{table}[!h]
-\renewcommand\thetable{S1}
-\centering
-\begin{tabular}{@{}lll@{}}
-\hline
-& Animals & Plants\\ [0.5ex]
-\hline
-Average genome size in Gbp& 2.489 (+- 2.073) & 0.914 (+- 0.934) \\
-Average gene length & 25,672 (+- 16,605) & 3,509 (+- 906)\\
-Geenuff error rate & 0.253 (+- 0.138) & 0.134 (+- 0.072) \\
-Fraction of class Intergenic & 0.752 (+- 0.05) & 0.808 (+- 0.106) \\
-Fraction of class UTR & 0.013 (+- 0.011) & 0.033 (+- 0.023) \\
-Fraction of class CDS & 0.028 (+- 0.028) & 0.077 (+- 0.052) \\
-Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
-\hline
-\end{tabular}
-\caption{The description of Table [?] applies here as well.}
-\end{table}
-
-\newpage
-\section{Longer Sequence Input}
-\label{sec:longer}
-\begin{table}[!h]
-\renewcommand\thetable{S1}
-\centering
-\begin{tabular}{@{}lll@{}}
-\hline
-Class & Input Length in bp\\ [0.5ex]
-\hline
-Mammalia & 200.000 \\
-Reptilia (excluding Aves) & 200.000 \\
-Aves & 100.000 \\
-Amphibia & 100.000 \\
-Actinopterygii & 50.000 \\
-Chondrichthyes & 50.000 \\
-Actinistia & 50.000 \\
-Ascidiacea & 20.000 \\
-Insecta & 20.000 \\
-\hline
-\end{tabular}
-\caption{Input sequence length for each phylogenetic class present in our animal dataset. As a rule of thumb, we found the input length should be proportional to the average gene length of the class while staying in the interval [20.000, 200.000]. If the N75 of a specific species was less than twice as high as the supposed sequence length it was lowered until either this criteria as met or a length of 50.000 was reached. }
-\end{table}
-
-\newpage
-\section{Overlapping evaluation by species}
-\label{sec:overlapping}
-\begin{figure}[!h]
-% \centerline{\includegraphics[height=0.01\paperheight]{images/overlapping/animals_overlapping}}
-\caption{Caption, caption.}\label{fig:animals_overlapping}
-\end{figure}
-
-
-\newpage
-\section{In-depth model performance}
-
-\begin{table}[!h]
-\renewcommand\thetable{S1}
-\centering
-\begin{tabular}{@{}lll@{}}
-\hline
-Class & Animal Value & Plant Value \\ [0.5ex]
-\hline
-Intergenic & 0.7 & 0.3 \\
-UTR & 1.6 & 1.0 \\
-CDS & 1.2 & 0.9 \\
-Intron & 1.2 & 0.3 \\
-\hline
-\end{tabular}
-\caption{}
-\end{table}
 
 \renewcommand\refname{Supplemental Reference}
 \bibliographystyle{natbib}

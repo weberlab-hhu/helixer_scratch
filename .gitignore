@@ -15,6 +15,8 @@ supplements.aux
 supplements.bbl
 supplements.pdf
 supplements.blg
+supplements.toc
+supplements.out
 .log
 */.ipynb_checkpoints/*
 .nfs*
