@@ -51,27 +51,102 @@ Intron & 1.2 & 0.3 \\
 
 \newpage
 \section{Model Evaluation by Species}
-The following plots show the prediction performance in Subgenic F1 per species as well as the difference to AUGUSTUS for both animals and plants.
+The following tables and plots show the prediction performance of Hexlixer for each species we worked with. The plots display the Subgenic F1 as well as the difference to AUGUSTUS with respect to the phylogenetic placement by NCBI Taxonomy.
 
 \subsection{Animals}
 \newpage
 
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part1}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part2}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part1}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part2}}
-\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part1}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part2}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part1}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part2}}
+%\end{figure}
 
 \clearpage
 \subsection{Plants}
 
+\begin{table}[!h]
+\resizebox{\textwidth}{!}{%
+\renewcommand\thetable{S1}
+\centering
+%\vspace*{-3.5cm}
+%\hspace*{-2.5cm}
+\begin{tabular}{@{}llllllll@{}}
+\hline
+Genome & Acc Overall & IG F1 & UTR F1 & CDS F1 & Intron F1 & Subgenic F1& Genic F1 \\ [0.5ex]
+\hline
+Ananas\_comosus & 0.8749 & 0.9224 & 0.5674 & 0.8591 & 0.7325 & 0.7691 & 0.753 \\
+Amaranthus\_hypochondriacus & 0.947 & 0.9728 & 0.5729 & 0.8535 & 0.8964 & 0.8856 & 0.864 \\
+Arabidopsis\_lyrata & 0.9438 & 0.9701 & 0.637 & 0.8957 & 0.8196 & 0.8649 & 0.8314 \\
+Asparagus\_officinalis & 0.6042 & 0.2635 & 0 & 0.8517 & 0.6979 & 0.7246 & 0.7206 \\
+Arabidopsis\_thaliana & 0.9542 & 0.9729 & 0.7294 & 0.953 & 0.9329 & 0.9456 & 0.9181 \\
+Amborella\_trichopoda & 0.6936 & 0.3451 & 0 & 0.8617 & 0.7816 & 0.7965 & 0.7933 \\
+Brachypodium\_distachyon & 0.9326 & 0.9625 & 0.6232 & 0.9027 & 0.8772 & 0.8879 & 0.8426 \\
+Brassica\_oleracea & 0.8648 & 0 & 0 & 0.9321 & 0.8785 & 0.911 & 0.9051 \\
+Cicer\_arietinum & 0.8583 & 0.7838 & 0 & 0.8872 & 0.8952 & 0.8921 & 0.8885 \\
+Citrus\_clementina & 0.9554 & 0.977 & 0.6277 & 0.9175 & 0.9027 & 0.9095 & 0.8771 \\
+Capsella\_grandiflora & 0.9465 & 0.9656 & 0.7117 & 0.9545 & 0.9139 & 0.9389 & 0.9145 \\
+Carica\_papaya & 0.9009 & 0.8926 & 0 & 0.9043 & 0.9156 & 0.9113 & 0.9057 \\
+Chenopodium\_quinoa & 0.944 & 0.9703 & 0.6057 & 0.855 & 0.8311 & 0.8382 & 0.8244 \\
+Chlamydomonas\_reinhardtii & 0.9484 & 0.9657 & 0.8039 & 0.9577 & 0.9546 & 0.9562 & 0.9254 \\
+Capsella\_rubella & 0.9455 & 0.9669 & 0.668 & 0.9485 & 0.9138 & 0.9352 & 0.9032 \\
+Cucumis\_sativus & 0.9515 & 0.9729 & 0.6174 & 0.9268 & 0.9237 & 0.9249 & 0.8962 \\
+Citrus\_sinensis & 0.9545 & 0.9766 & 0.5878 & 0.9147 & 0.9027 & 0.9082 & 0.8778 \\
+Coccomyxa\_subellipsoidea\_C-169 & 0.8467 & 0.8573 & 0.4164 & 0.8771 & 0.8896 & 0.8847 & 0.8409 \\
+Chromochloris\_zofingiensis & 0.8849 & 0.3095 & 0 & 0.9129 & 0.9299 & 0.9203 & 0.9027 \\
+Daucus\_carota & 0.8924 & 0.703 & 0 & 0.9284 & 0.9212 & 0.924 & 0.9175 \\
+Dunaliella\_salina & 0.7458 & 0.8473 & 0.1832 & 0.6152 & 0.4306 & 0.4585 & 0.4352 \\
+Eucalyptus\_grandis & 0.9447 & 0.9712 & 0.5327 & 0.8391 & 0.8245 & 0.8305 & 0.7956 \\
+Eutrema\_salsugineum & 0.9555 & 0.9755 & 0.6501 & 0.9301 & 0.8985 & 0.9179 & 0.8908 \\
+Fragaria\_vesca & 0.8776 & 0.9192 & 0.633 & 0.8666 & 0.7813 & 0.8218 & 0.7972 \\
+Glycine\_max & 0.9755 & 0.9886 & 0.6564 & 0.9265 & 0.9165 & 0.92 & 0.8825 \\
+Gossypium\_raimondii & 0.9784 & 0.9901 & 0.6836 & 0.9216 & 0.8835 & 0.9004 & 0.8701 \\
+Helianthus\_annuus & 0.9747 & 0.9875 & 0.4514 & 0.7758 & 0.6562 & 0.6975 & 0.6763 \\
+Hordeum\_vulgare & 0.9826 & 0.9917 & 0.4462 & 0.7774 & 0.624 & 0.6762 & 0.6503 \\
+Kalanchoe\_fedtschenkoi & 0.9415 & 0.9693 & 0.6067 & 0.9112 & 0.8569 & 0.8833 & 0.8372 \\
+Lactuca\_sativa & 0.98 & 0.9908 & 0.5771 & 0.867 & 0.7075 & 0.7848 & 0.7679 \\
+Linum\_usitatissimum & 0.8411 & 0.3605 & 0 & 0.9452 & 0.8435 & 0.8991 & 0.8912 \\
+Musa\_acuminata & 0.926 & 0.9598 & 0.4746 & 0.8856 & 0.8984 & 0.8946 & 0.8682 \\
+Malus\_domestica & 0.9629 & 0.9816 & 0.6214 & 0.9049 & 0.8661 & 0.8825 & 0.852 \\
+Manihot\_esculenta & 0.9748 & 0.9879 & 0.681 & 0.9365 & 0.9199 & 0.9261 & 0.8981 \\
+Mimulus\_guttatus & 0.9704 & 0.985 & 0.7101 & 0.9405 & 0.9234 & 0.9319 & 0.9062 \\
+Marchantia\_polymorpha & 0.9409 & 0.9708 & 0.6294 & 0.8786 & 0.8797 & 0.8792 & 0.8083 \\
+Micromonas\_pusilla & 0.6896 & 0.639 & 0.3364 & 0.7517 & 0.617 & 0.7358 & 0.7223 \\
+Micromonas\_sp.\_RCC299 & 0.592 & 0.5639 & 0.2706 & 0.637 & 0.5212 & 0.6301 & 0.6152 \\
+Medicago\_truncatula & 0.9181 & 0.9474 & 0.6813 & 0.8625 & 0.8639 & 0.8633 & 0.8475 \\
+Olea\_europaea & 0.7935 & 0.7695 & 0 & 0.794 & 0.8262 & 0.8142 & 0.8096 \\
+Ostreococcus\_sp.\_lucimarinus & 0.2174 & 0.3241 & 0.0451 & 0.0746 & 0.0441 & 0.0734 & 0.0725 \\
+Oryza\_sativa & 0.9061 & 0.9439 & 0.6234 & 0.8367 & 0.827 & 0.8312 & 0.8044 \\
+Oropetium\_thomaeum & 0.8682 & 0.9194 & 0.5482 & 0.8605 & 0.8045 & 0.8275 & 0.8058 \\
+Physcomitrella\_patens & 0.9589 & 0.9816 & 0.637 & 0.8701 & 0.8554 & 0.8626 & 0.8064 \\
+Prunus\_persica & 0.9434 & 0.9688 & 0.6422 & 0.9089 & 0.8944 & 0.9012 & 0.8605 \\
+Populus\_trichocarpa & 0.9609 & 0.9806 & 0.6771 & 0.9244 & 0.916 & 0.9196 & 0.882 \\
+Porphyra\_umbilicalis & 0.7648 & 0.8529 & 0.2087 & 0.6096 & 0.2986 & 0.565 & 0.5139 \\
+Ricinus\_communis & 0.9256 & 0.9442 & 0.4673 & 0.8984 & 0.9364 & 0.9192 & 0.9055 \\
+Sorghum\_bicolor & 0.9654 & 0.983 & 0.5792 & 0.9033 & 0.8608 & 0.8775 & 0.8292 \\
+Setaria\_italica & 0.9561 & 0.9775 & 0.6527 & 0.9166 & 0.8933 & 0.9037 & 0.8646 \\
+Solanum\_lycopersicum & 0.9476 & 0.9725 & 0.4948 & 0.8826 & 0.8367 & 0.8509 & 0.8127 \\
+Selaginella\_moellendorffii & 0.7166 & 0.7977 & 0.1825 & 0.7436 & 0.435 & 0.662 & 0.6388 \\
+Spirodela\_polyrhiza & 0.7784 & 0 & 0 & 0.903 & 0.8414 & 0.8624 & 0.8529 \\
+Solanum\_tuberosum & 0.7272 & 0.0994 & 0 & 0.8551 & 0.8199 & 0.8335 & 0.8299 \\
+Triticum\_aestivum & 0.9238 & 0.9601 & 0.5238 & 0.8455 & 0.8356 & 0.8399 & 0.7961 \\
+Theobroma\_cacao & 0.8743 & 0.9295 & 0.5257 & 0.8677 & 0.545 & 0.6421 & 0.627 \\
+Volvox\_carteri & 0.8546 & 0.9045 & 0.5535 & 0.831 & 0.8241 & 0.8269 & 0.7706 \\
+Vitis\_vinifera & 0.7918 & 0.0076 & 0 & 0.9229 & 0.8613 & 0.8771 & 0.8724 \\
+Zostera\_marina & 0.9148 & 0.9463 & 0.5865 & 0.9052 & 0.8261 & 0.8571 & 0.8387 \\
+Zea\_mays & 0.9843 & 0.9931 & 0.6073 & 0.886 & 0.854 & 0.8643 & 0.8406 \\
+\hline
+\end{tabular}}
+\end{table}
+
+\clearpage
 \begin{figure}[!h]
 \centerline{\includegraphics[width=1.0\textwidth]{images/plants_f1_scores}}
 \end{figure}
@@ -151,62 +226,62 @@ The following plots show the effect of overlapping for each species we worked wi
 \subsection{Animals}
 \newpage
 
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals1}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals2}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals3}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals4}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals5}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals6}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals7}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals8}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals9}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals10}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals11}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals12}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals13}}
-\end{figure}
-
-\clearpage
-\subsection{Plants}
-
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants1}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants2}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants3}}
-\end{figure}
-\begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants4}}
-\end{figure}
-
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals1}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals2}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals3}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals4}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals5}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals6}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals7}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals8}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals9}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals10}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals11}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals12}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals13}}
+%\end{figure}
+%
+%\clearpage
+%\subsection{Plants}
+%
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants1}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants2}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants3}}
+%\end{figure}
+%\begin{figure}[!h]
+%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants4}}
+%\end{figure}
+%
 \clearpage
 \section{Training Data statistics}
 \label{sec:training_data}
