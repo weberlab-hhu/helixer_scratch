@@ -392,13 +392,17 @@ Zea\_mays & 0.9843 & 0.9931 & 0.6073 & 0.886 & 0.854 & 0.8643 & 0.8406 \\
 \hline
 Parameter & Value \\ [0.5ex]
 \hline
-Layers & 4\\
-Units per layer & 256\\
-Learning rate & 1e-4\\
-Optimizer & Adam\\
+LSTM Layers & 4 \\
+LSTM Units per layer & 256 \\
+Learning rate & 1e-3 \\
+Batch Size & 52 \\
+Optimizer & Adam \\
+Clipnorm & 1.0 \\
+Loss & Categorical Crossentropy \\
+Float Precision & 32 bit \\
 \hline
 \end{tabular}
-\caption{All hyperparameters used for the }
+\caption{The hyperparameters that were used for the training of both the animal and plant models. For more implementation details please consult the source code.}
 \label{suptab:params}
 \end{table}
 
@@ -415,7 +419,7 @@ CDS & 1.2 & 0.9 \\
 Intron & 1.2 & 0.3 \\
 \hline
 \end{tabular}
-\caption{The class weights are the only hyperparameters that are different for animals and plants. The exact weights were determined manually and partially reflect the difference in the class distributions of both datasets (see Table [?]).}
+\caption{The class weights used during training. We found this parameter to be highly impactful for establishing a more balanced performance across the different classes. These are the only hyperparameters that are different for animals and plants. The exact weights were determined manually and partially reflect the difference in the class distributions of both datasets (see Table [?]).}
 \end{table}
 
 
