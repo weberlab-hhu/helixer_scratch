@@ -114,7 +114,7 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 
 \begin{figure}[!tpb]
 \label{fig:length_wise_bias}
-\centerline{\includegraphics[width=0.42\textwidth]{images/length_wise_bias}}
+\centerline{\includegraphics[width=0.45\textwidth]{images/length_wise_bias}}
 \caption{Average Genic F1 and basepair wise accuracy with respect to the position in the 20000 basepair long input sequences of all animals on top and all plant genomes below shown with and without overlapping. Each value is the average performance of a 200 basepair long chunk by one of the final ensemble models. The regular metrics show a significant negative bias towards the borders of each sequence. Overlapping the predictions helps to mitigate a lot of that while showing no negative side effects elsewhere on average. See Section \ref{sec:overlapping} for a breakout of the effect of overlapping by each individual species.}
 \end{figure}
 
@@ -139,7 +139,11 @@ Best model (+ varied input length) + overlapping &  0.85 (+-0.068) & 0.843 (+-0.
 \end{table}
 
 \section{Results}
-Figure \ref{fig:boxplot} shows the side-by-side comparison of the distribution of performances on all non-training genomes in the animal and plant case by Subgenic F1. In the case of Helixer, these scores represent cross-species predictions. We also compare the median performances of different configurations of Helixer with AUGUSTUS and a dilated CNN baseline in Table \ref{tab:results}. The results show a clear improvement over the AUGUSTUS both in median performance and spread. We also significantly outperform a baseline constructed of a dilated CNN architecture. 
+Figure \ref{fig:boxplot} shows the side-by-side comparison of the distribution of performances on all non-training genomes in the animal and plant case by Subgenic F1. In the case of Helixer, these scores represent cross-species predictions. We also compare the median performances of different configurations of Helixer with AUGUSTUS and a dilated CNN baseline in Table \ref{tab:results}. The results show a clear improvement over the AUGUSTUS both in median performance and spread. We also significantly outperform a baseline constructed of a dilated CNN architecture.
+
+Our models, however, tend to perform less well for the very smallest and largest genomes or species that are phylogenetically the furthest away from our training genomes. This is the case for both animals and plants and is visualized by the Supplemental Figures S?-?. We do not, for example, consistently predict very well on the algae as well as the non-avian reptiles. While one of the the algaes were included in our training genomes, the non-avian reptiles were not represented. 
+
+AUGUSTUS does outperform us rather consistently on the smallest genomes, but struggles much more the larger the genomes get. The difference in prediction quality is especially strong for mammals and the largest plants.
 
 Two techniques were used during inference to improve performance and limit model bias. The usage of longer input lengths helped especially for genomes that tend to have longer genes and was enabled by our model architecture being a relatively simple LSTM stack without any fully connected layers on top. We also constructed the final predictions out of a overlapping ones, which greatly helped to reduce prediction bias in most genomes. To our knowledge, both techniques were not used before in a model developed for gene annotation. 
 
