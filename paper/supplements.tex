@@ -40,8 +40,8 @@ The plots display the raw Subgenic F1 score as well as the difference to AUGUSTU
 \newpage
 
 \begin{table}[!h]
+\renewcommand\thetable{}
 \resizebox{\textwidth}{!}{%
-\renewcommand\thetable{S1}
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -113,8 +113,8 @@ equus\_asinus\_asinus & 0.9301 & 0.9476 & 0.2589 & 0.8651 & 0.9073 & 0.9055 & 0.
 
 \clearpage
 \begin{table}[!h]
+\renewcommand\thetable{}
 \resizebox{\textwidth}{!}{%
-\renewcommand\thetable{S1}
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -186,8 +186,8 @@ neovison\_vison & 0.9362 & 0.9565 & 0.4219 & 0.8752 & 0.895 & 0.8942 & 0.8894 \\
 
 \clearpage
 \begin{table}[!h]
+\renewcommand\thetable{}
 \resizebox{\textwidth}{!}{%
-\renewcommand\thetable{S1}
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -259,8 +259,8 @@ theropithecus\_gelada & 0.9554 & 0.9694 & 0.5335 & 0.8786 & 0.9283 & 0.9266 & 0.
 
 \clearpage
 \begin{table}[!h]
-\resizebox{\textwidth}{!}{%
 \renewcommand\thetable{S1}
+\resizebox{\textwidth}{!}{%
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -280,27 +280,33 @@ xiphophorus\_maculatus & 0.8854 & 0.9156 & 0.5964 & 0.8368 & 0.871 & 0.8671 & 0.
 zonotrichia\_albicollis & 0.9216 & 0.9482 & 0.382 & 0.8601 & 0.8667 & 0.8663 & 0.857 \\
 \hline
 \end{tabular}}
+\caption{Detailed results for all animal genomes.}
 \end{table}
 
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part1}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part2}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part1}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part2}}
-%\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part1}}
+\end{figure}
+\begin{figure}[!h]
+\renewcommand\thefigure{S1}
+\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part2}}
+\caption{Subgenic F1 results for all animal genomes shown by phylogenetic position.}
+\end{figure}
+
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part1}}
+\end{figure}
+\begin{figure}[!h]
+\renewcommand\thefigure{S2}
+\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part2}}
+\caption{Difference in Subgenic F1 to AUGUSTUS for all animal genomes shown by phylogenetic position.}
+\end{figure}
 
 \clearpage
 \subsection{Plants}
 
 \begin{table}[!h]
+\renewcommand\thetable{S2}
 \resizebox{\textwidth}{!}{%
-\renewcommand\thetable{S1}
 \centering
 %\vspace*{-3.5cm}
 %\hspace*{-2.5cm}
@@ -370,23 +376,27 @@ Zostera\_marina & 0.9148 & 0.9463 & 0.5865 & 0.9052 & 0.8261 & 0.8571 & 0.8387 \
 Zea\_mays & 0.9843 & 0.9931 & 0.6073 & 0.886 & 0.854 & 0.8643 & 0.8406 \\
 \hline
 \end{tabular}}
+\caption{Detailed results for all plant genomes.}
 \end{table}
 
 \clearpage
 \begin{figure}[!h]
+\renewcommand\thefigure{S3}
 \centerline{\includegraphics[width=1.0\textwidth]{images/plants_f1_scores}}
+\caption{Subgenic F1 results for all plant genomes shown by phylogenetic position.}
 \end{figure}
 \begin{figure}[!h]
+\renewcommand\thefigure{S4}
 \centerline{\includegraphics[width=1.0\textwidth]{images/plants_differences}}
+\caption{Difference in Subgenic F1 to AUGUSTUS for all plant genomes shown by phylogenetic position.}
 \end{figure}
-
 
 
 \clearpage
 \section{Hyperparameters}
 
 \begin{table}[!h]
-\renewcommand\thetable{S1}
+\renewcommand\thetable{S3}
 \centering
 \begin{tabular}{@{}ll@{}}
 \hline
@@ -407,7 +417,7 @@ Float Precision & 32 bit \\
 \end{table}
 
 \begin{table}[!h]
-\renewcommand\thetable{S1}
+\renewcommand\thetable{S4}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
@@ -427,7 +437,7 @@ Intron & 1.2 & 0.3 \\
 \section{Longer Sequence Input}
 \label{sec:longer}
 \begin{table}[!h]
-\renewcommand\thetable{S1}
+\renewcommand\thetable{S5}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
@@ -456,67 +466,72 @@ The following plots show the effect of overlapping for each species we worked wi
 \subsection{Animals}
 \newpage
 
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals1}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals2}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals3}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals4}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals5}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals6}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals7}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals8}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals9}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals10}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals11}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals12}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals13}}
-%\end{figure}
-%
-%\clearpage
-%\subsection{Plants}
-%
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants1}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants2}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants3}}
-%\end{figure}
-%\begin{figure}[!h]
-%\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants4}}
-%\end{figure}
-%
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals1}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals2}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals3}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals4}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals5}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals6}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals7}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals8}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals9}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals10}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals11}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals12}}
+\end{figure}
+\begin{figure}[!h]
+\renewcommand\thefigure{S5}
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals13}}
+\caption{Effect of overlapping on the sequence positions wise bias ordered by descending N75 for all animals genomes individually.}
+\end{figure}
+
+\clearpage
+\subsection{Plants}
+
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants1}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants2}}
+\end{figure}
+\begin{figure}[!h]
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants3}}
+\end{figure}
+\begin{figure}[!h]
+\renewcommand\thefigure{S6}
+\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants4}}
+\caption{Effect of overlapping on the sequence positions wise bias ordered by descending N75 for all plant genomes individually.}
+\end{figure}
+
+
 \clearpage
 \section{Training Data statistics}
 \label{sec:training_data}
 \begin{table}[!h]
-\renewcommand\thetable{S1}
+\renewcommand\thetable{S6}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
@@ -538,7 +553,7 @@ Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 \newpage
 \section{Dilated CNN Baseline Network Search}
 \begin{table}[!h]
-\renewcommand\thetable{S1}
+\renewcommand\thetable{S7}
 \centering
 \begin{tabular}{@{}ll@{}}
 \hline
@@ -558,7 +573,7 @@ Learning Rate & \{1e-3, 1e-4\}\\
 \end{table}
 
 \begin{table}[!h]
-\renewcommand\thetable{S1}
+\renewcommand\thetable{S8}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
