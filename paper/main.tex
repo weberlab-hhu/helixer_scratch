@@ -153,7 +153,7 @@ AUGUSTUS does outperform us rather consistently on the smallest genomes, but fal
 Two techniques were used during inference to improve performance and limit model bias. The usage of longer input lengths helped especially for genomes that tend to have longer genes and was enabled by our model architecture being a relatively simple LSTM stack without any fully connected layers on top. We also constructed the final predictions out of a overlapping ones, which greatly helped to reduce prediction bias in most genomes. To our knowledge, both techniques were not used before in a model developed for gene annotation. 
 
 \section{Discussion}
-We propose a gene calling model that is able to perform cross-species genomic annotiation for a wide variety of large eucaryotic genomes. Our model does this while outperforming AUGUSTUS on a base pair wise level and withstanding RNASeq data based scrutiny. 
+We propose a novel way to develop gene calling models that are able to perform cross-species genomic annotiation for a wide variety of large eucaryotic genomes. Helixer does this while outperforming AUGUSTUS on a base pair wise level and withstanding RNASeq data based scrutiny. 
 
 We found our models to be highly sensitive to the training genomes we chose. A different set could lead to a significant shift in strengths and weaknesses of the model and a larger and more spread out set of high quality genomes could also result in a wider range of genomes with decent predictions. For this, more computational resources would be required. 
 

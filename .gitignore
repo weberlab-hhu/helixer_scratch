@@ -25,7 +25,7 @@ plots/phylogenetic_trees/ete3/plot.png
 plots/phylogenetic_trees/ggtree/*.png
 .RData
 .Rhistory
-plots/Animals_overall_boxplot.png
-plots/Plants_overall_boxplot.png
+plots/notebooks/Animals_overall_boxplot.png
+plots/notebooks/Plants_overall_boxplot.png
 paper/images/overlapping/plants/*.png
 paper/images/overlapping/animals/*.png
