@@ -5,7 +5,7 @@ import argparse
 
 
 # overall score
-def score(f, other_y, n=20, by=1000):
+def score(f, other_y, predictions, n=20, by=1000):
     """get counts for histogram of reference scores broken up by other_y
 
     other_y should be a list of keys for h5 datasets to be compared to data/y, for each key
@@ -20,7 +20,10 @@ def score(f, other_y, n=20, by=1000):
         y = np.argmax(f['data/y'][i:(i + by)], axis=2).ravel()
         preds = {}
         for key in other_y:
-            preds[key] = np.argmax(f[key][i:(i + by)], axis=2).ravel()
+            of = f
+            if key == 'predictions':
+              of = predictions
+            preds[key] = np.argmax(of[key][i:(i + by)], axis=2).ravel()
         scores = f['scores/by_bp'][i:(i + by)].ravel()
 
         for col in range(4):
@@ -40,15 +43,20 @@ def score(f, other_y, n=20, by=1000):
     pd_histos = {}
     for key in histos:
         pd_histos[key] = pd.DataFrame(histos[key])
-        pd_histos[key].set_index(index)
+        pd_histos[key].index = index
+        pd_histos[key].columns = breaks[:-1]
 
     return pd_histos
 
 
-def main(h5_data, alternatives, out_dir):
+def main(h5_data, alternatives, out_dir, predictions):
     f = h5py.File(h5_data, mode='r')
-    other_y = ['predictions'] + ['alternative/' + x for x in alternatives.split(',')]
-    pd_histos = score(f, other_y)
+    if predictions is None:
+        pred_f = f
+    else:
+        pred_f = h5py.File(predictions, mode='r')
+    other_y = ['predictions'] + ['alternative/{}/y'.format(x) for x in alternatives.split(',')]
+    pd_histos = score(f, other_y, pred_f)
 
     for key in pd_histos:
         fkey = key.replace('/', '_')
@@ -65,5 +73,6 @@ if __name__ == "__main__":
                         help='comma sep list of h5 groups where we will use alternative/{alternative}/y,'
                              ' e.g. "augustus"')
     parser.add_argument('-o', '--out-dir', default='./', help='directory where output will be written to')
+    parser.add_argument('-p', '--predictions', help='point to h5 with /predictions if not the same')
     args = parser.parse_args()
-    main(args.h5_data, args.alternative, args.out_dir)
+    main(args.h5_data, args.alternatives, args.out_dir, args.predictions)
