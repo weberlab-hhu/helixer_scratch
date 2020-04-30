@@ -57,7 +57,7 @@ hel_color = 'royalblue'
 
 # make subplot grid
 fig = plt.figure(figsize=(12, 6))
-outer = gridspec.GridSpec(1, 3, wspace=0.1, hspace=0.1)
+outer = gridspec.GridSpec(1, 3, wspace=0.2, hspace=0.1)
 
 # boxplots
 boxplot_grid = gridspec.GridSpecFromSubplotSpec(2, 2, subplot_spec=outer[0], wspace=0.1, hspace=0.1)
@@ -83,7 +83,7 @@ def add_boxplot(subplot_spec, data, swarm_color, title='', tick_labels=False, su
     if title:
         ax.set_title(title)
     if superscript_label:
-        ax.text(-0.2, 1.1, 'a)', transform=ax.transAxes, size=10, weight='bold')
+        ax.text(-0.45, 0.95, 'a)', transform=ax.transAxes, size=15, weight='bold')
     fig.add_subplot(ax)
 
 add_boxplot(boxplot_grid[0, 0], df_animals['AUG'], aug_color, tick_labels=True, superscript_label=True)
@@ -94,7 +94,7 @@ add_boxplot(boxplot_grid[1, 1], df_plants['NN'], hel_color)
 # scatterplots
 scatterplot_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer[1], wspace=0.1, hspace=0.1)
 
-def add_scatterplot(subplot_spec, data, xlabel=''):
+def add_scatterplot(subplot_spec, data, xlabel='', superscript_label=False):
     ax = plt.Subplot(fig, subplot_spec)
     ax = sns.regplot(x=data['total_len'], y=data['AUG'], ax=ax, color=aug_color, scatter_kws={'s':8}, line_kws={'linewidth':1.5})
     ax = sns.regplot(x=data['total_len'], y=data['NN'], ax=ax, color=hel_color, scatter_kws={'s':8}, line_kws={'linewidth':1.5})
@@ -107,15 +107,17 @@ def add_scatterplot(subplot_spec, data, xlabel=''):
     else:
         ax.set_xticklabels([])
         ax.set_xlabel(None)
+    if superscript_label:
+        ax.text(-0.14, 0.95, 'b)', transform=ax.transAxes, size=15, weight='bold')
     fig.add_subplot(ax)
 
-add_scatterplot(scatterplot_grid[0], df_animals)
+add_scatterplot(scatterplot_grid[0], df_animals, superscript_label=True)
 add_scatterplot(scatterplot_grid[1], df_plants, 'Genome Size in Gbp')
 
 # line plots
 lineplot_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer[2], wspace=0.1, hspace=0.1)
 
-def add_lineplot(subplot_spec, data, xlabel=''):
+def add_lineplot(subplot_spec, data, xlabel='', superscript_label=False):
     ax = plt.Subplot(fig, subplot_spec)
     ax.plot(range(100), data['f1'], color='tab:red', linestyle='dashed')
     ax.plot(range(100), data['f1_with_overlapping'], color='tab:red')
@@ -133,9 +135,11 @@ def add_lineplot(subplot_spec, data, xlabel=''):
     else:
         ax.set_xlabel(None)
         ax.set_xticklabels([])
+    if superscript_label:
+        ax.text(-0.14, 0.95, 'c)', transform=ax.transAxes, size=15, weight='bold')
     fig.add_subplot(ax)
 
-add_lineplot(lineplot_grid[0], df_ol_animals)
+add_lineplot(lineplot_grid[0], df_ol_animals, superscript_label=True)
 add_lineplot(lineplot_grid[1], df_ol_plants, xlabel='Basepair Offset in Sequence')
 
 # add superscript labeling
