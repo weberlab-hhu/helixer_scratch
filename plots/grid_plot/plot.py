@@ -56,34 +56,34 @@ fig = plt.figure(figsize=(12, 8))
 outer = gridspec.GridSpec(1, 3, wspace=0.1, hspace=0.1)
 
 # boxplots
-boxplot_grid = gridspec.GridSpecFromSubplotSpec(2, 1,
+boxplot_grid = gridspec.GridSpecFromSubplotSpec(2, 2,
                 subplot_spec=outer[0], wspace=0.1, hspace=0.1)
 
-ax_animals_box = plt.Subplot(fig, boxplot_grid[0])
+# ax = plt.Subplot(fig, boxplot_grid[0, 0])
+# ax = sns.boxplot(y=df_animals["AUG"], medianprops={'color':'red'},
+            # ax=ax, color="white", zorder=100)
+# for patch in ax.artists:
+    # r, g, b, a = patch.get_facecolor()
+    # patch.set_facecolor((r, g, b, 0.0))
 
-_, axes = plt.subplots(1, 2, sharey=True, figsize=(10,10))
-sns.boxplot(y=df_animals["AUG"], medianprops={'color':'red'},
-            ax=axes[0], color="white")
-sns.swarmplot(y="AUG", data=df_animals, ax=axes[0], color="chocolate")
-axes[0].set_title('AUGUSTUS')
-axes[0].set_ylabel("Subgenic F1 Score")
+def add_subplot(subplot_spec, data, swarm_color, title=''):
+    ax = plt.Subplot(fig, subplot_spec)
+    ax = sns.boxplot(y=data, medianprops={'color':'red'}, ax=ax, color='white',
+                     showfliers=False, showcaps=False, whiskerprops={'linewidth':0})
+    plt.setp(ax.lines, zorder=100)
+    ax = sns.swarmplot(y=data, ax=ax, color=swarm_color)
+    ax.set_ylim((0.0, 1.0))
+    ax.set_ylabel(None)
+    ax.set_xticks([], [])
+    if title:
+        ax.set_title(title)
+    fig.add_subplot(ax)
 
-sns.boxplot(y=df_animals["NN"], medianprops={'color':'red'},
-            ax=axes[1], color="white")
-sns.swarmplot(y="NN", data=df_animals, ax=axes[1], color="royalblue")
-axes[1].set_title('Helixer')
+add_subplot(boxplot_grid[0, 0], df_animals['AUG'], 'chocolate', 'AUGUSTUS')
+add_subplot(boxplot_grid[0, 1], df_animals['NN'], 'royalblue', 'Helixer')
+add_subplot(boxplot_grid[1, 0], df_plants['AUG'], 'chocolate')
+add_subplot(boxplot_grid[1, 1], df_plants['NN'], 'royalblue')
 
-axes.ylim((0.0, 1.0))
-
-
-    for j in range(2):
-        ax = plt.Subplot(fig, inner[j])
-        t = ax.text(0.5,0.5, 'outer=%d, inner=%d' % (i,j))
-        t.set_ha('center')
-        ax.set_xticks([])
-        ax.set_yticks([])
-        fig.add_subplot(ax)
-
-fig.show()
+plt.show()
 
 
