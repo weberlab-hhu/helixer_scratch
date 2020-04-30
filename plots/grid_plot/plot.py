@@ -56,7 +56,7 @@ aug_color = 'chocolate'
 hel_color = 'royalblue'
 
 # make subplot grid
-fig = plt.figure(figsize=(12, 8))
+fig = plt.figure(figsize=(12, 6))
 outer = gridspec.GridSpec(1, 3, wspace=0.1, hspace=0.1)
 
 # boxplots
@@ -109,6 +109,33 @@ def add_scatterplot(subplot_spec, data, xlabel=''):
 
 add_scatterplot(scatterplot_grid[0], df_animals)
 add_scatterplot(scatterplot_grid[1], df_plants, 'Genome Size in Gbp')
+
+# line plots
+lineplot_grid = gridspec.GridSpecFromSubplotSpec(2, 1, subplot_spec=outer[2], wspace=0.1, hspace=0.1)
+
+def add_lineplot(subplot_spec, data, xlabel=''):
+    ax = plt.Subplot(fig, subplot_spec)
+    ax.plot(range(100), data['f1'], color='tab:red', linestyle='dashed')
+    ax.plot(range(100), data['f1_with_overlapping'], color='tab:red')
+    ax.plot(range(100), data['acc'], color='tab:purple', linestyle='dashed')
+    ax.plot(range(100), data['acc_with_overlapping'], color='tab:purple')
+    ax.set_ylim((0.0, 1.0))
+
+    ax.set_yticklabels([])
+    ax.set_ylabel(None)
+    ticks = [0, 50, 100]
+    ax.set_xticks(ticks)
+    if xlabel:
+        ax.set_xlabel(xlabel)
+        ax.set_xticklabels([t * 200 for t in ticks])
+    else:
+        ax.set_xlabel(None)
+        ax.set_xticklabels([])
+    fig.add_subplot(ax)
+
+add_lineplot(lineplot_grid[0], df_ol_animals)
+add_lineplot(lineplot_grid[1], df_ol_plants, xlabel='Basepair Offset in Sequence')
+
 
 plt.show()
 
