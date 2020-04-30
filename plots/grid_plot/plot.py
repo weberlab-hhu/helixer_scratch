@@ -102,6 +102,9 @@ def add_scatterplot(subplot_spec, data, xlabel=''):
     ax.set_ylabel(None)
     if xlabel:
         ax.set_xlabel(xlabel)
+    else:
+        ax.set_xticklabels([])
+        ax.set_xlabel(None)
     fig.add_subplot(ax)
 
 add_scatterplot(scatterplot_grid[0], df_animals)
