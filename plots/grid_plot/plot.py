@@ -69,7 +69,7 @@ boxplot_grid = gridspec.GridSpecFromSubplotSpec(2, 2, subplot_spec=outer[0], wsp
     # r, g, b, a = patch.get_facecolor()
     # patch.set_facecolor((r, g, b, 0.0))
 
-def add_boxplot(subplot_spec, data, swarm_color, title='', tick_labels=False):
+def add_boxplot(subplot_spec, data, swarm_color, title='', tick_labels=False, superscript_label=False):
     ax = plt.Subplot(fig, subplot_spec)
     ax = sns.boxplot(y=data, medianprops={'color':'red'}, ax=ax, color='white',
                      showfliers=False, showcaps=False, whiskerprops={'linewidth':0})
@@ -82,9 +82,11 @@ def add_boxplot(subplot_spec, data, swarm_color, title='', tick_labels=False):
         ax.set_yticklabels([])
     if title:
         ax.set_title(title)
+    if superscript_label:
+        ax.text(-0.2, 1.1, 'a)', transform=ax.transAxes, size=10, weight='bold')
     fig.add_subplot(ax)
 
-add_boxplot(boxplot_grid[0, 0], df_animals['AUG'], aug_color, tick_labels=True)
+add_boxplot(boxplot_grid[0, 0], df_animals['AUG'], aug_color, tick_labels=True, superscript_label=True)
 add_boxplot(boxplot_grid[0, 1], df_animals['NN'], hel_color)
 add_boxplot(boxplot_grid[1, 0], df_plants['AUG'], aug_color, tick_labels=True)
 add_boxplot(boxplot_grid[1, 1], df_plants['NN'], hel_color)
@@ -136,6 +138,7 @@ def add_lineplot(subplot_spec, data, xlabel=''):
 add_lineplot(lineplot_grid[0], df_ol_animals)
 add_lineplot(lineplot_grid[1], df_ol_plants, xlabel='Basepair Offset in Sequence')
 
+# add superscript labeling
 
 plt.show()
 
