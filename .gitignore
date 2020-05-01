@@ -23,6 +23,7 @@ supplements.out
 output.csv
 plots/phylogenetic_trees/ete3/plot.png
 plots/phylogenetic_trees/ggtree/*.png
+plots/grid_plot/*.png
 .RData
 .Rhistory
 plots/notebooks/Animals_overall_boxplot.png

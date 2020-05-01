@@ -81,7 +81,7 @@ def add_boxplot(subplot_spec, data, swarm_color, title='', tick_labels=False, su
     if title:
         ax.set_title(title)
     if superscript_label:
-        ax.text(-0.48, 0.95, 'a)', transform=ax.transAxes, size=15, weight='bold')
+        ax.text(-0.4, 0.95, 'a)', transform=ax.transAxes, size=15, weight='bold')
     fig.add_subplot(ax)
 
 add_boxplot(boxplot_grid[0, 0], df_animals['AUG'], aug_color, tick_labels=True, superscript_label=True)
@@ -107,7 +107,8 @@ def add_scatterplot(subplot_spec, data, xlabel='', superscript_label=False):
     else:
         ax.set_xticklabels([])
         ax.set_xlabel(None)
-        ax.legend(loc='lower left', fontsize='small')
+        # ax.legend(loc='lower left', fontsize='small')
+        ax.legend(loc='lower left')
     if superscript_label:
         ax.text(-0.14, 0.95, 'b)', transform=ax.transAxes, size=15, weight='bold')
     fig.add_subplot(ax)
@@ -135,12 +136,14 @@ def add_lineplot(subplot_spec, data, xlabel='', superscript_label=False):
     else:
         ax.set_xlabel(None)
         ax.set_xticklabels([])
-        ax.legend(loc='lower left', fontsize='small')
+        ax.legend(loc='lower left')
     if superscript_label:
-        ax.text(-0.21, 0.95, 'c)', transform=ax.transAxes, size=15, weight='bold')
+        ax.text(-0.17, 0.95, 'c)', transform=ax.transAxes, size=15, weight='bold')
     fig.add_subplot(ax)
 
 add_lineplot(lineplot_grid[0], df_ol_animals, superscript_label=True)
 add_lineplot(lineplot_grid[1], df_ol_plants, xlabel='Basepair Position in Input Sequence')
 
-plt.show()
+outer_main.tight_layout(fig)
+fig.savefig('main_results.png', dpi=350)
+# plt.show()
