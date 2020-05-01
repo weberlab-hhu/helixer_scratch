@@ -2,48 +2,57 @@ import numpy as np
 import pandas as pd
 import h5py
 import argparse
+import itertools
+import copy
 
 
 # overall score
-def score(f, other_y, predictions, n=20, by=1000):
+def score(f, other_y, predictions, n=1000, by=2000):
     """get counts for histogram of reference scores broken up by other_y
 
     other_y should be a list of keys for h5 datasets to be compared to data/y, for each key
     this will record and return 8 histograms under the same key:
        [ig right, ig wrong, utr right, utr wrong, cds right, cds wrong, intron right, intron wrong]"""
     breaks = [x / n for x in range(n + 1)]
+
+    i_s = list(range(4))
+    i_s_by_y = [i_s for _ in range(len(other_y))]
+    argmax_sets = list(itertools.product(*i_s_by_y))
+
     histos = {}
-    for key in other_y:
-        histos[key] = [np.zeros((n,)) for _ in range(8)]
+    score_cats = ['ig', 'exon', 'intron']
+    for key in score_cats:
+        histos[key] = [np.zeros((n,)) for _ in range(len(argmax_sets))]
 
     for i in range(0, f['data/X'].shape[0], by):
-        y = np.argmax(f['data/y'][i:(i + by)], axis=2).ravel()
+        un_padded = np.sum(f['data/X'][i:(i + by)], axis=2).ravel().astype(bool)
         preds = {}
         for key in other_y:
             of = f
             if key == 'predictions':
               of = predictions
-            preds[key] = np.argmax(of[key][i:(i + by)], axis=2).ravel()
-        scores = f['scores/by_bp'][i:(i + by)].ravel()
+            preds[key] = np.argmax(of[key][i:(i + by)], axis=2).ravel()[un_padded]
+        scores = f['scores/ig_exon_intron_bp'][i:(i + by)].ravel()
 
-        for col in range(4):
-            mask = y == col
-            ysm = y[mask]
-            scoressm = scores[mask]
-            for key in other_y:
-                predsm = preds[key][mask]
-                maskright = (predsm == ysm).astype('bool')
-                righthisto = np.histogram(scoressm[maskright], bins=breaks)[0]
-                histos[key][col * 2] += righthisto
-                histos[key][col * 2 + 1] += np.histogram(scoressm[np.logical_not(maskright)], bins=breaks)[0]
-    index = []
-    for cat in ['ig', 'utr', 'cds', 'exon']:
-        index += [cat + '_agree', cat + '_disagree']
+        for ih, argmaxes in enumerate(argmax_sets):
+            subpreds = copy.deepcopy(preds)
+            scoressm = copy.deepcopy(scores)
+
+            # filter so that each "y" in other_y matches expected argmax
+            for iam, am in enumerate((argmaxes)):
+                mask = subpreds[other_y[iam]] == am
+                for key in subpreds:
+                    subpreds[key] = subpreds[key][mask]
+                    scoressm = scoressm[mask]
+
+            for isc, sc_key in enumerate(score_cats):
+                matchhisto = np.histogram(scoressm[:, isc], bins=breaks)[0]
+                histos[sc_key][ih] += matchhisto
 
     pd_histos = {}
     for key in histos:
         pd_histos[key] = pd.DataFrame(histos[key])
-        pd_histos[key].index = index
+        pd_histos[key].index = argmax_sets
         pd_histos[key].columns = breaks[:-1]
 
     return pd_histos
@@ -55,7 +64,8 @@ def main(h5_data, alternatives, out_dir, predictions):
         pred_f = f
     else:
         pred_f = h5py.File(predictions, mode='r')
-    other_y = ['predictions'] + ['alternative/{}/y'.format(x) for x in alternatives.split(',')]
+    other_y = ['data/y', 'predictions']
+    other_y += ['alternative/{}/y'.format(x) for x in alternatives.split(',')]
     pd_histos = score(f, other_y, pred_f)
 
     for key in pd_histos:
