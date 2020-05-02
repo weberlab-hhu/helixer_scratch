@@ -7,20 +7,23 @@ import copy
 
 
 # overall score
-def score(f, other_y, predictions, n=1000, by=2000):
-    """get counts for histogram of reference scores broken up by other_y
+def score(f, other_y, predictions, n=1000, by=2000, max_bin=4):
+    """get counts for histogram of normalized coverage broken up by other_y confusion matrix
 
-    other_y should be a list of keys for h5 datasets to be compared to data/y, for each key
-    this will record and return 8 histograms under the same key:
-       [ig right, ig wrong, utr right, utr wrong, cds right, cds wrong, intron right, intron wrong]"""
-    breaks = [x / n for x in range(n + 1)]
+    other_y should be a list of alternatives for y (ref or preds) as keys in the h5 file"""
+    # double check our 'max_bin' is actually high enough to summarize data
+    maxes_by_sp = f['meta/max_normalized_cov_sc'].attrs
+    for sp in maxes_by_sp:
+        assert max_bin > np.max(maxes_by_sp[sp])
+
+    breaks = [x / n * max_bin for x in range(n + 1)]
 
     i_s = list(range(4))
     i_s_by_y = [i_s for _ in range(len(other_y))]
     argmax_sets = list(itertools.product(*i_s_by_y))
 
     histos = {}
-    score_cats = ['ig', 'exon', 'intron']
+    score_cats = ['cov', 'sc']
     for key in score_cats:
         histos[key] = [np.zeros((n,)) for _ in range(len(argmax_sets))]
 
@@ -32,8 +35,8 @@ def score(f, other_y, predictions, n=1000, by=2000):
             if key == 'predictions':
               of = predictions
             preds[key] = np.argmax(of[key][i:(i + by)], axis=2).ravel()[un_padded]
-        scores = f['scores/ig_exon_intron_bp'][i:(i + by)].ravel()
-
+        scores = f['scores/norm_cov_by_bp'][i:(i + by)].reshape([-1, 2])
+        print(scores.shape)
         for ih, argmaxes in enumerate(argmax_sets):
             subpreds = copy.deepcopy(preds)
             scoressm = copy.deepcopy(scores)
