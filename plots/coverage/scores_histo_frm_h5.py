@@ -27,7 +27,9 @@ def score(f, other_y, predictions, n=1000, by=2000, max_bin=4):
     for key in score_cats:
         histos[key] = [np.zeros((n,)) for _ in range(len(argmax_sets))]
 
-    for i in range(0, f['data/X'].shape[0], by):
+    xshape = f['data/X'].shape[0]
+    for i in range(0, xshape, by):
+        print('at {} of {}'.format(i, xshape))
         un_padded = np.sum(f['data/X'][i:(i + by)], axis=2).ravel().astype(bool)
         preds = {}
         for key in other_y:
@@ -35,8 +37,8 @@ def score(f, other_y, predictions, n=1000, by=2000, max_bin=4):
             if key == 'predictions':
               of = predictions
             preds[key] = np.argmax(of[key][i:(i + by)], axis=2).ravel()[un_padded]
-        scores = f['scores/norm_cov_by_bp'][i:(i + by)].reshape([-1, 2])
-        print(scores.shape)
+        scores = f['scores/norm_cov_by_bp'][i:(i + by)].reshape([-1, 2])[un_padded]
+
         for ih, argmaxes in enumerate(argmax_sets):
             subpreds = copy.deepcopy(preds)
             scoressm = copy.deepcopy(scores)
@@ -46,7 +48,7 @@ def score(f, other_y, predictions, n=1000, by=2000, max_bin=4):
                 mask = subpreds[other_y[iam]] == am
                 for key in subpreds:
                     subpreds[key] = subpreds[key][mask]
-                    scoressm = scoressm[mask]
+                scoressm = scoressm[mask, :]
 
             for isc, sc_key in enumerate(score_cats):
                 matchhisto = np.histogram(scoressm[:, isc], bins=breaks)[0]

@@ -30,7 +30,7 @@ online.}
 \maketitle
 
 \section{Introduction}
-The annotation of genes in DNA is fundamental for many other tasks depending on it to be done as good and correct as possible. It can be performed at different levels of precision, from simple coding -- non-coding classification to detailed structural labeling. Because of the sheer size of genomes alone, gene annotation is a very labour intensive process and genomic database providers like NCBI \citep{thibaud2013eukaryotic} and Ensembl \citep{aken2016ensembl} offer gene annotation pipelines. These pipelines integrate experimental data (from e.g. RNA-seq or proteogenomics) with homolog sequences in the database and ab-initio gene predictions. The latter is an attractive approach, because it is cheap and fast. State of the art performance is achieved by higher order hidden markov models (HMMs), such as Genscan \citep{burge1997prediction} or AUGUSTUS \citep{stanke2003gene} but their accuracy leaves room for improvement. By encoding possible states and transitions in a probalistic model, designers of HMMs assume structure in the sequence that may limit its predictive power. Indeed, in practice HMMs have problems with generalizing across species and it seems actual learning of underlying patterns is limited despite the fundamental ability to do so being present. 
+The annotation of genes in DNA is fundamental for many other tasks depending on it to be done as good and correct as possible. It can be performed at different levels of precision, from simple coding -- non-coding classification to detailed structural labeling. Because of the sheer size of genomes alone, gene annotation is a very labour intensive process and genomic database providers like NCBI \citep{thibaud2013eukaryotic} and Ensembl \citep{aken2016ensembl} offer gene annotation pipelines. These pipelines integrate experimental data (from e.g. RNA-seq or proteogenomics) with homolog sequences in the database and ab-initio gene predictions. The latter is an attractive approach, because it is cheap and fast. State of the art performance is achieved by higher order hidden markov models (HMMs), such as Genscan \citep{burge1997prediction}, AUGUSTUS \citep{stanke2003gene} or SNAP \citep{johnson2008snap}. Their accuracy, however, leaves room for improvement. By encoding possible states and transitions in a probalistic model, designers of HMMs assume structure in the sequence that may limit its predictive power. In practice HMMs have trouble to generalize across species and it seems actual learning of underlying patterns is limited despite the fundamental ability to do so being present. 
 
 In the last decade, deep neural networks (DNN) have been applied with great success in many areas of statistical modelling, including biology \citep{ching2018opportunities}. For sequence data, such as DNA, speech or text, a special kind of recurrent neural network (RNN) called long-short term memory (LSTM) \citep{hochreiter1997long} is an established building block for many different architectures. LSTM units can also be used to process sequential input starting from both ends, forming a bi-directional LSTM (BLSTM). It has also been shown that HMMs can be successfully combined with DNNs \citep{liu2016novo, liu2016pedla}.
 
@@ -77,7 +77,9 @@ During data generation, we query for the longest transcript of each gene and dis
 For the training itself, we divide each continous genomic sequence into 20.000 bases long subsequences, which are then used as input or label for the neural network together with the sample weights. We append zero padding if the subsequences are not long enough. If a subsequence is fully marked as erroneous, we do not include it anywhere.
 
 \subsection{Metrics}
-We use two metrics to judge model performance. The {\it Genic F1} is our primary metric that provides the most comprehensive picture of annotation quality in one number. The {\it Subgenic F1} is similar to the Genic F1, except that it does not take UTR predictions into account. This is done for comparability with AUGUSTUS and further explained in Section \ref{sec:augustus}. Both metrics work by summing up True Positives (TP), False Positives (FP) and False Negatives (FN) of each considered class before calculating precision and recall from these values and combining the two into a F1 score. Both metrics do not take the values of the intergenic class into account, as this class is very abundant and appears to be by far the easiest to predict. (See Table \ref{tab:statistics_all} for the class distribution and Tables S1 and S2 for a more in-depth report our model performance including the intergenic class). In the case of the Genic F1, this means that effectively only the TP of the intergenic class are disregarded. The metrics essentially provide a weighted mean of the performances in the considered classes. 
+We mainly use two metrics to judge model performance. The {\it Genic F1} is our primary metric that provides the most comprehensive picture of annotation quality in one number. The {\it Subgenic F1} is similar to the Genic F1, except that it does not take UTR predictions into account. This is done for comparability with AUGUSTUS and further explained in Section \ref{sec:augustus}. Both metrics work by summing up True Positives (TP), False Positives (FP) and False Negatives (FN) of each considered class before calculating precision and recall from these values and combining the two into a F1 score. Both metrics do not take the values of the intergenic class into account, as this class is very abundant and appears to be by far the easiest to predict. (See Table \ref{tab:statistics_all} for the class distribution and Tables S1 and S2 for a more in-depth report our model performance including the intergenic class). In the case of the Genic F1, this means that effectively only the TP of the intergenic class are disregarded. The metrics essentially provide a weighted mean of the performances in the considered classes. 
+
+In Figure \ref{fig:main_results}c we also report on the overall base pair level accuracy besides the Genic F1.
 
 \subsection{Model Architecture and Training}
 \label{sec:model}
@@ -92,7 +94,7 @@ We also implemented a dilated CNN (dCNN) baseline as this kind of architecture i
 \subsection{Inference Techniques}
 We also used multiple techniques to improve the prediction quality after the training was done. One very effective way for genomes with larger genes was to input longer sequences during inference time than during training. This was done for all animal genomes except the invertebrates. The input sequences were up to 10 times larger, depending on species group and assembly quality. This also demonstrates the ability of our model to generalize as it is able to make successful prediction on far longer sequences than it has ever seen. The sequence length during inference can be up to 200.000 base pairs long and is determined by the phylogenetic class. The concrete lengths were chosen to keep the typical average gene length roughly proportional to the length of the sequence input. For more implementation details on this see Section 3 of the Supplements or the source code.
 	
-The final predictions of a single model are constructed by overlapping predictions, that were made from a sliding window and then cut to a core sequence. This was done to strongly reduce a typical drop in performance of the models towards the beginning and end of each sequence (see Figure \ref{fig:length_wise_bias}). It also improves the average model performance in general by providing the model with multiple different starting points. The different overlapping sequences were recombined by averaging the individual softmax values of each base. The figures in Section 4 of the Supplements show the effect of overlapping for each genome, ordered by N75. We found that overlapping tends to work best if the genomes are not very fragmented and we used it for both animals and plants.
+The final predictions of a single model are constructed by overlapping predictions, that were made from a sliding window and then cut to a core sequence. This was done to strongly reduce a typical drop in performance of the models towards the beginning and end of each sequence (see Figure \ref{fig:main_results}c). It also improves the average model performance in general by providing the model with multiple different starting points. The different overlapping sequences were recombined by averaging the individual softmax values of each base. The figures in Section 4 of the Supplements show the effect of overlapping for each genome, ordered by N75. We found that overlapping tends to work best if the genomes are not very fragmented and we used it for both animals and plants.
 
 A model ensemble with 8 components was used to generate the final predictions for each species. For this, we trained 4 seperate animal and plant models and also used a model from an epoch that did not have the highest Genic F1 on the validation set. Depending on the results, we used the model iteration with either the highest genic recall or precision. The model with the best Genic F1 was always best in one of those. This was done to increase the diversity of the model ensemble. As with the overlapping, the fusion of the 8 individual predictions was done by averaging the softmax values of each base pair prediction.
 
@@ -117,34 +119,29 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 
 \end{methods}
 
-\begin{figure}[!tpb]
-\label{fig:length_wise_bias}
-\centerline{\includegraphics[width=0.45\textwidth]{images/length_wise_bias}}
-\caption{Average Genic F1 and basepair wise accuracy with respect to the position in the 20000 basepair long input sequences of all animals on top and all plant genomes below shown with and without overlapping. Each value is the average performance of a 200 basepair long chunk by one of the final ensemble models. The regular metrics show a significant negative bias towards the borders of each sequence. Overlapping the predictions helps to mitigate a lot of that while showing no negative side effects elsewhere on average. See Section \ref{sec:overlapping} for a breakout of the effect of overlapping by each individual species.}
-\end{figure}
-
-\begin{figure}[!tpb]
-\centerline{\includegraphics[width=0.45\textwidth]{images/overall_boxplot}}
-\caption{Boxplots comparing the Subgenic F1 scores for all animal and plant genomes that were not used during training of Helixer, which is equivalent to all validation and test genomes. Results are given for Helixer and AUGUSTUS with the median predictions scores being denoted by the red lines. Details of how AUGUSTUS was used are given in Section \ref{sec:augustus}.}\label{fig:boxplot}
-\end{figure}
+\begin{figure*}[!tpb]
+\label{fig:main_results}
+\centerline{\includegraphics[width=\textwidth]{images/main_results}}
+\caption{Main overall results and other investigations. The top row shows the animal data; the bottom row is concerned with the plants. Yellow dots are for AUGUSTUS and the blue ones are for Helixer. {\bf a)} Swarm - and boxplots showing the Subgenic F1 scores for all genomes that were not used during training of Helixer, which is equivalent to all validation and test genomes. Each dot represents the prediction performace for one genome. The median prediction scores are shown by the red line. Details of how AUGUSTUS was used are given in Section \ref{sec:augustus}. {\bf b)} Scatterplots showing the prediction performances measured in Subgenic F1 by genome length. The regression line is shown with a 95\% confidence interval. {\bf c)} The average Genic F1 (in red) and basepair wise accuracy (in purple) with respect to the position in the 20000 basepair long input sequences. The dashed line shows the same without overlapping. Each value is the average performance of a 200 basepair long subsection by one of the models of the final ensemble. The usage of the model without overlapping results in a significant negative bias towards the borders of each sequence. Overlapping the predictions helps to mitigate a lot of that while showing no negative side effects elsewhere on average. See Section 4 for the Supplements for the effects of overlapping for each individual species.}
+\end{figure*}
 
 \begin{table}[!t]
-\processtable{Experimental Results and Comparison\label{tab:results}} {
+\processtable{Summary of Experimental Results\label{tab:results}} {
 \begin{tabular}{@{}lll@{}}
 \toprule & Animals & Plants\\
 \midrule
-AUGUSTUS & 0.632 (+-0.09) & 0.757 (+-0.182)\\
-Dilated CNN Baseline & - (+-) & - (+-)\\
-Best Helixer model & - (+-) & - (+-) \\
-Best model + varied input length & - (+-) & - \\
-Best model (+ varied input length) + overlapping &  0.85 (+-0.068) & 0.843 (+-0.151) \\
-(Varied input length +) overlapping + ensembling & 0.868 (+-0.064) & 0.863 (+-0.148) \\
+AUGUSTUS & 0.632 & 0.757 \\
+Dilated CNN Baseline & -  & - \\
+Best Helixer model & -  & -  \\
+Best model + varied input length & -  & - \\
+Best model (+ varied input length) + overlapping &  0.85  & 0.843  \\
+(Varied input length +) overlapping + ensembling & 0.868  & 0.863  \\
 \botrule
 \end{tabular}}{{\it Note:} Values are the median in Subgenic F1 across all validation and test genomes of the respective group. Varied input length was only used in the animal case. The best model was chosen out of the eight models of the ensemble for having the best performance in the reported setup.}
 \end{table}
 
 \section{Results}
-Figure \ref{fig:boxplot} shows the side-by-side comparison of the distribution of performances on all non-training genomes in the animal and plant case by Subgenic F1. In the case of Helixer, these scores represent cross-species predictions. We also compare the median performances of different configurations of Helixer with AUGUSTUS and a dilated CNN baseline in Table \ref{tab:results}. The results show a clear improvement over the AUGUSTUS both in median performance and spread. We also significantly outperform a baseline constructed of a dilated CNN architecture.
+Figure \ref{fig:main_results}a shows the side-by-side comparison of the distribution of performances on all non-training genomes in the animal and plant case by Subgenic F1. In the case of Helixer, these scores represent cross-species predictions. We also compare the median performances of different configurations of Helixer with AUGUSTUS and a dilated CNN baseline in Table \ref{tab:results}. The results show a clear improvement over the AUGUSTUS both in median performance and spread. We also significantly outperform a baseline constructed of a dilated CNN architecture.
 
 Our models, however, tend to perform less well for the very smallest and largest genomes or species that are phylogenetically the furthest away from our training genomes. This is the case for both animals and plants and is visualized by the Figures S1 and S3. We do not, for example, consistently predict very well on the algae as well as the non-avian reptiles. While one of the the algae were included in our training genomes, the non-avian reptiles were not. Our model also tends to show higher uncertainty around transitions of annotation classes (e.g. from UTR to CDS) due to the lack of further post-processing of the basepair wise predictions.
 
