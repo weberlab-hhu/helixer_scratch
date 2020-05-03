@@ -20,10 +20,10 @@
 
 \editor{Associate Editor: XXXXXXX}
 
-\abstract{\textbf{Motivation:} Current state of the art gene annotation programs for eukaryotic genomes have to be pretrained for each species and still often produce annotations that lack the required accuracy. \\
-\textbf{Results:} We set up a framework that can be used to build much more general gene callers that also outperform traditional methods on a variety of complex genomes.\\
-\textbf{Availability:} \\
-\textbf{Contact:} \href{name@bio.com}{name@bio.com}\\
+\abstract{\textbf{Motivation:} Current state-of-the-art tools for the annotation of genes in eukaryotic genomes have to be pretrained for each species and still often produce annotations that can be improved much further. The fundamental algorithmic architecture for those tools also remains the same since about two decades, limiting learning capabilities. Here, we set out to improve the cross-species annotation of genes from DNA data alone with the help of deep learning. The goal is to eliminate the dependency on a closely related gene model while also improving the predictive quality in general with a fundamentally new architecture.\\
+\textbf{Results:} We present Helixer, a framework for the development and usage of a cross-species deep learning model that improves significantly on performance and generalizability when compared to more traditional methods. We evaluate our approach by building a single model for the annotation of 186 animal genomes as well as one for 51 plants. Our predictions are shown to be much less sensitive to the length of the genome than those of a current state-of-the-are tool. We also present two novel post-processing techniques that each worked to further strengthen our annotations and show in-depth results of an RNA-Seq based comparison of our predictions.\\
+\textbf{Availability:} The source code of this work is available at \url{https://github.com/weberlab-hhu/HelixerPrep} [change] under the GNU General Public License v3.0.\\
+\textbf{Contact:} \href{alisandra.denton@hhu.de}{alisandra.denton@hhu.de}\\
 \textbf{Supplementary information:} Supplementary data are available at \textit{Bioinformatics}
 online.}
 
@@ -151,6 +151,8 @@ Two techniques were used during inference to improve performance and limit model
 
 \section{Discussion}
 We propose a novel way to develop gene calling models that are able to perform cross-species genomic annotiation for a wide variety of large eucaryotic genomes. Helixer does this while outperforming AUGUSTUS on a base pair wise level and withstanding RNASeq data based scrutiny. 
+
+Eliminating the need for a close genome annotation being present for pretraining.
 
 We found our models to be highly sensitive to the training genomes we chose. A different set could lead to a significant shift in strengths and weaknesses of the model and a larger and more spread out set of high quality genomes could also result in a wider range of genomes with decent predictions. For this, more computational resources would be required. 
 
