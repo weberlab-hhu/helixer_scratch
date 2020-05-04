@@ -34,10 +34,10 @@ p = ggtree(tree) %<+% sets + geom_tiplab(size=4, offset=.3) + geom_tippoint(aes(
 # p = p + geom_label(aes(label=node), fill='steelblue')
 # p = p + geom_cladelabel(node=201, label="Mammalia", align=T, geom='label', offset=12)
 
-png('plants_differences.png', width=600, height=1000)
+png('plants_differences.png', width=600, height=900)
 gheatmap(p, differences, width=.15, low="red", mid="white", high="blue", midpoint=0.0, use_scale_fill_gradient2=T, colnames=F, offset=5, legend_title="Difference") 
 dev.off()
 
-png('plants_f1_scores.png', width=600, height=1000)
+png('plants_f1_scores.png', width=600, height=900)
 gheatmap(p, f1_scores, width=.15, colnames=F, offset=5, use_scale_fill_viridis_d=T, legend_title="Subgenic F1") 
 dev.off()
