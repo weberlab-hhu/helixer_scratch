@@ -14,7 +14,6 @@ mkdir -v -p $geenuff_basedir/tmp/input $geenuff_basedir/tmp/output
 # gunzip -v -c $data_basedir/$genome/ensembl98/annotation/*.gff3.gz > $geenuff_basedir/tmp/input/$genome.gff3
 # gunzip -v -c $data_basedir/$genome/ensembl98/assembly/*.fa.gz > $geenuff_basedir/tmp/input/$genome.fa
 
-# cp -v $data_basedir/$genome/ensembl98/annotation/*.gff3 $data_basedir/$genome/ensembl98/assembly/*.fa $geenuff_basedir/tmp/input/
-cp -v $data_basedir/$genome/v2.0/annotation/*.gff3 $data_basedir/$genome/v2.0/assembly/*.fa $geenuff_basedir/tmp/input/
+cp -v $data_basedir/$genome/*/annotation/*.gff3 $data_basedir/$genome/*/assembly/*.fa $geenuff_basedir/tmp/input/
 
 $geenuff_basedir/import_genome.py --db-path $2 --basedir $geenuff_basedir/tmp/ --species $genome
