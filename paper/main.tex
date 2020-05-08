@@ -20,12 +20,12 @@
 
 \editor{Associate Editor: XXXXXXX}
 
-\abstract{\textbf{Motivation:} Current state-of-the-art tools for the annotation of 
-genes in eukaryotic genomes have to be pretrained for each species and still often 
+\abstract{\textbf{Motivation:} Current state-of-the-art tools for the \textit{de novo} annotation of 
+genes in eukaryotic genomes have to be specifically fitted for each species and still often 
 produce annotations that can be improved much further. The fundamental algorithmic 
-architecture for those tools also remains the same since about two decades, limiting
+architecture for these tools has remained largely unchanged for about two decades, limiting
 learning capabilities. Here, we set out to improve the cross-species annotation of
-genes from DNA data alone with the help of deep learning. The goal is to eliminate 
+genes from DNA sequence alone with the help of deep learning. The goal is to eliminate 
 the dependency on a closely related gene model while also improving the predictive
 quality in general with a fundamentally new architecture.\\
 \textbf{Results:} We present Helixer, a framework for the development and usage of 
@@ -33,37 +33,40 @@ a cross-species deep learning model that improves significantly on performance a
 generalizability when compared to more traditional methods. We evaluate our 
 approach by building a single model for the annotation of 186 animal genomes as 
 well as one for 51 plants. Our predictions are shown to be much less sensitive to
-the length of the genome than those of a current state-of-the-are tool. We also 
+the length of the genome than those of a current state-of-the-art tool. We also 
 present two novel post-processing techniques that each worked to further strengthen 
 our annotations and show in-depth results of an RNA-Seq based comparison of our 
 predictions.\\
 \textbf{Availability:} The source code of this work is available at 
 \url{https://github.com/weberlab-hhu/HelixerPrep} [change] under the GNU General 
 Public License v3.0.\\
-\textbf{Contact:} \href{alisandra.denton@hhu.de}{alisandra.denton@hhu.de}\\
+\textbf{Contact:} \href{alisandra.denton@hhu.de}{alisandra.denton@hhu.de}\\  
+% normally contact is last author / person with permanent position (i.e. Andreas). 
+% Not sure how important that is, but if we're skipping that, then we can change it back to Felix
 \textbf{Supplementary information:} Supplementary data are available at 
 \textit{Bioinformatics} online.}
 
 \maketitle
 
 \section{Introduction}
-The annotation of genes in DNA is fundamental for many other tasks depending on it 
-to be done as good and correct as possible. It can be performed at different levels 
+The annotation of genes in DNA is fundamental for many downstream tasks, which 
+depend on high quality annotations. Gene annotation can be performed at different levels 
 of precision, from simple coding -- non-coding classification to detailed structural 
-labeling. Because of the sheer size of genomes alone, gene annotation is a very 
-labour intensive process and genomic database providers like NCBI 
-\citep{thibaud2013eukaryotic} and Ensembl \citep{aken2016ensembl} offer gene 
-annotation pipelines. These pipelines integrate experimental data (from e.g. RNA-seq 
-or proteogenomics) with homolog sequences in the database and ab-initio gene 
+labeling. Because of the sheer size of genomes alone, manual gene annotation is 
+generally intractable. Instead, researchers can use pipelines such as 
+Maker \citep{}, PASA \citep{} or those offered by genomic database providers like NCBI 
+\citep{thibaud2013eukaryotic} and Ensembl \citep{aken2016ensembl}. 
+These pipelines integrate experimental data (from e.g. RNA-seq 
+or proteogenomics) with homologous sequences in the database and ab-initio gene 
 predictions. The latter is an attractive approach, because it is cheap and fast. 
-State of the art performance is achieved by higher order hidden markov models 
+State-of-the-art performance is achieved by higher order hidden markov models 
 (HMMs), such as Genscan \citep{burge1997prediction}, AUGUSTUS \citep{stanke2003gene} 
 or SNAP \citep{johnson2008snap}. Their accuracy, however, leaves room for 
 improvement. By encoding possible states and transitions in a probalistic model, 
 designers of HMMs assume structure in the sequence that may limit its predictive 
-power. In practice HMMs have trouble to generalize across species and it seems 
+power. In practice HMMs have trouble generalizing across species and it seems 
 actual learning of underlying patterns is limited despite the fundamental ability 
-to do so being present. 
+to do so being present \citep{}. 
 
 In the last decade, deep neural networks (DNN) have been applied with great success 
 in many areas of statistical modelling, including biology 
@@ -82,7 +85,7 @@ bidirectional LSTMs (BLSTM) for gene finding in prokaryotes. Gene prediction in
 prokaryotes is considered more amenable than in eukaryotes, as genes in prokaryotes 
 are proportionately more frequent in the genome, feature simpler control structures 
 and do not use splicing \citep{wang2004brief}. DanQ \citep{quang2016danq} proposes 
-the use of a BLSTM after a concurrent neural net (CNN) to find detailed motifs in 
+the use of a BLSTM after a convolutional neural net (CNN) to find detailed motifs in 
 the human genome. DeePromotor \citep{oubounyt2019deepromoter} trains a similar 
 architecture for the recognition of promotor regions. Recently, several groups 
 \citep{jaganathan2019predicting, wang2019splicefinder} successfully used CNNs to 
@@ -90,7 +93,7 @@ find splicing sites.
 
 In this work we present Helixer, a novel prototype software for training and 
 utilizing a general purpose DNN for the ab-initio cross-species gene annotation of 
-large eukaryotic genomes using only DNA data as input. Our model is trained to 
+large eukaryotic genomes using only DNA sequence as input. Our model is trained to 
 differentiate between 4 regions: Intergenic, Untranslated (UTR), Coding (CDS) and 
 Intron. We demonstrate the effectiveness of this approach by training a single model 
 for the annotation of a large set of genomes from the kingdoms metazoa and 
@@ -105,16 +108,33 @@ is publically available.
 \subsection{Datasets}
 The foundation of our work are 192 animal and 60 plant genomes. The data of each 
 genome consists of the latest publically available genomic assembly in form of a 
-FASTA file and the latest annotation in the GFF format. We used all animals genomes 
-in EnsemblMetazoa 45 \citep{howe2020ensembl} as well as all non-embargoed plant 
-genomes of the JGI Phytosome 13 database \citep{goodstein2012phytozome}. Both data 
-groups were used seperately during training as well as during evaluation. 
+FASTA file and the latest annotation in the GFF format. One genome for each species of animal 
+in EnsemblMetazoa 45 \citep{howe2020ensembl} as well as all non-embargoed plant
+species from the JGI Phytosome 13 database \citep{goodstein2012phytozome}; exact 
+genomes used are list here \ref{}. % add a supplemental table with names and versions
+Data was downloaded on 29/03/2019 and 15/10/2019 for plants and animals respectively. 
+Both data groups were used seperately during training as well as during evaluation. 
+
+Both to divide genomes into training, validation and test sets, as well as to understand
+performance, we needed a way to evaluate genome and annotation quality.
+Metadata was generated for each genome, including: basic length and composition statistics \citep{}; % quast
+k-mer content \citep{}; % jellyfish
+conserved gene content of the genome, transcriptome, and proteome \citep{}; % BUSCO, files generated with gffread
+and finally simple counts of genic features from the gff files. In particular, 
+we considered the following features of the metadata when judging the quality of a genome and it's 
+annotation: assembly contiguity (N50 / genome size); retention in the proteome 
+of detected conserved orthogroups (BUSCOs) that were identified in the genome; and
+the presence of UTRs and alternative splicing as estimated by the gff feature-counts.
+Finally this metadata was combined with researcher knowledge of model species to guide genome
+selection as necessary.
 
 At the start of our work we split both genome groups into {\it training genomes} and 
 {\it test genomes}. The test genome groups are made up of 19 and 6 genomes, 
-respectively, and were chosen to be of the best possible quality based on collected 
+respectively, and were chosen to be of decent quality and diversity based on collected 
 metadata while also representing a broad phylogenetic spread. 
 
+For both feasibility and iterative cross-species generalization validattion, we
+selected only some of the remaining genomes for direct training.
 The selection of training genomes also requires balancing multiple conflicting 
 tradeoffs. On the one hand, we do want to train with as much data as possible, but 
 not all data has a good enough quality to enable a powerful generalization. It is 
@@ -127,7 +147,7 @@ a couple of days as we tested many different data and model configurations, whic
 limited the overall size of the training set and the model. 
 
 We employed an iterative approach to effectively select a proper set of training 
-genomes. We first started with 3-4 genomes that were almost certain to be of the 
+genomes. We first started with 3-4 genomes that were expected to be of the 
 highest quality. We then evaluated the performance of the resulting model on all 
 genomes individually (including the training genomes) and looked for candidates to 
 add to the training set or to remove from it. This process was repeated multiple 
