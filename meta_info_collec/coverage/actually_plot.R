@@ -25,7 +25,7 @@ for (j in 1:2){
       ticksat <- viribp(summed_demelted_sc[rows_sc[[j]], ], 
                         ylab='average fraction of bp in\nspliced coverage bin',
                         ref=ref, match_length=mw)
-      legend(ticksat[length(ticksat)] + 0.2, 1, colnames(summed_demelted_sc),
+      legend(ticksat[length(ticksat)] + 0.2, 1, rev(colnames(summed_demelted_sc)),
              fill=viridis(6), bty='n', title='Bin')
     dev.off()
     
@@ -44,7 +44,7 @@ for (j in 1:2){
           ticksat <- viribp(sp_demelted_sc[[sp]][rows_sc[[j]], ],
                             ylab='average fraction of bp in\nspliced coverage bin',
                             ref=ref, match_length=mw)
-          legend(ticksat[length(ticksat)] + 0.2, 1, colnames(summed_demelted_sc),
+          legend(ticksat[length(ticksat)] + 0.2, 1, rev(colnames(summed_demelted_sc)),
                  fill=viridis(6), bty='n', title='Bin')
         dev.off()
     
