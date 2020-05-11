@@ -140,11 +140,12 @@ tradeoffs. On the one hand, we do want to train with as much data as possible, b
 not all data has a good enough quality to enable a powerful generalization. It is 
 also very desirable to have a broad spread phylogenetically as well as in genome 
 size and average gene length as the model is increasingly unlikely to generalize 
-well beyond the borders given by the training data. However, if the genomic patterns 
-inside the data are too different from each other, it may be difficult for the model 
-to generalize, too. It was also important for us to get experimental results within 
-a couple of days as we tested many different data and model configurations, which 
-limited the overall size of the training set and the model. 
+well beyond the borders given by the training data. However, it also may be difficult 
+for the model learn and generalize, if the genomic patterns inside the data are 
+too different from each other. It was also important for us to limit the size of
+our training genomes set to be small enough that enough that we could get experimental 
+results within a couple of days and thereby be able to test many different data and 
+model configurations.
 
 We employed an iterative approach to effectively select a proper set of training 
 genomes. We first started with 3-4 genomes that were expected to be of the 
@@ -161,7 +162,7 @@ performance on the combined set of validation and test genomes as the validation
 genomes are by far the largest set. We also did not find a noticible difference in 
 performance between those two groups. 
 
-Once a set of training genomes was selected, we split it up again into a {\it 
+Once a set of training genomes was selected, we further split the sequences therein into a {\it 
 training and validation set}. This split of the training genomes was done to get a 
 quicker sense of the generalization capabilities and was used primarily during 
 training. We split off the validation set by selecting 20\% of the FASTA sequences 
@@ -169,8 +170,8 @@ above and below the N90 of each training genome, ensuring a proper distribution 
 large and short sequences in both sets and a split on the chromosome level. 
 Evaluation of the annotations on all training and validation genomes was done 
 regularly after a promising model candidate was found based on its validation set 
-performance. Ultimately we only cared about the cross-species performance on all 
-validation genomes of a model.
+performance. Ultimately we used the cross-species performance on all 
+validation genomes as the decisive measure of model quality.
 
 \subsection{Data Pre-processing}
 We first pre-process and store the raw genomic information by using GeenuFF 
@@ -197,28 +198,29 @@ Fraction of class CDS & 0.016 (+- 0.014) & 0.085 (+- 0.071) \\
 Fraction of class Intron & 0.201 (+- 0.035) & 0.099 (+- 0.057) \\
 \botrule
 \end{tabular}}{{\it Note:} Values are averages of the individual values of each 
-genome in a data group. All statistics except the average gene lengths are excluding 
-FASTA sequences without a gene and subsequences that were masked as completely 
-erroneous. Each strand of DNA was counted seperately. The average gene length was 
-determined by the average length of the longest transcript by cumulative exon 
-length, which is how we query for genes during data generation. Brackets show the 
-standart deviation.}
+genome in a data group. All statistics except the average gene lengths exclude
+FASTA sequences without a gene and any 20,000 bp subsequences that were masked as completely 
+erroneous. Each strand of DNA was counted seperately. The gene length was 
+determined by the length of the pre-mRNA of the longest protein at each
+loci. Brackets show the standard deviation.}
 \end{table}
 
-During data generation, we query for the longest transcript of each gene and 
-disregard FASTA sequences that have no functional annotation. GeenuFF checks the 
+During data generation, we query for the transcript with the longest protein of each gene and 
+disregard FASTA sequences that have no functional annotation as it is ambiguous
+whether such sequences contain no genes or were simply not annotated in the reference. GeenuFF checks the 
 genomic annotations for potential errors during import and is able to mark those 
 areas. We use this information to effectively blank out those bases during training 
 by using the sample weights described in Table \ref{tab:arrays}. The vast majority 
-of bases masked lie in the intergenic region as the most prevelant error is a 
+of masked bases lie in the intergenic region as the most prevelant error is a 
 missing UTR and GeenuFF marks a potentially large intergenic region for it. Table 
 \ref{tab:statistics_all} shows statistics about the masking. 
 
-For the training itself, we divide each continous genomic sequence into 20.000 bases 
-long subsequences, which are then used as input or label for the neural network 
-together with the sample weights. We append zero padding if the subsequences are 
-not long enough. If a subsequence is fully marked as erroneous, we do not include 
-it anywhere.
+For the training itself, we divide each continous genomic sequence into 20,000 bp 
+long subsequences, for which one-hot vectors of the base pairs and annotations 
+are generated and respectively used as input and label for the neural network 
+together with the sample weights. We append zero padding if the sequences (or
+sequence ends) are shorter than 20,000 bp. 
+If a subsequence is fully marked as erroneous, we exclude it from all analyses. 
 
 \subsection{Metrics}
 We mainly use two metrics to judge model performance. The {\it Genic F1} is our 
@@ -228,13 +230,13 @@ not take UTR predictions into account. This is done for comparability with AUGUS
 and further explained in Section \ref{sec:augustus}. Both metrics work by summing up 
 True Positives (TP), False Positives (FP) and False Negatives (FN) of each 
 considered class before calculating precision and recall from these values and 
-combining the two into a F1 score. Both metrics do not take the values of the 
+combining the two into a F1 score. Neither metric takes the values of the 
 intergenic class into account, as this class is very abundant and appears to be by 
 far the easiest to predict. (See Table \ref{tab:statistics_all} for the class 
 distribution and Tables S1 and S2 for a more in-depth report our model performance 
 including the intergenic class). In the case of the Genic F1, this means that 
 effectively only the TP of the intergenic class are disregarded. The metrics 
-essentially provide a weighted mean of the performances in the considered classes. 
+essentially provide a weighted mean of the performances in the considered classes. %?? hmmm, but this is not a weighted mean across classes is it? Do introns not weigh more heavily?
 
 In Figure \ref{fig:main_results}c we also report on the overall base pair level 
 accuracy besides the Genic F1.
@@ -248,10 +250,15 @@ circa 5.4 million parameters and was implemented with the deep learning library
 keras \citep{chollet2015keras} on top of TensorFlow \citep{abadi2016tensorflow}. We 
 tested multiple different architectures before arriving at this model configuration, 
 including convolutional neural networks (CNN) and hybrid architectures. We also use 
-class weigths as the classes of the input data are not balanced equally enough, at 
-least not for our network, and does also vary greatly between animals and plants. 
+class weigths as the classes of the input data are both unbalanced vary greatly 
+between animals and plants. 
 For example, the tradeoff between the number of intergenic and intronic bases is 
 quite different in both groups (see Table \ref{tab:statistics_all}). 
+
+A class wise evaluation including the calculation of the Genic % still could use a better location...
+F1 score is performed on the validation set after every epoch. The best model
+from any training run was selected as the model with the highest Genic F1 after either
+maximum epochs were reached or Genic F1 stopped improving and training was interrupted. % check / what was patience set to?
 
 The hyperparameters were optimized by a combination of manual and automatic 
 optimization. Automatic optimization was carried out by using either the TPE 
@@ -263,10 +270,8 @@ repository.
 Our final model was trained with 10 bases of genomic sequence as input during each 
 time step and produces individual predictions for each of those 10 bases 
 simultaneously. This grouping enabled us to train effectively with far longer 
-sequences than usual. A class wise evaluation including the calculation of the Genic 
-F1 score is performed on the validation set after every epoch.
-
-We also implemented a dilated CNN (dCNN) baseline as this kind of architecture is 
+sequences than usual. 
+We compare our final models to a dilated CNN (dCNN) baseline as this kind of architecture is 
 widely used when working with DNA data as input. Details of the neural architecture 
 search are given in Section 6 of the Supplements.
 
@@ -275,36 +280,49 @@ We also used multiple techniques to improve the prediction quality after the
 training was done. One very effective way for genomes with larger genes was to input 
 longer sequences during inference time than during training. This was done for all 
 animal genomes except the invertebrates. The input sequences were up to 10 times 
-larger, depending on species group and assembly quality. This also demonstrates the 
+longer, depending on the phylogenetic group and assembly quality. This also demonstrates the 
 ability of our model to generalize as it is able to make successful prediction on 
-far longer sequences than it has ever seen. The sequence length during inference can 
-be up to 200.000 base pairs long and is determined by the phylogenetic class. The 
+far longer sequences than it has ever seen. The 
 concrete lengths were chosen to keep the typical average gene length roughly 
 proportional to the length of the sequence input. For more implementation details 
 on this see Section 3 of the Supplements or the source code.
 	
 The final predictions of a single model are constructed by overlapping predictions, 
-that were made from a sliding window and then cut to a core sequence. This was done 
+that were made from a sliding window and then cropped to a core sequence. This was done 
 to strongly reduce a typical drop in performance of the models towards the beginning 
 and end of each sequence (see Figure \ref{fig:main_results}c). It also improves the 
 average model performance in general by providing the model with multiple different 
-starting points. The different overlapping sequences were recombined by averaging 
+starting points. The different overlapping sequences were combined by averaging 
 the individual softmax values of each base. The figures in Section 4 of the 
 Supplements show the effect of overlapping for each genome, ordered by N75. We found 
 that overlapping tends to work best if the genomes are not very fragmented and we 
 used it for both animals and plants.
 
 A model ensemble with 8 components was used to generate the final predictions for 
-each species. For this, we trained 4 seperate animal and plant models and also used 
-a model from an epoch that did not have the highest Genic F1 on the validation set. 
-Depending on the results, we used the model iteration with either the highest genic 
-recall or precision. The model with the best Genic F1 was always best in one of 
+each species. For this, we performed 4 separate animal and plant training runs and 
+selected two models each, specifically the model with the best precision and the  % please check
+other with the best recall. The model with the best Genic F1 was always best in one of 
 those. This was done to increase the diversity of the model ensemble. As with the 
 overlapping, the fusion of the 8 individual predictions was done by averaging the 
 softmax values of each base pair prediction.
 
 \subsection{Evaluation of AUGUSTUS} 
 \label{sec:augustus}
+Due to the practical time constraints for retraining and running, we decided to compare our Helixer
+models only to one existing {\it de novo} gene caller, the popular gene caller, Augustus.
+Typical usage requires retraining Augustus for each species, with the exception of a
+few lucky cases where a model for a close relative is already available. To scale this for 
+the large plant and animal datasets, we used protein-homology to create a training set and
+therefore could train and evaluate only models without UTRs. 
+
+Orthologs of highly conserved single-copy genes were identified in each genome using
+BUSCO. The {\it viridiplantae} set was used for plants and the {\it metazoa} set for animals.
+The training genbank files were generated directly by BUSCO, by utilizing the ``--long"  % inline code?
+parameter. For plants, the entire retraining could be performed as above; however, for animals
+we randomly selected only half BUSCO-generated training set, which resulted in a training set 
+size and runtime comparable to the plants. 
+
+
 What Marvin did, why we don't use Genic F1 for comparison, etc
 
 
