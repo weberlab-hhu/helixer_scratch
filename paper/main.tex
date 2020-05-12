@@ -5,6 +5,10 @@
 \appnotes{Manuscript Category}
 \usepackage{url}
 
+\usepackage{draftwatermark}
+\SetWatermarkText{DRAFT}
+\SetWatermarkScale{1}
+
 \begin{document}
 \firstpage{1}
 
@@ -38,7 +42,7 @@ present two novel post-processing techniques that each worked to further strengt
 our annotations and show in-depth results of an RNA-Seq based comparison of our 
 predictions.\\
 \textbf{Availability:} The source code of this work is available at 
-\url{https://github.com/weberlab-hhu/HelixerPrep} [change] under the GNU General 
+\url{https://github.com/weberlab-hhu/HelixerPrep} under the GNU General 
 Public License v3.0.\\
 \textbf{Contact:} \href{alisandra.denton@hhu.de}{alisandra.denton@hhu.de}\\  
 % normally contact is last author / person with permanent position (i.e. Andreas). 
@@ -103,6 +107,20 @@ Both the ability to generalize across genomes as well as the scope of the evalua
 greatly surpasses all other work in this field. The source code and all input data 
 is publically available.
 
+\begin{table}[!t]
+\processtable{Data arrays generated and used by Helixer\label{tab:arrays}} {
+\begin{tabular}{@{}ll@{}}
+\toprule Name & Information \\
+\midrule
+Input & Genomic sequence in the 4-dimensional IUPAC encoding\\
+	  & (one hot encoding for non-ambiguous bases) \\
+Output & Labels in a 4-dimensional one hot encoding representing \\
+      & the classes {\it Intergenic}, {\it UTR}, {\it CDS} and {\it Intron}\\
+Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
+\botrule
+\end{tabular}}{{\it Note:} An intron inside a UTR region is encoded as intron and 
+can be inferred from the prediction order.}
+\end{table}
 \begin{methods}
 \section{Methods}
 \subsection{Datasets}
@@ -303,25 +321,6 @@ those. This was done to increase the diversity of the model ensemble. As with th
 overlapping, the fusion of the 8 individual predictions was done by averaging the 
 softmax values of each base pair prediction.
 
-\subsection{Evaluation of AUGUSTUS} 
-\label{sec:augustus}
-What Marvin did, why we don't use Genic F1 for comparison, etc
-
-
-\begin{table}[!t]
-\processtable{Data arrays generated and used by Helixer\label{tab:arrays}} {
-\begin{tabular}{@{}ll@{}}
-\toprule Name & Information \\
-\midrule
-Input & Genomic sequence in the 4-dimensional IUPAC encoding\\
-	  & (one hot encoding for non-ambiguous bases) \\
-Output & Labels in a 4-dimensional one hot encoding representing \\
-      & the classes {\it Intergenic}, {\it UTR}, {\it CDS} and {\it Intron}\\
-Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
-\botrule
-\end{tabular}}{{\it Note:} An intron inside a UTR region is encoded as intron and 
-can be inferred from the prediction order.}
-\end{table}
 
 \end{methods}
 
@@ -400,8 +399,6 @@ cross-species genomic annotiation for a wide variety of large eucaryotic genomes
 Helixer does this while outperforming AUGUSTUS on a base pair wise level and 
 withstanding RNASeq data based scrutiny. 
 
-Eliminating the need for a close genome annotation being present for pretraining.
-
 We found our models to be highly sensitive to the training genomes we chose. A 
 different set could lead to a significant shift in strengths and weaknesses of the 
 model and a larger and more spread out set of high quality genomes could also result 
@@ -413,14 +410,6 @@ input. This would bring Helixer on even footing with current tools and could lea
 to real world applicable performance improvements if the results of this work are 
 any indication, as deep learning has been shown to excel in a multimodal settings 
 \citep{ching2018opportunities}.
-
-\section*{Acknowledgements}
-
-We are very grateful for the support of...
-
-\section*{Funding}
-
-This work has been supported by the... \vspace*{-12pt}
 
 \bibliographystyle{natbib}
 \bibliography{literature}
