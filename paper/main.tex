@@ -4,7 +4,7 @@
 \access{Advance Access Publication Date: Day Month Year}
 \appnotes{Manuscript Category}
 \usepackage{url}
-
+\usepackage{placeins}
 \begin{document}
 \firstpage{1}
 
@@ -20,7 +20,8 @@
 
 \editor{Associate Editor: XXXXXXX}
 
-\abstract{\textbf{Motivation:} Current state-of-the-art tools for the \textit{de novo} annotation of 
+\abstract{
+\textbf{Motivation:} Current state-of-the-art tools for the \textit{de novo} annotation of 
 genes in eukaryotic genomes have to be specifically fitted for each species and still often 
 produce annotations that can be improved much further. The fundamental algorithmic 
 architecture for these tools has remained largely unchanged for about two decades, limiting
@@ -41,9 +42,9 @@ predictions.\\
 \url{https://github.com/weberlab-hhu/HelixerPrep} [change] under the GNU General 
 Public License v3.0.\\
 \textbf{Contact:} \href{andreas.weber@hhu.de}{andreas.weber@hhu.de}\\  
-
 \textbf{Supplementary information:} Supplementary data are available at 
-\textit{Bioinformatics} online.}
+\textit{Bioinformatics} online.
+}
 
 \maketitle
 
@@ -459,6 +460,12 @@ final predictions out of a overlapping ones, which greatly helped to reduce
 prediction bias in most genomes. To our knowledge, neither technique has been used 
 before in a model developed for gene annotation. 
 
+\begin{figure*}[!h]
+\label{fig:cov_example_main}
+\centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_main}}
+\caption{high low accuracty by high low RNAseq support for ref}
+\end{figure*}
+
 As an independent evaluation and to get a better qualitative understanding of
 performance we compared Helixer predictions, Augustus predictions and the
 reference to RNAseq coverage data. RNAseq was processed for three each of plants
@@ -466,7 +473,7 @@ and animals chosen because they had varied performance quality relative to Augus
 RNAseq coverage provides support for an 
 exonic annotation (UTR or CDS), spliced coverages provides support for an 
 annotation of intron, and neither coverage nor spliced coverage is expected 
-for intergenic annotations. Looking at selected subsequences \ref{fig:examples} % and supplemental figures.
+for intergenic annotations. Looking at selected subsequences (Figure \ref{fig:cov_example_main}) % and supplemental figures.
 we identified cases where RNAseq supported both the annotations of the reference 
 and Helixer (a), neither (b), the reference, but not Helixer (c),
 and Helixer, but not the reference (d). 
@@ -491,8 +498,14 @@ for extended stretches (hSlA2, hSlA3, lSlA3). Notably, in one of the examples ()
 the RNAseq shows evidence of alternative splicing; and in another () Helixer's
 prediction falls between that of the reference and Augustus.
 
+\begin{figure*}[!h]
+\label{fig:average_vs_augustus}
+\includegraphics[width=5.6cm]{images/cov_examples/average_vs_augustus}  % should be 8.6 when floats are sorted out right
+\caption{A caption}
+\end{figure*}
+
 Coverage and Spliced coverage were broken down by the confusion matrix (of both
-Helixer vs Augustus and Helixer vs the reference) for all genomes \ref{}. % H vs A main, H vs R supp
+Helixer vs Augustus and Helixer vs the reference) for all genomes (Figure \ref{fig:average_vs_augustus}). % H vs A main, H vs R supp
 Where tools were in agreement (far left), coverage and spliced coverage closely matched
 expectations. Specifically for CDS:CDS and UTR:UTR most base pairs had some, and many
 had moderate or high coverage. The same pattern was seen for intron:intron and spliced
@@ -552,12 +565,13 @@ Finally, developent of a post-processing method
 to go from base pair wise predictions to integrated predictions for whole 
 transcripts at each loci could both further improve performance and would
 greatly increase real world applications.
+\FloatBarrier
 
 \section*{Acknowledgements}
 
 We are very grateful for the support of...
 
-HHU HPC-team, deNBI, Ebenhöh lab for computational (particularly GPU) resources.
+HHU HPC-team, deNBI, Ebenh{\"o}h lab for computational (particularly GPU) resources.
 
 \section*{Funding}
 
