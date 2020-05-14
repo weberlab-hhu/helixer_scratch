@@ -40,9 +40,8 @@ predictions.\\
 \textbf{Availability:} The source code of this work is available at 
 \url{https://github.com/weberlab-hhu/HelixerPrep} [change] under the GNU General 
 Public License v3.0.\\
-\textbf{Contact:} \href{alisandra.denton@hhu.de}{alisandra.denton@hhu.de}\\  
-% normally contact is last author / person with permanent position (i.e. Andreas). 
-% Not sure how important that is, but if we're skipping that, then we can change it back to Felix
+\textbf{Contact:} \href{andreas.weber@hhu.de}{andreas.weber@hhu.de}\\  
+
 \textbf{Supplementary information:} Supplementary data are available at 
 \textit{Bioinformatics} online.}
 
@@ -462,7 +461,9 @@ before in a model developed for gene annotation.
 
 As an independent evaluation and to get a better qualitative understanding of
 performance we compared Helixer predictions, Augustus predictions and the
-reference to RNAseq coverage data. RNAseq coverage provides support for an 
+reference to RNAseq coverage data. RNAseq was processed for three each of plants
+and animals chosen because they had varied performance quality relative to Augustus. 
+RNAseq coverage provides support for an 
 exonic annotation (UTR or CDS), spliced coverages provides support for an 
 annotation of intron, and neither coverage nor spliced coverage is expected 
 for intergenic annotations. Looking at selected subsequences \ref{fig:examples} % and supplemental figures.
@@ -496,33 +497,50 @@ Where tools were in agreement (far left), coverage and spliced coverage closely 
 expectations. Specifically for CDS:CDS and UTR:UTR most base pairs had some, and many
 had moderate or high coverage. The same pattern was seen for intron:intron and spliced
 coverage. Finally, intergenic:intergenic showed only a small fraction of base pairs with 
-any of either coverage or spliced coverage.
+any of either coverage or spliced coverage. In all conflicts the amount of RNAseq support
+fell between the cases where tools agreed, indicating that all options were at least
+capable of finding weak-spots in the other annotations.
 In cases of conflict, Helixer's predictions were substantially more consistent with
 the RNAseq data than those of Augustus. Specifically, for base pairs where one tool said CDS and
 the other intergenic or intron \ref{}, there was more coverage when 
 Helixer said CDS. Similarly, for base pairs where one tool said intron and the other 
 CDS or intergenic, there was more spliced coverage when Helixer said intron \ref{}. 
-These patterns were consistent in direction but varied in magnitude in the individual species. % double check
-RNAseq based comparison of Helixer and the reference was less clear cut.
--Helixer is good at differentiating ig, ref better at introns
--diffs between species. 
--Helixer is substantially better for Tcacao, with a "poor Sub Genic F1"
--taken together: competitive quality predictions, in some cases the mistakes really are in the reference / we wouldn't want 100\% accuracy against the reference
+These patterns were consistent in direction but varied in magnitude in the individual species,
+with the expception of {\it P. marinus} where Helixer and Augustus performed comparably
+at differentiating CDS and introns.
 
+RNAseq based comparison of Helixer and the reference was less clear cut.
+Averaged across species, helixer's predictions received slightly more support
+than the reference when differentiating CDS, UTR and introns from intergenic;
+however helixer's predictions received slightly less support than the reference 
+when differentiating CDS and UTR from introns. Performance varies between individual
+species, from {\it P. marinus}, where the reference receives more support
+in every conflict, to {\it T. cacao}, where Helixer models receive equivalent
+or more support in every conflict. Interestingly, these are the two species that
+were selected because they had (relative to the usual difference) low Subgenic F1 compared to 
+Augustus; for the former the RNAseq confirms relatively weak performance for Helixer, while the 
+for the latter RNAseq rather indicates a sub-par reference. 
 
 \section{Discussion}
-We propose a novel way to develop gene calling models that are able to perform 
-cross-species genomic annotiation for a wide variety of large eucaryotic genomes. 
-Helixer does this while outperforming AUGUSTUS on a base pair wise level and 
+We indtroduce Helixer a novel, deep-learning based tool for gene annotation
+prediction. Helixer outperforms AUGUSTUS on base pair wise metrics and on 
 consistency with independent RNASeq data. 
 
-Eliminating the need for a close genome annotation being present for pretraining.
+We include trained models for plants and animals which achieve 
+high prediction accuracy on cross-species gene annotation for broad 
+phylogenetic groups (land plants and vertebrates, respectively).
+Within these groups, this eliminates the dependency on retraining and the
+expertise and data required therefore. Production of comparable, single-method
+annotations for broad groups has the potential to greatly facilitate downstream
+analyses which suffer when data is heterogeneous \citep{}.
 
 We found our models to be highly sensitive to the training genomes we chose. A 
 different set could lead to a significant shift in strengths and weaknesses of the 
 model and a larger and more spread out set of high quality genomes could also result 
 in a wider range of genomes with decent predictions. For this, more computational 
-resources would be required. 
+resources would be required. Simply training with a similar amount of data, 
+but for a different group (e.g. invertebrates of fungi) could also be used to 
+increase the functional predictive range. 
 
 An avenue for future research could be the addition of RNASeq data as additional 
 input. This would bring Helixer on even footing with current tools and could lead 
@@ -530,13 +548,21 @@ to real world applicable performance improvements if the results of this work ar
 any indication, as deep learning has been shown to excel in a multimodal settings 
 \citep{ching2018opportunities}.
 
+Finally, developent of a post-processing method
+to go from base pair wise predictions to integrated predictions for whole 
+transcripts at each loci could both further improve performance and would
+greatly increase real world applications.
+
 \section*{Acknowledgements}
 
 We are very grateful for the support of...
 
+HHU HPC-team, deNBI, Ebenhöh lab for computational (particularly GPU) resources.
+
 \section*{Funding}
 
 This work has been supported by the... \vspace*{-12pt}
+
 
 \bibliographystyle{natbib}
 \bibliography{literature}
