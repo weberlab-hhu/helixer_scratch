@@ -463,7 +463,21 @@ before in a model developed for gene annotation.
 \begin{figure*}[!h]
 \label{fig:cov_example_main}
 \centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_main}}
-\caption{high low accuracty by high low RNAseq support for ref}
+\caption{Four example helixer predictions in the context of RNAseq data, the reference,
+and Augustus' prediction for {\it M. esculenta}. The examples were chosen so
+that a) Helixer had high accuracy against the reference and the reference
+was supported by the RNAseq data, b) Helixer had high accuracy but the 
+reference was not supported by the RNAseq data, c) Helixer had low accuracy
+and the reference was supported by the RNAseq data, and d) helixer had low
+accuracy but the reference was not supported by RNAseq data. Plotability was
+a major secondary consideration. Each subplot shows from top to
+bottom i) the natural log of the coverage ("cov", solid) and spliced coverage 
+("sc", dotted) + 1, ii) the reference annotation in matrix form, iii) 
+Augustus' predictions in matrix form, and iv) Helixer's predictions. The reference
+and Augustus have either 0 (white) or 1 (black) for each base pair and category, while
+Helixer emits a probability from 0-1 represented via gray-scale. "Ntrn" stand
+for intron, and "IG" stands for intergenic.
+}
 \end{figure*}
 
 As an independent evaluation and to get a better qualitative understanding of
@@ -500,8 +514,14 @@ prediction falls between that of the reference and Augustus.
 
 \begin{figure*}[!h]
 \label{fig:average_vs_augustus}
-\includegraphics[width=5.6cm]{images/cov_examples/average_vs_augustus}  % should be 8.6 when floats are sorted out right
-\caption{A caption}
+\includegraphics[width=8.6cm]{images/cov_examples/average_vs_augustus}  % should be 8.6 when floats are sorted out right
+\caption{Fraction of bp with color-indicated a) coverage and b) spliced coverage of genomic positions 
+broken down by the confusion matrix of Augustus and Helixer's predictions. Categories 
+are only displayed if they can be meaningfully compared by examining a) coverage or b) spliced
+coverage. The displayed fractions are the averages of the individual fractions for the 
+six RNAseq-evaluation species. The left-most bars show cases where the two tools agree, 
+while the remaining bars show paired conflicts. "Ntrn" stand
+for intron, and "IG" stands for intergenic.}
 \end{figure*}
 
 Coverage and Spliced coverage were broken down by the confusion matrix (of both
