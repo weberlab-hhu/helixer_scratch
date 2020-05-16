@@ -592,6 +592,129 @@ Learning Rate & 1e-4 & 1e-3\\
 \caption{The parameters of the dilated CNN model that performed the best according to the Genic F1 of the validation data of the respective training genomes. The best animal model has circa 4.6 million parameters; the best plant model around 2.1 million.}
 \end{table}
 
+\section{Evaluation against RNAseq}
+
+\begin{figure}[!h]
+\renewcommand\thefigure{S7}
+\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_002}}
+\caption{
+Four additional example helixer predictions in the context of RNAseq data, the reference,
+and Augustus' prediction for {\it M. esculenta}. The examples were chosen so
+that a) Helixer had high accuracy against the reference and the reference
+was supported by the RNAseq data, b) Helixer had high accuracy but the
+reference was not supported by the RNAseq data, c) Helixer had low accuracy
+and the reference was supported by the RNAseq data, and d) helixer had low
+accuracy but the reference was not supported by RNAseq data. Plotability was
+a major secondary consideration. Each subplot shows from top to
+bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
+(``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
+Augustus' predictions in matrix form, and iv) Helixer's predictions. The reference
+and Augustus have either 0 (white) or 1 (black) for each base pair and category, while
+Helixer emits a probability from 0-1 represented via gray-scale. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\renewcommand\thefigure{S8}
+\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_003}}
+\caption{
+Four additional example helixer predictions in the context of RNAseq data, the reference,
+and Augustus' prediction for {\it M. esculenta}. The examples were chosen so
+that a) Helixer had high accuracy against the reference and the reference
+was supported by the RNAseq data, b) Helixer had high accuracy but the
+reference was not supported by the RNAseq data, c) Helixer had low accuracy
+and the reference was supported by the RNAseq data, and d) helixer had low
+accuracy but the reference was not supported by RNAseq data. Plotability was
+a major secondary consideration. Each subplot shows from top to
+bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
+(``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
+Augustus' predictions in matrix form, and iv) Helixer's predictions. The reference
+and Augustus have either 0 (white) or 1 (black) for each base pair and category, while
+Helixer emits a probability from 0-1 represented via gray-scale. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
+
+\begin{figure}[!h]
+\renewcommand\thefigure{S9}
+\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_UTRs_plants}}
+\caption{
+One example of helixer's gradual UTR to intergenic transition predictions 
+from each RNAseq evaluation plant species in the context of RNAseq data, the reference,
+and Augustus' prediction. The species are
+a) {\it M. esculenta}, b) {\it M. truncatula} and c) {\it T. cacao}. Each subplot shows from top to
+bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
+(``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
+Augustus' predictions in matrix form, and iv) Helixer's predictions. The reference
+and Augustus have either 0 (white) or 1 (black) for each base pair and category, while
+Helixer emits a probability from 0-1 represented via gray-scale. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\renewcommand\thefigure{S10}
+\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_UTRs_animals}}
+\caption{
+One example of helixer's gradual UTR to intergenic transition predictions 
+from each RNAseq evaluation animal species in the context of RNAseq data, the reference,
+and Augustus' prediction. The species are
+a) {\it P. anubis}, b) {\it E. caballus} and c) {\it P. marinus}. Each subplot shows from top to
+bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
+(``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
+Augustus' predictions in matrix form, and iv) Helixer's predictions. The reference
+and Augustus have either 0 (white) or 1 (black) for each base pair and category, while
+Helixer emits a probability from 0-1 represented via gray-scale. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\renewcommand\thefigure{S11}
+\centerline{\includegraphics[]{images/cov_examples/average_vs_ref}}
+\caption{
+Fraction of bp with color-indicated a) coverage and b) spliced coverage of genomic positions
+broken down by the confusion matrix of the reference and Helixer's predictions. Categories
+are only displayed if they can be meaningfully compared by examining a) coverage or b) spliced
+coverage. The displayed fractions are the averages of the individual fractions for the
+six RNAseq-evaluation species. The left-most bars show cases where the two tools agree,
+while the remaining bars show paired conflicts. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\renewcommand\thefigure{S12}
+\centerline{\includegraphics[]{images/cov_examples/each_sp_vs_augustus}}
+\caption{
+Fraction of bp with color-indicated a, c, e, g, i, k) coverage and b, d, f, h, j, l) spliced coverage of genomic positions
+broken down by the confusion matrix of Augustus' and Helixer's predictions. Categories
+are only displayed if they can be meaningfully compared by examining coverage or spliced
+coverage. The rows show the individual species: a, b) {\it M. esculenta}, c, d) {\it M. truncatula}, 
+e, f) {\it T. cacao}, g, h) {\it P. anubis}, i, j) {\it E. caballus} and k, l) {\it P. marinus} . 
+The left-most bars show cases where the two tools agree,
+while the remaining bars show paired conflicts. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
+\begin{figure}[!h]
+\renewcommand\thefigure{S13}
+\centerline{\includegraphics[]{images/cov_examples/each_sp_vs_ref}}
+\caption{
+Fraction of bp with color-indicated a, c, e, g, i, k) coverage and b, d, f, h, j, l) spliced coverage of genomic positions
+broken down by the confusion matrix of the reference and Helixer's predictions. Categories
+are only displayed if they can be meaningfully compared by examining coverage or spliced
+coverage. The rows show the individual species: a, b) {\it M. esculenta}, c, d) {\it M. truncatula}, 
+e, f) {\it T. cacao}, g, h) {\it P. anubis}, i, j) {\it E. caballus} and k, l) {\it P. marinus} . 
+The left-most bars show cases where the two tools agree,
+while the remaining bars show paired conflicts. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
 
 
 \renewcommand\refname{Supplemental References}
