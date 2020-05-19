@@ -5,6 +5,19 @@
 \appnotes{Manuscript Category}
 \usepackage{url}
 \usepackage{placeins}
+
+% extra counters to reference items in supplemental
+% note that thes are not directly linked, so the order of the environments 
+% should match where they occur in the supplement
+\newcounter{supfig}
+\newenvironment{supfig}[1][]{\refstepcounter{supfig}}
+
+\newcounter{suptab}
+\newenvironment{suptab}[1][]{\refstepcounter{suptab}}
+
+\newcounter{supsec}
+\newenvironment{supsec}[1][]{\refstepcounter{supsec}}
+
 \begin{document}
 \firstpage{1}
 
@@ -111,15 +124,16 @@ genome consists of the latest publically available genomic assembly in form of a
 FASTA file and the latest annotation in the GFF format. One genome for each species of animal 
 in EnsemblMetazoa 45 \citep{howe2020ensembl} as well as all non-embargoed plant
 species from the JGI Phytosome 13 database \citep{goodstein2012phytozome}; exact 
-genomes used are list here \ref{}. % add a supplemental table with names and versions
+genomes used are list here \ref{suptab:source_data}. % add a supplemental table with names and versions
 Data was downloaded on 29/03/2019 and 15/10/2019 for plants and animals respectively. 
 Both data groups were used seperately during training as well as during evaluation. 
 
 Both to divide genomes into training, validation and test sets, as well as to understand
 performance, we needed a way to evaluate genome and annotation quality.
-Metadata was generated for each genome, including: basic length and composition statistics \citep{}; % quast
-k-mer content \citep{}; % jellyfish
-conserved gene content of the genome, transcriptome, and proteome \citep{}; % BUSCO, files generated with gffread
+Metadata was generated for each genome, including: basic length and 
+composition statistics \citep{gurevich2013quast}; k-mer content \citep{marccais2011fast};
+conserved gene content of the genome, transcriptome, and proteome (\cite{simao2015busco};
+file conversion with gffread from \cite{trapnell2012differential}; % BUSCO, files generated with gffread
 and finally simple counts of genic features from the gff files. In particular, 
 we considered the following features of the metadata when judging the quality of a genome and it's 
 annotation: assembly contiguity (N50 / genome size); retention in the proteome 
@@ -184,7 +198,40 @@ used as labels during training is transformed to a one hot encoding with the fou
 classes {\it Intergenic}, {\it UTR}, {\it CDS} and {\it Intron}. See also Table 
 \ref{tab:arrays} for a more detailed description of the generated data types.
 
-\begin{table}[!t]
+\begin{table}[!htb]
+\label{tab:arrays}
+\processtable{Data arrays generated and used by Helixer}{
+\begin{tabular}{@{}ll@{}}
+\toprule Name & Information \\
+\midrule
+Input & Genomic sequence in the 4-dimensional IUPAC encoding\\
+	  & (one hot encoding for non-ambiguous bases) \\
+Output & Labels in a 4-dimensional one hot encoding representing \\
+      & the classes {\it Intergenic}, {\it UTR}, {\it CDS} and {\it Intron}\\
+Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
+\botrule
+\end{tabular}}{{\it Note:} the encoding does not differentiate between introns
+in coding and non-coding regions.}
+\end{table}
+
+During data generation, we query for the transcript with the longest protein of each gene and 
+disregard FASTA sequences that have no functional annotation as it is ambiguous
+whether such sequences contain no genes or were simply not annotated in the reference. GeenuFF checks the 
+genomic annotations for potential errors during import and is able to mark those 
+areas. We use this information to effectively blank out those bases during training 
+by using the sample weights described in Table \ref{tab:arrays}. The vast majority 
+of masked bases lie in the intergenic region as the most prevelant error is a 
+missing UTR and GeenuFF marks a potentially large intergenic region for it. Table 
+\ref{tab:statistics_all} shows statistics about the masking. 
+
+For the training itself, we divide each continous genomic sequence into 20,000 bp 
+long subsequences, for which one-hot vectors of the base pairs and annotations 
+are generated and respectively used as input and label for the neural network 
+together with the sample weights. We append zero padding if the sequences (or
+sequence ends) are shorter than 20,000 bp. 
+If a subsequence is fully marked as erroneous, we exclude it from all analyses. 
+
+\begin{table}[!htb]
 \processtable{Data group statistics for all data\label{tab:statistics_all}} {
 \begin{tabular}{@{}lll@{}}
 \toprule & Animals & Plants\\
@@ -205,22 +252,6 @@ determined by the length of the pre-mRNA of the longest protein at each
 loci. Brackets show the standard deviation.}
 \end{table}
 
-During data generation, we query for the transcript with the longest protein of each gene and 
-disregard FASTA sequences that have no functional annotation as it is ambiguous
-whether such sequences contain no genes or were simply not annotated in the reference. GeenuFF checks the 
-genomic annotations for potential errors during import and is able to mark those 
-areas. We use this information to effectively blank out those bases during training 
-by using the sample weights described in Table \ref{tab:arrays}. The vast majority 
-of masked bases lie in the intergenic region as the most prevelant error is a 
-missing UTR and GeenuFF marks a potentially large intergenic region for it. Table 
-\ref{tab:statistics_all} shows statistics about the masking. 
-
-For the training itself, we divide each continous genomic sequence into 20,000 bp 
-long subsequences, for which one-hot vectors of the base pairs and annotations 
-are generated and respectively used as input and label for the neural network 
-together with the sample weights. We append zero padding if the sequences (or
-sequence ends) are shorter than 20,000 bp. 
-If a subsequence is fully marked as erroneous, we exclude it from all analyses. 
 
 \subsection{Metrics}
 We mainly use two metrics to judge model performance. The {\it Genic F1} is our 
@@ -375,21 +406,6 @@ and spliced coverage (number of reads with gap or splice; i.e. cigar N or D)
 for every base pair in the genomes as implemented in the "training\_rnaseq.py"
 script.
 
-\begin{table}[!t]
-\processtable{Data arrays generated and used by Helixer\label{tab:arrays}} {
-\begin{tabular}{@{}ll@{}}
-\toprule Name & Information \\
-\midrule
-Input & Genomic sequence in the 4-dimensional IUPAC encoding\\
-	  & (one hot encoding for non-ambiguous bases) \\
-Output & Labels in a 4-dimensional one hot encoding representing \\
-      & the classes {\it Intergenic}, {\it UTR}, {\it CDS} and {\it Intron}\\
-Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
-\botrule
-\end{tabular}}{{\it Note:} An intron inside a UTR region is encoded as intron and 
-can be inferred from the prediction order.}
-\end{table}
-
 \end{methods}
 
 \begin{figure*}[!tpb]
@@ -516,7 +532,7 @@ prediction falls between that of the reference and Augustus.
 \label{fig:average_vs_augustus}
 \includegraphics[width=8.6cm]{images/cov_examples/average_vs_augustus}  % should be 8.6 when floats are sorted out right
 \caption{Fraction of bp with color-indicated a) coverage and b) spliced coverage of genomic positions 
-broken down by the confusion matrix of Augustus and Helixer's predictions. Categories 
+broken down by the confusion matrix of Augustus' and Helixer's predictions. Categories 
 are only displayed if they can be meaningfully compared by examining a) coverage or b) spliced
 coverage. The displayed fractions are the averages of the individual fractions for the 
 six RNAseq-evaluation species. The left-most bars show cases where the two tools agree, 
@@ -600,5 +616,38 @@ This work has been supported by the... \vspace*{-12pt}
 
 \bibliographystyle{natbib}
 \bibliography{literature}
+% place holders for supplemental things
+% ori version was grepped out of supplements, then
+% :'<,'>s/^/\\begin{supfig}/g
+% :'<,'>s/$/\\end{supfig}/g
+% and similar for tables/sections
+% tables
+\begin{suptab}\label{suptab:generalization_animals}\end{suptab}
+\begin{suptab}\label{suptab:generalization_plants}\end{suptab}
+\begin{suptab}\label{suptab:params}\end{suptab}
+\begin{suptab}\label{suptab:classweights}\end{suptab}
+\begin{suptab}\label{suptab:prediction_lengths}\end{suptab}
+\begin{suptab}\label{suptab:genome_stats}\end{suptab}
+\begin{suptab}\label{suptab:dcnn_xval}\end{suptab}
+\begin{suptab}\label{suptab:dcnn_params}\end{suptab}
+% figures
+\begin{supfig}\label{supfig:phylogeny_f1_animals}\end{supfig}
+\begin{supfig}\label{supfig:phylogeny_differences_animals}\end{supfig}
+\begin{supfig}\label{supfig:phylogeny_f1_plants}\end{supfig}
+\begin{supfig}\label{supfig:phylogeny_differences_plants}\end{supfig}
+\begin{supfig}\label{supfig:overlapping_animals}\end{supfig}
+\begin{supfig}\label{supfig:overlapping_plants}\end{supfig}
+\begin{supfig}\label{supfig:cov_example_02}\end{supfig}
+\begin{supfig}\label{supfig:cov_example_02}\end{supfig}
+\begin{supfig}\label{supfig:UTRs_animals}\end{supfig}
+\begin{supfig}\label{supfig:UTRs_plants}\end{supfig}
+\begin{supfig}\label{supfig:average_vs_ref}\end{supfig}
+\begin{supfig}\label{supfig:each_sp_vs_augustus}\end{supfig}
+\begin{supfig}\label{supfig:each_sp_vs_ref}\end{supfig}
+% sections
+\begin{supsec}\label{sec:longer}\end{supsec}
+\begin{supsec}\label{sec:overlapping}\end{supsec}
+\begin{supsec}\label{sec:training_data}\end{supsec}
+
 
 \end{document}

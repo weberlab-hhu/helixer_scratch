@@ -18,6 +18,7 @@
 \author[1]{Felix Stiehler}
 \author[1]{Alisandra Denton}
 \author[1]{Marvin Steinborn}
+\author[ \hspace{-1ex}]{Daniela Dey}
 \author[ \hspace{-1ex}]{Stephan Scholz}
 \author[1]{Andreas Weber}
 \affil[1]{Institue for Plant Biochemistry, Heinrich-Heine-University, Dusseldorf, D-40225, Germany}
@@ -40,6 +41,7 @@ The plots display the raw Subgenic F1 score as well as the difference to AUGUSTU
 \newpage
 
 \begin{table}[!h]
+\label{suptab:generalization_animals}
 \renewcommand\thetable{}
 \resizebox{\textwidth}{!}{%
 \centering
@@ -284,6 +286,7 @@ zonotrichia\_albicollis & 0.9216 & 0.9482 & 0.382 & 0.8601 & 0.8667 & 0.8663 & 0
 \end{table}
 
 \begin{figure}[!h]
+\label{supfig:phylogeny_f1_animals}
 \centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part1}}
 \end{figure}
 \begin{figure}[!h]
@@ -293,6 +296,7 @@ zonotrichia\_albicollis & 0.9216 & 0.9482 & 0.382 & 0.8601 & 0.8667 & 0.8663 & 0
 \end{figure}
 
 \begin{figure}[!h]
+\label{supfig:phylogeny_differences_animals}
 \centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part1}}
 \end{figure}
 \begin{figure}[!h]
@@ -311,6 +315,7 @@ zonotrichia\_albicollis & 0.9216 & 0.9482 & 0.382 & 0.8601 & 0.8667 & 0.8663 & 0
 %\vspace*{-3.5cm}
 %\hspace*{-2.5cm}
 \begin{tabular}{@{}llllllll@{}}
+\label{suptab:generalization_plants}
 \hline
 Genome & Acc Overall & IG F1 & UTR F1 & CDS F1 & Intron F1 & Subgenic F1& Genic F1 \\ [0.5ex]
 \hline
@@ -381,11 +386,13 @@ Zea\_mays & 0.9843 & 0.9931 & 0.6073 & 0.886 & 0.854 & 0.8643 & 0.8406 \\
 
 \clearpage
 \begin{figure}[!h]
+\label{supfig:phylogeny_f1_plants}
 \renewcommand\thefigure{S3}
 \centerline{\includegraphics[width=1.0\textwidth]{images/plants_f1_scores}}
 \caption{Subgenic F1 results for all plant genomes shown by phylogenetic position.}
 \end{figure}
 \begin{figure}[!h]
+\label{supfig:phylogeny_differences_plants}
 \renewcommand\thefigure{S4}
 \centerline{\includegraphics[width=1.0\textwidth]{images/plants_differences}}
 \caption{Difference in Subgenic F1 to AUGUSTUS for all plant genomes shown by phylogenetic position.}
@@ -430,6 +437,7 @@ Intron & 1.2 & 0.3 \\
 \hline
 \end{tabular}
 \caption{The class weights used during training. We found this parameter to be highly impactful for establishing a more balanced performance across the different classes. These are the only hyperparameters that are different for animals and plants. The exact weights were determined manually and partially reflect the difference in the class distributions of both datasets (see Table [?]).}
+\label{suptab:classweights}
 \end{table}
 
 
@@ -437,6 +445,7 @@ Intron & 1.2 & 0.3 \\
 \section{Longer Sequence Input}
 \label{sec:longer}
 \begin{table}[!h]
+\label{suptab:prediction_lengths}
 \renewcommand\thetable{S5}
 \centering
 \begin{tabular}{@{}lll@{}}
@@ -506,6 +515,7 @@ The following plots show the effect of overlapping for each species we worked wi
 \renewcommand\thefigure{S5}
 \centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals13}}
 \caption{Effect of overlapping on the sequence positions wise bias ordered by descending N75 for all animals genomes individually.}
+\label{supfig:overlapping_animals}
 \end{figure}
 
 \clearpage
@@ -524,6 +534,7 @@ The following plots show the effect of overlapping for each species we worked wi
 \renewcommand\thefigure{S6}
 \centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants4}}
 \caption{Effect of overlapping on the sequence positions wise bias ordered by descending N75 for all plant genomes individually.}
+\label{supfig:overlapping_plants}
 \end{figure}
 
 
@@ -531,6 +542,7 @@ The following plots show the effect of overlapping for each species we worked wi
 \section{Training Data statistics}
 \label{sec:training_data}
 \begin{table}[!h]
+\label{suptab:genome_stats}
 \renewcommand\thetable{S6}
 \centering
 \begin{tabular}{@{}lll@{}}
@@ -553,6 +565,7 @@ Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 \newpage
 \section{Dilated CNN Baseline Network Search}
 \begin{table}[!h]
+\label{suptab:dcnn_xval}
 \renewcommand\thetable{S7}
 \centering
 \begin{tabular}{@{}ll@{}}
@@ -573,6 +586,7 @@ Learning Rate & \{1e-3, 1e-4\}\\
 \end{table}
 
 \begin{table}[!h]
+\label{suptab:dcnn_params}
 \renewcommand\thetable{S8}
 \centering
 \begin{tabular}{@{}lll@{}}
@@ -595,6 +609,7 @@ Learning Rate & 1e-4 & 1e-3\\
 \section{Evaluation against RNAseq}
 
 \begin{figure}[!h]
+\label{supfig:cov_example_02}
 \renewcommand\thefigure{S7}
 \centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_002}}
 \caption{
@@ -616,6 +631,7 @@ for intron, and ``IG" stands for intergenic.
 \end{figure}
 
 \begin{figure}[!h]
+\label{supfig:cov_example_02}
 \renewcommand\thefigure{S8}
 \centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_003}}
 \caption{
@@ -636,26 +652,9 @@ for intron, and ``IG" stands for intergenic.
 }
 \end{figure}
 
-
 \begin{figure}[!h]
 \renewcommand\thefigure{S9}
-\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_UTRs_plants}}
-\caption{
-One example of helixer's gradual UTR to intergenic transition predictions 
-from each RNAseq evaluation plant species in the context of RNAseq data, the reference,
-and Augustus' prediction. The species are
-a) {\it M. esculenta}, b) {\it M. truncatula} and c) {\it T. cacao}. Each subplot shows from top to
-bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
-(``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
-Augustus' predictions in matrix form, and iv) Helixer's predictions. The reference
-and Augustus have either 0 (white) or 1 (black) for each base pair and category, while
-Helixer emits a probability from 0-1 represented via gray-scale. ``Ntrn" stand
-for intron, and ``IG" stands for intergenic.
-}
-\end{figure}
-
-\begin{figure}[!h]
-\renewcommand\thefigure{S10}
+\label{supfig:UTRs_animals}
 \centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_UTRs_animals}}
 \caption{
 One example of helixer's gradual UTR to intergenic transition predictions 
@@ -672,7 +671,27 @@ for intron, and ``IG" stands for intergenic.
 \end{figure}
 
 \begin{figure}[!h]
+\renewcommand\thefigure{S10}
+\label{supfig:UTRs_plants}
+\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_UTRs_plants}}
+\caption{
+One example of helixer's gradual UTR to intergenic transition predictions 
+from each RNAseq evaluation plant species in the context of RNAseq data, the reference,
+and Augustus' prediction. The species are
+a) {\it M. esculenta}, b) {\it M. truncatula} and c) {\it T. cacao}. Each subplot shows from top to
+bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
+(``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
+Augustus' predictions in matrix form, and iv) Helixer's predictions. The reference
+and Augustus have either 0 (white) or 1 (black) for each base pair and category, while
+Helixer emits a probability from 0-1 represented via gray-scale. ``Ntrn" stand
+for intron, and ``IG" stands for intergenic.
+}
+\end{figure}
+
+
+\begin{figure}[!h]
 \renewcommand\thefigure{S11}
+\label{supfig:average_vs_ref}
 \centerline{\includegraphics[]{images/cov_examples/average_vs_ref}}
 \caption{
 Fraction of bp with color-indicated a) coverage and b) spliced coverage of genomic positions
@@ -687,6 +706,7 @@ for intron, and ``IG" stands for intergenic.
 
 \begin{figure}[!h]
 \renewcommand\thefigure{S12}
+\label{supfig:each_sp_vs_augustus}
 \centerline{\includegraphics[]{images/cov_examples/each_sp_vs_augustus}}
 \caption{
 Fraction of bp with color-indicated a, c, e, g, i, k) coverage and b, d, f, h, j, l) spliced coverage of genomic positions
@@ -702,6 +722,7 @@ for intron, and ``IG" stands for intergenic.
 
 \begin{figure}[!h]
 \renewcommand\thefigure{S13}
+\label{supfig:each_sp_vs_ref}
 \centerline{\includegraphics[]{images/cov_examples/each_sp_vs_ref}}
 \caption{
 Fraction of bp with color-indicated a, c, e, g, i, k) coverage and b, d, f, h, j, l) spliced coverage of genomic positions
