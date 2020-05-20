@@ -67,7 +67,8 @@ depend on high quality annotations. Gene annotation can be performed at differen
 of precision, from simple coding -- non-coding classification to detailed structural 
 labeling. Because of the sheer size of genomes alone, manual gene annotation is 
 generally intractable. Instead, researchers can use pipelines such as 
-Maker \citep{}, PASA \citep{} or those offered by genomic database providers like NCBI 
+Maker \citep{cantarel2008maker}, PASA \citep{haas2003improving} or those 
+offered by genomic database providers like NCBI 
 \citep{thibaud2013eukaryotic} and Ensembl \citep{aken2016ensembl}. 
 These pipelines integrate experimental data (from e.g. RNA-seq 
 or proteogenomics) with homologous sequences in the database and ab-initio gene 
@@ -125,7 +126,7 @@ FASTA file and the latest annotation in the GFF format. One genome for each spec
 in EnsemblMetazoa 45 \citep{howe2020ensembl} as well as all non-embargoed plant
 species from the JGI Phytosome 13 database \citep{goodstein2012phytozome}; exact 
 genomes used are list here \ref{suptab:source_data}. % add a supplemental table with names and versions
-Data was downloaded on 29/03/2019 and 15/10/2019 for plants and animals respectively. 
+Data was downloaded on 15/10/2019 and 29/03/2019 for animals and plants respectively. 
 Both data groups were used seperately during training as well as during evaluation. 
 
 Both to divide genomes into training, validation and test sets, as well as to understand
@@ -150,13 +151,14 @@ metadata while also representing a broad phylogenetic spread.
 For both feasibility and iterative cross-species generalization validattion, we
 selected only some of the remaining genomes for direct training.
 The selection of training genomes also requires balancing multiple conflicting 
-tradeoffs. On the one hand, we do want to train with as much data as possible, but 
-not all data has a good enough quality to enable a powerful generalization. It is 
-also very desirable to have a broad spread phylogenetically as well as in genome 
-size and average gene length as the model is increasingly unlikely to generalize 
+tradeoffs. On the one hand, we want to train with as much data as possible, but 
+on the other
+not all data has sufficient quality to enable a powerful generalization. It is 
+also very desirable to have diverse training genomes with a broad phylogenetic spread, 
+and a variety of genome sizes and average gene length as the model is increasingly unlikely to generalize 
 well beyond the borders given by the training data. However, it also may be difficult 
 for the model learn and generalize, if the genomic patterns inside the data are 
-too different from each other. It was also important for us to limit the size of
+too different from each other. Practically, it was important for us to limit the size of
 our training genomes set to be small enough that enough that we could get experimental 
 results within a couple of days and thereby be able to test many different data and 
 model configurations.
@@ -258,16 +260,18 @@ We mainly use two metrics to judge model performance. The {\it Genic F1} is our
 primary metric that provides the most comprehensive picture of annotation quality 
 in one number. The {\it Subgenic F1} is similar to the Genic F1, except that it does 
 not take UTR predictions into account. This is done for comparability with AUGUSTUS 
-and further explained in Section \ref{sec:augustus}. Both metrics work by summing up 
+as further explained in Section \ref{sec:augustus}. Both metrics work by summing up 
 True Positives (TP), False Positives (FP) and False Negatives (FN) of each 
 considered class before calculating precision and recall from these values and 
 combining the two into a F1 score. Neither metric takes the values of the 
 intergenic class into account, as this class is very abundant and appears to be by 
 far the easiest to predict. (See Table \ref{tab:statistics_all} for the class 
-distribution and Tables S1 and S2 for a more in-depth report our model performance 
+distribution and Tables S\ref{suptab:generalization_animals} 
+and S\ref{suptab:generalization_plants} for a more in-depth report our model performance 
 including the intergenic class). In the case of the Genic F1, this means that 
 effectively only the TP of the intergenic class are disregarded. The metrics 
-essentially provide a weighted mean of the performances in the considered classes. %?? hmmm, but this is not a weighted mean across classes is it? Do introns not weigh more heavily?
+essentially provide a weighted mean of the performances in the considered classes,
+with weights proportional to class frequency.
 
 In Figure \ref{fig:main_results}c we also report on the overall base pair level 
 accuracy besides the Genic F1.
@@ -295,8 +299,8 @@ The hyperparameters were optimized by a combination of manual and automatic
 optimization. Automatic optimization was carried out by using either the TPE 
 algorithm \citep{bergstra2011algorithms}, random search or grid search depending on 
 the situation. We used NNI \citep{nni2019} to facilitate the search. All relevant 
-hyperparameters can be found in Table S3 and S4 or in the Helixer source code 
-repository. 
+hyperparameters can be found in Table S\ref{suptab:params} and 
+S\ref{suptab:classweights} or in the Helixer source code repository. 
 	
 Our final model was trained with 10 bases of genomic sequence as input during each 
 time step and produces individual predictions for each of those 10 bases 
@@ -304,7 +308,7 @@ simultaneously. This grouping enabled us to train effectively with far longer
 sequences than usual. 
 We compare our final models to a dilated CNN (dCNN) baseline as this kind of architecture is 
 widely used when working with DNA data as input. Details of the neural architecture 
-search are given in Section 6 of the Supplements.
+search are given in Section \ref{sec:dcnn} of the Supplements.
 
 \subsection{Inference Techniques}
 We also used multiple techniques to improve the prediction quality after the 
@@ -316,7 +320,7 @@ ability of our model to generalize as it is able to make successful prediction o
 far longer sequences than it has ever seen. The 
 concrete lengths were chosen to keep the typical average gene length roughly 
 proportional to the length of the sequence input. For more implementation details 
-on this see Section 3 of the Supplements or the source code.
+on this see Section \ref{sec:longer} of the Supplements or the source code.
 	
 The final predictions of a single model are constructed by overlapping predictions, 
 that were made from a sliding window and then cropped to a core sequence. This was done 
@@ -324,15 +328,15 @@ to strongly reduce a typical drop in performance of the models towards the begin
 and end of each sequence (see Figure \ref{fig:main_results}c). It also improves the 
 average model performance in general by providing the model with multiple different 
 starting points. The different overlapping sequences were combined by averaging 
-the individual softmax values of each base. The figures in Section 4 of the 
+the individual softmax values of each base. The figures in Section \ref{sec:overlapping} of the 
 Supplements show the effect of overlapping for each genome, ordered by N75. We found 
 that overlapping tends to work best if the genomes are not very fragmented and we 
 used it for both animals and plants.
 
 A model ensemble with 8 components was used to generate the final predictions for 
 each species. For this, we performed 4 separate animal and plant training runs and 
-selected two models each, specifically the model with the best precision and the  % please check / epoch model / version something
-other with the best recall. The model with the best Genic F1 was always best in one of 
+selected two checkpoints each, specifically the checkpoint from the epoch with the best precision and the  % please check / epoch model / version something
+other from the epoch with the best recall. The model checkpoint with the best Genic F1 was always best in one of 
 those. This was done to increase the diversity of the model ensemble. As with the 
 overlapping, the fusion of the 8 individual predictions was done by averaging the 
 softmax values of each base pair prediction.
@@ -340,9 +344,9 @@ softmax values of each base pair prediction.
 \subsection{Evaluation of AUGUSTUS} 
 \label{sec:augustus}
 Due to the practical time constraints for retraining and running, we decided to compare our Helixer
-models only to one existing {\it de novo} gene caller, the popular gene caller, Augustus.
+models only to one existing {\it de novo} gene caller, the popular gene caller, Augustus \citep{stanke2003gene}.
 Typical usage requires retraining Augustus for each species, with the exception of a
-few lucky cases where a model for a close relative is already available. To scale this for 
+few lucky cases where a model for a sufficiently close relative is already available. To scale this for 
 the large plant and animal datasets, we used protein-homology to create a training set and
 therefore could train and evaluate only models without UTRs. 
 
@@ -367,10 +371,12 @@ was used for all comparisons between Augustus and Helixer.
 The reference annotations were created with existing tools and largely with a pipeline incorporating
 {\it de novo} gene predictions with RNAseq and homology data. The references, like any
 data, are expected to contain errors; but here we were particularly concerned because
-the {\it de novo} gene caller used by the references was Augustus for many species (...)
-% todo list and cite examples (above and below)
-and a fundamentally similar HMM-based tool for many more (...), which would potentially bias 
-reference based comparisons of Helixer's and Augustus' performance. 
+the {\it de novo} gene caller used by the references was Augustus for many species 
+(e.g. {\it Arabidopsis lyrata}, \cite{rawat2015improving}; {\it Asparagus officinalis}, 
+\cite{harkess2017asparagus}; and {\it Chenopodium quinoa}, \cite{jarvis2017genome})  
+and a different HMM-based tool for many more (e.g. {\it Citrus clementina}, \cite{wu2018genomics}; 
+{\it Capsella grandiflora}, \cite{slotte2013capsella};,...), which would potentially bias 
+reference based comparisons of Helixer's and Augustus' performance. % examples chosen alphabetically and skipping ons where I wasn't sure from the methods
 
 We therefore downloaded and processed public RNAseq data to obtain an independent option 
 for evaluating model performance. We selected three each of plant and animal genomes for
@@ -390,10 +396,10 @@ AND ("biomol rna"[Properties] AND "library layout paired"[Properties])'. In so f
 more than 50 samples were identified, every Nth sample was selected so that about 50
 samples were chosen for further processing, as listed here \ref{}. % todo make a supp table
 Each sample was quality controlled with FastQC \citep{}, before and after trimming
-with Trimmomatic \citep{}, and then mapped to the genome with Hisat2 \citep{}. 
-Samtools \citep{} was used for the sorting and indexing that was necessary both for
-RNAseq mapped metric collection with PicardTools \citep{} and custom downstream 
-processing below. MultiQC \citep{} was used to summarize the results. The above was 
+with Trimmomatic \citep{bolger2014trimmomatic}, and then mapped to the genome with Hisat2 \citep{kim2019graph}. 
+Samtools \citep{li2009sequence} was used for the sorting and indexing that was necessary both for
+RNAseq mapped metric collection with PicardTools \citep{Picard2019toolkit} and custom downstream 
+processing below. MultiQC \citep{ewels2016multiqc} was used to summarize the results. The above was 
 automated and the results visualized with the code here (... make available and link to RNAseq stuff).
 Samples were filtered to those that had {\it relatively} high mapping rates, particularly to
 exonic regions; that had low 3' bias, normal FastQC and Trimmomatic stats, and that
@@ -645,9 +651,14 @@ This work has been supported by the... \vspace*{-12pt}
 \begin{supfig}\label{supfig:each_sp_vs_augustus}\end{supfig}
 \begin{supfig}\label{supfig:each_sp_vs_ref}\end{supfig}
 % sections
+\begin{supsec}\label{sec:generalization}\end{supsec}
+\begin{supsec}\label{sec:hyperparameters}\end{supsec}
 \begin{supsec}\label{sec:longer}\end{supsec}
 \begin{supsec}\label{sec:overlapping}\end{supsec}
 \begin{supsec}\label{sec:training_data}\end{supsec}
+\begin{supsec}\label{sec:dcnn}\end{supsec}
+\begin{supsec}\label{sec:rnaseq_eval}\end{supsec}
+
 
 
 \end{document}
