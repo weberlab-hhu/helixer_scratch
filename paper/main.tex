@@ -370,15 +370,17 @@ was used for all comparisons between Augustus and Helixer.
 \label{sec:rnaseq}
 The reference annotations were created with existing tools and largely with a pipeline incorporating
 {\it de novo} gene predictions with RNAseq and homology data. The references, like any
-data, are expected to contain errors; but here we were particularly concerned because
-the {\it de novo} gene caller used by the references was Augustus for many species 
-(e.g. {\it Arabidopsis lyrata}, \cite{rawat2015improving}; {\it Asparagus officinalis}, 
+data, are expected to contain errors so we chose to use RNAseq data for independent evaluation.
+In plants there is the additional concern that the references may share biases with
+Augustus or HMMs as Augustus was used as the {\it de novo} gene caller for the reference of
+many plant species (e.g. {\it Arabidopsis lyrata}, \cite{rawat2015improving}; 
+{\it Asparagus officinalis}, 
 \cite{harkess2017asparagus}; and {\it Chenopodium quinoa}, \cite{jarvis2017genome})  
-and a different HMM-based tool for many more (e.g. {\it Citrus clementina}, \cite{wu2018genomics}; 
-{\it Capsella grandiflora}, \cite{slotte2013capsella};,...), which would potentially bias 
-reference based comparisons of Helixer's and Augustus' performance. % examples chosen alphabetically and skipping ons where I wasn't sure from the methods
+and other HMM-based tools for many more (e.g. {\it Citrus clementina}, \cite{wu2018genomics}; and
+{\it Capsella grandiflora}, \cite{slotte2013capsella}). The Ensemble animal dataset by and large
+used the Ensembl annotation pipeline, which includes no HMM-based tool.
 
-We therefore downloaded and processed public RNAseq data to obtain an independent option 
+We downloaded and processed public RNAseq data to obtain an independent option 
 for evaluating model performance. We selected three each of plant and animal genomes for
 detailed evaluation with RNAseq. These were selected to have relatively good 
 ({\it Manihot esculenta} and {\it Papio anubis}), 
@@ -401,8 +403,9 @@ Samtools \citep{li2009sequence} was used for the sorting and indexing that was n
 RNAseq mapped metric collection with PicardTools \citep{Picard2019toolkit} and custom downstream 
 processing below. MultiQC \citep{ewels2016multiqc} was used to summarize the results. The above was 
 automated and the results visualized with the code here (... make available and link to RNAseq stuff).
-Samples were filtered to those that had {\it relatively} high mapping rates, particularly to
-exonic regions; that had low 3' bias, normal FastQC and Trimmomatic stats, and that
+Samples were filtered to those that had {\it relatively} high mapping rates, high mapping to
+exonic regions relative to other regions; that had low 3' bias, normal FastQC and 
+Trimmomatic stats, and that
 were confirmed to be stranded with 2nd strand as sense strand. If more remained, seven
 of the high quality samples were selected randomly.
 
