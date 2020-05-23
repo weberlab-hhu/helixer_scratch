@@ -134,7 +134,7 @@ performance, we needed a way to evaluate genome and annotation quality.
 Metadata was generated for each genome, including: basic length and 
 composition statistics \citep{gurevich2013quast}; k-mer content \citep{marccais2011fast};
 conserved gene content of the genome, transcriptome, and proteome (\cite{simao2015busco};
-file conversion with gffread from \cite{trapnell2012differential}; % BUSCO, files generated with gffread
+file conversion with gffread from \cite{trapnell2012differential}; 
 and finally simple counts of genic features from the gff files. In particular, 
 we considered the following features of the metadata when judging the quality of a genome and it's 
 annotation: assembly contiguity (N50 / genome size); retention in the proteome 
@@ -386,8 +386,8 @@ detailed evaluation with RNAseq. These were selected to have relatively good
 ({\it Manihot esculenta} and {\it Papio anubis}), 
 typical ({\it Medicago truncatula} and {\it Equus caballus}), 
 and poor ({\it Theobroma cacao} and {\it Petromyzon marinus})
-performance compared to Augustus \ref{} % supp phylogenies maybe?
-within our generalizable range (i.e. excluding algae and
+performance compared to Augustus \ref{supfig:rna_select} % subgenic F1 sorted by Helixer new plots
+within our generalizable range (i.e. excluding the outgroups algae and
 invertebrates). Selections were further constrained by the availability of stranded RNAseq
 data. 
 
@@ -397,7 +397,7 @@ For each of these six species the following search was performed on Sequence Rea
 AND ("biomol rna"[Properties] AND "library layout paired"[Properties])'. In so far as 
 more than 50 samples were identified, every Nth sample was selected so that about 50
 samples were chosen for further processing, as listed here \ref{}. % todo make a supp table
-Each sample was quality controlled with FastQC \citep{}, before and after trimming
+Each sample was quality controlled with FastQC (www.bioinformatics.babraham.ac.uk/projects/fastqc/), before and after trimming
 with Trimmomatic \citep{bolger2014trimmomatic}, and then mapped to the genome with Hisat2 \citep{kim2019graph}. 
 Samtools \citep{li2009sequence} was used for the sorting and indexing that was necessary both for
 RNAseq mapped metric collection with PicardTools \citep{Picard2019toolkit} and custom downstream 
@@ -421,7 +421,7 @@ script.
 \label{fig:main_results}
 \centerline{\includegraphics[width=\textwidth]{images/main_results}}
 \caption{Main overall results and other investigations. The top row shows the animal
- data; the bottom row is concerned with the plants. Yellow dots are for AUGUSTUS and 
+ data; the bottom row is concerned with the plants. Orange dots are for AUGUSTUS and 
 the blue ones are for Helixer. {\bf a)} Swarm - and boxplots showing the Subgenic F1 
 scores for all genomes that were not used during training of Helixer, which is 
 equivalent to all validation and test genomes. Each dot represents the prediction 
@@ -432,8 +432,9 @@ length. The regression line is shown with a 95\% confidence interval. {\bf c)} T
 average Genic F1 (in red) and basepair wise accuracy (in purple) with respect to 
 the position in the 20000 basepair long input sequences. The dashed line shows the 
 same without overlapping. Each value is the average performance of a 200 basepair 
-long subsection by one of the models of the final ensemble. See Section 4 for the 
-Supplements shows the effects of overlapping for each individual species.}
+long subsection by one of the models of the final ensemble. 
+See Section \ref{supsec:overlapping} of the 
+Supplements for the effects of overlapping in individual species.}
 \end{figure*}
 
 \begin{table}[!t]
@@ -466,15 +467,17 @@ significantly outperform a baseline constructed of a dilated CNN architecture.
 Our models, however, tend to perform less well for the very smallest and largest 
 genomes or species that are phylogenetically the furthest away from our training 
 genomes. This is the case for both animals and plants and is visualized by the 
-Figures S1 and S3. We do not, for example, consistently predict very well on the 
-algae as well as the non-avian reptiles. While one of the the algae were included 
+Figures S\ref{supfig:phylogeny_f1_animals} and S\ref{supfig:phylogeny_f1_plants}. 
+We do not, for example, consistently predict very well on the 
+algae nor on the non-avian reptiles. While one of the the algae were included 
 in our training genomes it accounted for a tiny proportion of the total training 
 data and the non-avian reptiles were not included at all.
  
 AUGUSTUS outperforms us on some of the smallest genomes, but falls off much more 
 drastically as the genomes get larger. The difference in prediction quality is 
 especially strong for mammals, which tend to have big genomes with very long genes 
-as well as the largest plants. Figures S2 and S4 display the comparison to AUGUSTUS 
+as well as the largest plants. Figures S\ref{supfig:phylogeny_differences_animals} 
+and S\ref{supfig:phylogeny_differences_plants} display the comparison to AUGUSTUS 
 by phylogenetic position.
 
 Two techniques were used during inference to improve performance and limit model 
@@ -514,8 +517,8 @@ exonic annotation (UTR or CDS), spliced coverages provides support for an
 annotation of intron, and neither coverage nor spliced coverage is expected 
 for intergenic annotations. Looking at selected subsequences (Figure \ref{fig:cov_example_main}) % and supplemental figures.
 we identified cases where RNAseq supported both the annotations of the reference 
-and Helixer (a), neither (b), the reference, but not Helixer (c),
-and Helixer, but not the reference (d). 
+and Helixer a), neither b), the reference, but not Helixer c),
+and Helixer, but not the reference d). 
 
 Helixer models do not yet have postprocessing
 to make finalized single predictions, but instead output basewise probabilities.
@@ -524,17 +527,21 @@ classes, for instance between UTR and CDS, or more dramatically between UTR and
 intergenic even where Helixer predictions closely match the reference and RNAseq data (a). 
 Helixer's uncertainty around UTR <-> intergenic transitions may relate to a
 fundamentally harder problem (there is no conserved motif at the site as is observed
-for splice sites and start/stop codons), lack a single precise biological site \citep{},
-or noise in the reference, which we observed relative to the RNAseq data \ref{}. % supplemental UTR figures, 1/species
+for splice sites and start/stop codons), lack of a precise one 
+base pair biological site \citep{carninci2006genome},  % todo, citation for termination site as well
+or noise in the reference, which we observed relative to the RNAseq data 
+(Figures S\ref{supfig:UTRs_animals}-\ref{supfig:UTRs_plants}). % supplemental UTR figures, 1/species
 
 Helixer models also sometimes showed uncertainty for larger regions.
 In some cases, where Helixer did not receive RNAseq support for its highest probability
 annotation, it assigned a low but non-trivial probability to the RNAseq-supported 
-exon/intron pattern (b and c,hSlA2 supp). However, in the extreme,
+exon/intron pattern (Figures \ref{fig:cov_example_main}b-c,S\ref{supfig:cov_example_02}c). However, in the extreme,
 there are cases where the Helixer model exibits substantial indecision or confusion 
 and shifts gradually between classes with no single class receiving a high probability 
-for extended stretches (hSlA2, hSlA3, lSlA3). Notably, in one of the examples ()
-the RNAseq shows evidence of alternative splicing; and in another () Helixer's
+for extended stretches (Figures S\ref{supfig:cov_example_02}c, S\ref{supfig:cov_example_02}c-d). 
+Notably, in one of the examples (S\ref{supfig:cov_example_02}d))
+the RNAseq shows evidence of alternative splicing; 
+and in another (S\ref{supfig:cov_example_02}c) Helixer's
 prediction falls between that of the reference and Augustus.
 
 \begin{figure*}[!h]
@@ -647,7 +654,7 @@ This work has been supported by the... \vspace*{-12pt}
 \begin{supfig}\label{supfig:overlapping_animals}\end{supfig}
 \begin{supfig}\label{supfig:overlapping_plants}\end{supfig}
 \begin{supfig}\label{supfig:cov_example_02}\end{supfig}
-\begin{supfig}\label{supfig:cov_example_02}\end{supfig}
+\begin{supfig}\label{supfig:cov_example_03}\end{supfig}
 \begin{supfig}\label{supfig:UTRs_animals}\end{supfig}
 \begin{supfig}\label{supfig:UTRs_plants}\end{supfig}
 \begin{supfig}\label{supfig:average_vs_ref}\end{supfig}
