@@ -528,7 +528,7 @@ intergenic even where Helixer predictions closely match the reference and RNAseq
 Helixer's uncertainty around UTR <-> intergenic transitions may relate to a
 fundamentally harder problem (there is no conserved motif at the site as is observed
 for splice sites and start/stop codons), lack of a precise one 
-base pair biological site \citep{carninci2006genome},  % todo, citation for termination site as well
+base pair biological site \citep{carninci2006genome,hon2013quantification}
 or noise in the reference, which we observed relative to the RNAseq data 
 (Figures S\ref{supfig:UTRs_animals}-\ref{supfig:UTRs_plants}). % supplemental UTR figures, 1/species
 
@@ -567,21 +567,21 @@ fell between the cases where tools agreed, indicating that all options were at l
 capable of finding weak-spots in the other annotations.
 In cases of conflict, Helixer's predictions were substantially more consistent with
 the RNAseq data than those of Augustus. Specifically, for base pairs where one tool said CDS and
-the other intergenic or intron \ref{}, there was more coverage when 
-Helixer said CDS. Similarly, for base pairs where one tool said intron and the other 
-CDS or intergenic, there was more spliced coverage when Helixer said intron \ref{}. 
+the other intergenic or intron, there was more coverage when 
+Helixer said CDS (Figure \ref{fig:average_vs_augustus}a). Similarly, for base pairs where one tool said intron and the other 
+CDS or intergenic, there was more spliced coverage when Helixer said intron (Figure \ref{fig:average_vs_augustus}b). 
 These patterns were consistent in direction but varied in magnitude in the individual species,
 with the expception of {\it P. marinus} where Helixer and Augustus performed comparably
-at differentiating CDS and introns.
+at differentiating CDS and introns (Figure S\ref{supfig:each_sp_vs_augustus}).
 
 RNAseq based comparison of Helixer and the reference was less clear cut.
 Averaged across species, helixer's predictions received slightly more support
 than the reference when differentiating CDS, UTR and introns from intergenic;
 however helixer's predictions received slightly less support than the reference 
-when differentiating CDS and UTR from introns. Performance varies between individual
+when differentiating CDS and UTR from introns (Figure S\ref{supfig:average_vs_ref}). Performance varies between individual
 species, from {\it P. marinus}, where the reference receives more support
 in every conflict, to {\it T. cacao}, where Helixer models receive equivalent
-or more support in every conflict. Interestingly, these are the two species that
+or more support in every conflict (Figure S\ref{supfig:each_sp_vs_ref}). Interestingly, these are the two species that
 were selected because they had (relative to the usual difference) low Subgenic F1 compared to 
 Augustus; for the former the RNAseq confirms relatively weak performance for Helixer, while the 
 for the latter RNAseq rather indicates a sub-par reference. 
