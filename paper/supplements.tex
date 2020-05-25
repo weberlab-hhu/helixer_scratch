@@ -2,7 +2,9 @@
 \usepackage{graphicx}
 \usepackage{authblk}
 \usepackage{natbib}
+\usepackage{geometry}
 \usepackage{hyperref}
+\usepackage{amssymb}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -10,7 +12,11 @@
     linkcolor=black,
     urlcolor=black
 }
+\newgeometry{vmargin={20mm}, hmargin={25mm}}
 
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\def \tablescale{0.88}
 \begin{document}
 
 \title{Supplemental Materials for \\ Helixer: Cross-species Gene Annotation of Large Eucaryotic Genomes Using Deep Learning}
@@ -32,6 +38,124 @@
 \tableofcontents
 
 \newpage
+\section{Data collection and preparation}
+\label{ssec:data_prep}
+% species and versions table
+% meta data table?
+% selecting species for RNAseq
+\begin{figure}[!h]
+\label{supfig:rna_select_animals}
+\centerline{\includegraphics[width=1.0\textwidth]{images/RNAseq_animals_fit}}
+\caption{Visualizes how the performance of Helixer (in consideration of Augustus' performance)
+was used to select three animal species (larger points) for detailed RNAseq analysis. The 
+species were chosen to have good, medium and poor performance; invertebrates (diamonds) were
+not considered as the generalizability and recommended use of the Helixer animal model
+currently only extends to vertebrates; candidate species were checked for the availibility of
+stranded, paired-end RNAseq data and skipped if none was available.}
+\end{figure}
+
+\clearpage
+\begin{figure}[!hbt]
+\label{supfig:rna_select_plants}
+\centerline{\includegraphics[width=0.5\textwidth]{images/RNAseq_plants}}
+\caption{Visualizes how the performance of Helixer (in consideration of Augustus' performance)
+was used to select three plant species (larger points) for detailed RNAseq analysis. The 
+species were chosen to have good, medium and poor performance; algae (diamonds) were
+not considered as the generalizability and recommended use of the Helixer animal model
+currently only extends to higher plants; candidate species were checked for the availibility of
+stranded, paired-end RNAseq data and skipped if none was available.}
+\end{figure}
+\clearpage
+% RNAseq tested samples table
+\begin{table}[!h]
+\resizebox{0.8\textwidth}{!}{%
+\centering
+\begin{tabular}{@{}lll|lll|lll|lll@{}}
+\hline
+Samples&HQ&S&Samples&HQ&S&Samples&HQ&S&Samples&HQ&S\\
+\hline
+\\
+\textit{P. anubis}\\
+\hline
+SRS3122053&&&SRS3122094&\checkmark&\checkmark&SRS3270781&&&SRS3270847&&\\
+SRS3122057&\checkmark&\checkmark&SRS3122111&&&SRS3270785&&&SRS3270853&&\\
+SRS3122063&\checkmark&\checkmark&SRS3270734&&&SRS3270808&&&SRS3270858&&\\
+SRS3122070&&&SRS3270735&&&SRS3270811&&&SRS3270862&&\\
+SRS3122074&&&SRS3270737&&&SRS3270812&&&SRS3270863&&\\
+SRS3122079&\checkmark&\checkmark&SRS3270738&&&SRS3270821&&&SRS3270870&&\\
+SRS3122081&&&SRS3270746&&&SRS3270824&&&SRS3270872&&\\
+SRS3122088&&&SRS3270751&&&SRS3270839&&&SRS3270880&&\\
+SRS3122092&\checkmark&\checkmark&SRS3270763&&&SRS3270840&&&SRS819311&\checkmark&\checkmark\\
+SRS3122093&&&SRS3270773&&&SRS3270841&&&SRS819317&\checkmark&\checkmark\\
+\hline
+\\
+\textit{E. caballus}\\
+\hline
+ERS1517592&&&ERS2382444&&&ERS2681771&&&SRS2552997&\checkmark&\checkmark\\
+ERS1517600&&&ERS2681720&\checkmark&\checkmark&ERS2681772&\checkmark&\checkmark&SRS2553004&\checkmark&\checkmark\\
+ERS1517608&&&ERS2681730&&&ERS2681775&&&SRS2770963&&\\
+ERS1517617&&&ERS2681733&&&ERS3563898&&&SRS2770972&&\\
+ERS1517625&&&ERS2681734&&&SRS1102326&&&SRS3347177&&\\
+ERS1517633&&&ERS2681740&&&SRS1102328&&&SRS3347182&&\\
+ERS1517641&&&ERS2681742&&&SRS1102336&&&SRS4826859&&\\
+ERS2382439&&&ERS2681750&&&SRS2158774&&&SRS4826867&&\\
+ERS2382440&&&ERS2681754&&&SRS2158777&&&SRS4890460&\checkmark&\checkmark\\
+ERS2382442&&&ERS2681758&&&SRS2158788&&&SRS5330332&\checkmark&\checkmark\\
+ERS2382443&&&ERS2681770&&&SRS2552988&\checkmark&\checkmark&SRS5330340&&\\
+\hline
+\\
+\textit{P. marinus}\\
+\hline
+SRS5315360&\checkmark&\checkmark&SRS5315363&\checkmark&&SRS5315366&\checkmark&&SRS5315369&\checkmark&\\
+SRS5315361&\checkmark&\checkmark&SRS5315364&\checkmark&\checkmark&SRS5315367&\checkmark&\checkmark&&&\\
+SRS5315362&\checkmark&\checkmark&SRS5315365&\checkmark&\checkmark&SRS5315368&\checkmark&\checkmark&&&\\
+\hline
+\\
+\textit{M. esculenta}\\
+\hline
+SRS1608507&&&SRS1610089&\checkmark&\checkmark&SRS1610201&&&SRS946172&&\\
+SRS1608510&\checkmark&\checkmark&SRS1610128&\checkmark&\checkmark&SRS1610205&\checkmark&\checkmark&SRS946227&&\\
+SRS1610036&&&SRS1610150&&&SRS1610207&&&SRS946633&&\\
+SRS1610041&&&SRS1610177&&&SRS1610208&&&SRS946650&&\\
+SRS1610076&\checkmark&\checkmark&SRS1610181&&&SRS945853&&&SRS946703&&\\
+SRS1610079&\checkmark&\checkmark&SRS1610187&&&SRS946078&&&SRS947897&&\\
+SRS1610084&\checkmark&\checkmark&SRS1610197&&&SRS946138&&&&&\\
+\hline
+\\
+\textit{M. truncatula}\\
+\hline
+ERS1556003&&&SRS1948297&&&SRS3700721&\checkmark&&SRS4425365&\checkmark&\\
+ERS1556006&&&SRS1948300&&&SRS3700725&\checkmark&\checkmark&SRS4538246&&\\
+ERS1556009&&&SRS1948304&\checkmark&&SRS4425341&&&SRS4538249&&\\
+ERS1556012&&&SRS1948306&&&SRS4425343&\checkmark&&SRS5045319&&\\
+ERS1556015&&&SRS1948309&&&SRS4425346&\checkmark&\checkmark&SRS5045322&&\\
+ERS1556018&\checkmark&&SRS1948313&\checkmark&\checkmark&SRS4425347&\checkmark&\checkmark&SRS5045325&&\\
+ERS1556021&&&SRS1948315&&&SRS4425350&\checkmark&&SRS5045328&&\\
+ERS1556024&&&SRS3700712&\checkmark&&SRS4425353&&&SRS5045330&&\\
+SRS1736395&\checkmark&\checkmark&SRS3700715&\checkmark&&SRS4425356&\checkmark&\checkmark&SRS5045334&&\\
+SRS1736398&\checkmark&&SRS3700717&&&SRS4425357&&&SRS5045337&&\\
+SRS1948293&&&SRS3700718&\checkmark&\checkmark&SRS4425364&\checkmark&&&&\\
+\hline
+\\
+\textit{T. cacao}\\
+\hline
+SRS5244538&\checkmark&&SRS5244546&\checkmark&\checkmark&SRS5244554&&&SRS5244562&\checkmark&\checkmark\\
+SRS5244539&&&SRS5244547&&&SRS5244555&&&SRS5244563&&\\
+SRS5244540&&&SRS5244548&&&SRS5244556&\checkmark&\checkmark&SRS5244564&&\\
+SRS5244541&&&SRS5244549&&&SRS5244557&\checkmark&&SRS5244565&\checkmark&\checkmark\\
+SRS5244542&&&SRS5244550&&&SRS5244558&&&SRS5244566&&\\
+SRS5244543&\checkmark&\checkmark&SRS5244551&&&SRS5244559&&&SRS5244567&&\\
+SRS5244544&\checkmark&\checkmark&SRS5244552&&&SRS5244560&&&SRS5244568&&\\
+SRS5244545&&&SRS5244553&\checkmark&\checkmark&SRS5244561&&&&&\\
+\hline
+\end{tabular}}
+\label{suptab:rnaseq_samples}
+\caption{List of RNAseq samples that were selected for processing, whether they were of high quality (HQ), and 
+finally, whether they were ultimately selected (S) for merging and use in coverage calculation.}
+\end{table}
+\clearpage
+% 
+
 \section{Model Evaluation by Species}
 \label{ssec:generalization}
 The following tables and plots show the prediction performance of Helixer for each species we worked with. The tables show a breakdown by basepair level accuracy, F1 score for each individual class and our two overall metrics, the Subgenic F1 and Genic F1. An F1 score of zero can indicate that the reference did not include that class. 
@@ -42,8 +166,8 @@ The plots display the raw Subgenic F1 score as well as the difference to AUGUSTU
 \newpage
 
 \begin{table}[!h]
-\renewcommand\thetable{}
-\resizebox{\textwidth}{!}{%
+%\renewcommand\thetable{}
+\resizebox{\tablescale\textwidth}{!}{%
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -115,8 +239,8 @@ equus\_asinus\_asinus & 0.9301 & 0.9476 & 0.2589 & 0.8651 & 0.9073 & 0.9055 & 0.
 
 \clearpage
 \begin{table}[!h]
-\renewcommand\thetable{}
-\resizebox{\textwidth}{!}{%
+%\renewcommand\thetable{}
+\resizebox{\tablescale\textwidth}{!}{%
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -188,8 +312,8 @@ neovison\_vison & 0.9362 & 0.9565 & 0.4219 & 0.8752 & 0.895 & 0.8942 & 0.8894 \\
 
 \clearpage
 \begin{table}[!h]
-\renewcommand\thetable{}
-\resizebox{\textwidth}{!}{%
+%\renewcommand\thetable{}
+\resizebox{\tablescale\textwidth}{!}{%
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -261,8 +385,8 @@ theropithecus\_gelada & 0.9554 & 0.9694 & 0.5335 & 0.8786 & 0.9283 & 0.9266 & 0.
 
 \clearpage
 \begin{table}[!h]
-\renewcommand\thetable{S1}
-\resizebox{\textwidth}{!}{%
+%\renewcommand\thetable{S1}
+\resizebox{\tablescale\textwidth}{!}{%
 \centering
 \begin{tabular}{@{}llllllll@{}}
 \hline
@@ -288,21 +412,21 @@ zonotrichia\_albicollis & 0.9216 & 0.9482 & 0.382 & 0.8601 & 0.8667 & 0.8663 & 0
 
 \begin{figure}[!h]
 \label{supfig:phylogeny_f1_animals}
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part1}}
+\centerline{\includegraphics[width=\textwidth]{images/animals_f1_scores_part1}}
 \end{figure}
 \begin{figure}[!h]
-\renewcommand\thefigure{S1}
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_f1_scores_part2}}
+%\renewcommand\thefigure{S1}  % just commenting these out for now, incase I missed or miss-ordered anything in the text while making dynamic
+\centerline{\includegraphics[width=\textwidth]{images/animals_f1_scores_part2}}
 \caption{Subgenic F1 results for all animal genomes shown by phylogenetic position.}
 \end{figure}
 
 \begin{figure}[!h]
 \label{supfig:phylogeny_differences_animals}
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part1}}
+\centerline{\includegraphics[width=\textwidth]{images/animals_differences_part1}}
 \end{figure}
 \begin{figure}[!h]
-\renewcommand\thefigure{S2}
-\centerline{\includegraphics[width=1.2\textwidth]{images/animals_differences_part2}}
+%\renewcommand\thefigure{S2}
+\centerline{\includegraphics[width=\textwidth]{images/animals_differences_part2}}
 \caption{Difference in Subgenic F1 to AUGUSTUS for all animal genomes shown by phylogenetic position.}
 \end{figure}
 
@@ -310,8 +434,8 @@ zonotrichia\_albicollis & 0.9216 & 0.9482 & 0.382 & 0.8601 & 0.8667 & 0.8663 & 0
 \subsection{Plants}
 
 \begin{table}[!h]
-\renewcommand\thetable{S2}
-\resizebox{\textwidth}{!}{%
+%\renewcommand\thetable{S2}
+\resizebox{\tablescale\textwidth}{!}{%
 \centering
 %\vspace*{-3.5cm}
 %\hspace*{-2.5cm}
@@ -388,14 +512,14 @@ Zea\_mays & 0.9843 & 0.9931 & 0.6073 & 0.886 & 0.854 & 0.8643 & 0.8406 \\
 \clearpage
 \begin{figure}[!h]
 \label{supfig:phylogeny_f1_plants}
-\renewcommand\thefigure{S3}
-\centerline{\includegraphics[width=1.0\textwidth]{images/plants_f1_scores}}
+%\renewcommand\thefigure{S3}
+\centerline{\includegraphics[width=\tablescale\textwidth]{images/plants_f1_scores}}
 \caption{Subgenic F1 results for all plant genomes shown by phylogenetic position.}
 \end{figure}
 \begin{figure}[!h]
 \label{supfig:phylogeny_differences_plants}
-\renewcommand\thefigure{S4}
-\centerline{\includegraphics[width=1.0\textwidth]{images/plants_differences}}
+%\renewcommand\thefigure{S4}
+\centerline{\includegraphics[width=\tablescale\textwidth]{images/plants_differences}}
 \caption{Difference in Subgenic F1 to AUGUSTUS for all plant genomes shown by phylogenetic position.}
 \end{figure}
 
@@ -404,7 +528,7 @@ Zea\_mays & 0.9843 & 0.9931 & 0.6073 & 0.886 & 0.854 & 0.8643 & 0.8406 \\
 \section{Hyperparameters}
 \label{sec:hyperparameters}
 \begin{table}[!h]
-\renewcommand\thetable{S3}
+%\renewcommand\thetable{S3}
 \centering
 \begin{tabular}{@{}ll@{}}
 \hline
@@ -425,7 +549,7 @@ Float Precision & 32 bit \\
 \end{table}
 
 \begin{table}[!h]
-\renewcommand\thetable{S4}
+%\renewcommand\thetable{S4}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
@@ -447,7 +571,7 @@ Intron & 1.2 & 0.3 \\
 \label{sec:longer}
 \begin{table}[!h]
 \label{suptab:prediction_lengths}
-\renewcommand\thetable{S5}
+%\renewcommand\thetable{S5}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
@@ -475,45 +599,45 @@ The following plots show the effect of overlapping for each species we worked wi
 
 \subsection{Animals}
 \newpage
-
+\def \overlapscale{1.07}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals1}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals1}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals2}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals2}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals3}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals3}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals4}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals4}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals5}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals5}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals6}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals6}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals7}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals7}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals8}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals8}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals9}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals9}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals10}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals10}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals11}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals11}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals12}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_animals12}}
 \end{figure}
 \begin{figure}[!h]
-\renewcommand\thefigure{S5}
+%\renewcommand\thefigure{S5}
 \centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_animals13}}
 \caption{Effect of overlapping on the sequence positions wise bias ordered by descending N75 for all animals genomes individually.}
 \label{supfig:overlapping_animals}
@@ -523,17 +647,17 @@ The following plots show the effect of overlapping for each species we worked wi
 \subsection{Plants}
 
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants1}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_plants1}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants2}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_plants2}}
 \end{figure}
 \begin{figure}[!h]
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants3}}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_plants3}}
 \end{figure}
 \begin{figure}[!h]
-\renewcommand\thefigure{S6}
-\centerline{\includegraphics[width=1.2\textwidth]{images/overlapping/montage_plants4}}
+%\renewcommand\thefigure{S6}
+\centerline{\includegraphics[width=\overlapscale\textwidth]{images/overlapping/montage_plants4}}
 \caption{Effect of overlapping on the sequence positions wise bias ordered by descending N75 for all plant genomes individually.}
 \label{supfig:overlapping_plants}
 \end{figure}
@@ -544,7 +668,7 @@ The following plots show the effect of overlapping for each species we worked wi
 \label{sec:training_data}
 \begin{table}[!h]
 \label{suptab:genome_stats}
-\renewcommand\thetable{S6}
+%\renewcommand\thetable{S6}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
@@ -559,7 +683,7 @@ Fraction of class CDS & 0.028 (+- 0.028) & 0.077 (+- 0.052) \\
 Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 \hline
 \end{tabular}
-\caption{The description of Table [?] applies here as well.}
+\caption{The description of Table [?] applies here as well.}  % 2
 \end{table}
 
 
@@ -568,7 +692,7 @@ Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 \label{sec:dcnn}
 \begin{table}[!h]
 \label{suptab:dcnn_xval}
-\renewcommand\thetable{S7}
+%\renewcommand\thetable{S7}
 \centering
 \begin{tabular}{@{}ll@{}}
 \hline
@@ -589,7 +713,7 @@ Learning Rate & \{1e-3, 1e-4\}\\
 
 \begin{table}[!h]
 \label{suptab:dcnn_params}
-\renewcommand\thetable{S8}
+%\renewcommand\thetable{S8}
 \centering
 \begin{tabular}{@{}lll@{}}
 \hline
@@ -608,13 +732,14 @@ Learning Rate & 1e-4 & 1e-3\\
 \caption{The parameters of the dilated CNN model that performed the best according to the Genic F1 of the validation data of the respective training genomes. The best animal model has circa 4.6 million parameters; the best plant model around 2.1 million.}
 \end{table}
 
+\newpage
 \section{Evaluation against RNAseq}
 \label{sec:rnaseq_eval}
 
 \begin{figure}[!h]
 \label{supfig:cov_example_02}
-\renewcommand\thefigure{S7}
-\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_002}}
+%\renewcommand\thefigure{S7}
+\centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_002}}
 \caption{
 Four additional example helixer predictions in the context of RNAseq data, the reference,
 and Augustus' prediction for {\it M. esculenta}. The examples were chosen so
@@ -635,8 +760,8 @@ for intron, and ``IG" stands for intergenic.
 
 \begin{figure}[!h]
 \label{supfig:cov_example_03}
-\renewcommand\thefigure{S8}
-\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_003}}
+%\renewcommand\thefigure{S8}
+\centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_003}}
 \caption{
 Four additional example helixer predictions in the context of RNAseq data, the reference,
 and Augustus' prediction for {\it M. esculenta}. The examples were chosen so
@@ -656,9 +781,9 @@ for intron, and ``IG" stands for intergenic.
 \end{figure}
 
 \begin{figure}[!h]
-\renewcommand\thefigure{S9}
+%\renewcommand\thefigure{S9}
 \label{supfig:UTRs_animals}
-\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_UTRs_animals}}
+\centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_UTRs_animals}}
 \caption{
 One example of helixer's gradual UTR to intergenic transition predictions 
 from each RNAseq evaluation animal species in the context of RNAseq data, the reference,
@@ -674,9 +799,9 @@ for intron, and ``IG" stands for intergenic.
 \end{figure}
 
 \begin{figure}[!h]
-\renewcommand\thefigure{S10}
+%\renewcommand\thefigure{S10}
 \label{supfig:UTRs_plants}
-\centerline{\includegraphics[width=17.8cm]{images/cov_examples/cov_example_UTRs_plants}}
+\centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_UTRs_plants}}
 \caption{
 One example of helixer's gradual UTR to intergenic transition predictions 
 from each RNAseq evaluation plant species in the context of RNAseq data, the reference,
@@ -693,7 +818,7 @@ for intron, and ``IG" stands for intergenic.
 
 
 \begin{figure}[!h]
-\renewcommand\thefigure{S11}
+%\renewcommand\thefigure{S11}
 \label{supfig:average_vs_ref}
 \centerline{\includegraphics[]{images/cov_examples/average_vs_ref}}
 \caption{
@@ -708,7 +833,7 @@ for intron, and ``IG" stands for intergenic.
 \end{figure}
 
 \begin{figure}[!h]
-\renewcommand\thefigure{S12}
+%\renewcommand\thefigure{S12}
 \label{supfig:each_sp_vs_augustus}
 \centerline{\includegraphics[]{images/cov_examples/each_sp_vs_augustus}}
 \caption{
@@ -724,7 +849,7 @@ for intron, and ``IG" stands for intergenic.
 \end{figure}
 
 \begin{figure}[!h]
-\renewcommand\thefigure{S13}
+%\renewcommand\thefigure{S13}
 \label{supfig:each_sp_vs_ref}
 \centerline{\includegraphics[]{images/cov_examples/each_sp_vs_ref}}
 \caption{
