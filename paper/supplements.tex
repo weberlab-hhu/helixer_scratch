@@ -17,6 +17,11 @@
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 \def \tablescale{0.88}
+
+\newcounter{supdata}
+\newenvironment{supdata}[1][]{\refstepcounter{supdata}}
+
+
 \begin{document}
 
 \title{Supplemental Materials for \\ Helixer: Cross-species Gene Annotation of Large Eucaryotic Genomes Using Deep Learning}
@@ -40,121 +45,364 @@
 \newpage
 \section{Data collection and preparation}
 \label{ssec:data_prep}
-% species and versions table
-% meta data table?
-% selecting species for RNAseq
-\begin{figure}[!h]
-\label{supfig:rna_select_animals}
-\centerline{\includegraphics[width=1.0\textwidth]{images/RNAseq_animals_fit}}
-\caption{Visualizes how the performance of Helixer (in consideration of Augustus' performance)
-was used to select three animal species (larger points) for detailed RNAseq analysis. The 
-species were chosen to have good, medium and poor performance; invertebrates (diamonds) were
-not considered as the generalizability and recommended use of the Helixer animal model
-currently only extends to vertebrates; candidate species were checked for the availibility of
-stranded, paired-end RNAseq data and skipped if none was available.}
-\end{figure}
+This section describes exactly which animal and plant genomes were downloaded
+from Ensemble (Table \ref{suptab:downloads_animals}) and 
+Phytozome13 (Table \ref{suptab:downloads_plants}), respectively.
+Further we describe assesment of genome quality based on metadata. 
 
-\clearpage
-\begin{figure}[!hbt]
-\label{supfig:rna_select_plants}
-\centerline{\includegraphics[width=0.5\textwidth]{images/RNAseq_plants}}
-\caption{Visualizes how the performance of Helixer (in consideration of Augustus' performance)
-was used to select three plant species (larger points) for detailed RNAseq analysis. The 
-species were chosen to have good, medium and poor performance; algae (diamonds) were
-not considered as the generalizability and recommended use of the Helixer animal model
-currently only extends to higher plants; candidate species were checked for the availibility of
-stranded, paired-end RNAseq data and skipped if none was available.}
-\end{figure}
-\clearpage
-% RNAseq tested samples table
+For each acquired genome we assembled a set of metadata for assessing 
+genome and annotation quality. 
+This metadata includes basic length and 
+composition statistics with Quast \citep{gurevich2013quast}; 
+bp content, 2-mer content with Jellyfish \citep{marccais2011fast};
+conserved gene content of the genome, transcriptome, and proteome (\cite{simao2015busco};
+the transcriptome and proteome used were generated from the genome and gff3 file 
+using gffread from \cite{trapnell2012differential}); 
+and finally simple counts of genic features from the gff3 files.
+
+While the metadata ultimately does not provide a way to quantify ``genome quality",
+there were several features that were, all the same, particularly useful to consider
+when evaulating, e.g. whether a particular genome was of sufficient quality to be
+used for training. Often these features did not directly measure quality of
+the annotation, but still reflect the time, resources and skill invested in
+creating the genome and annotation. 
+
+\begin{itemize}
+    \item Assembly Quality
+    \begin{itemize}
+        \item Assembly contiguity--as measured by N50 / total assembly size
+    \end{itemize}
+    \item Annotation Quality
+    \begin{itemize}
+        \item Gene detection consistency--we looked at the difference between complete BUSCOs that could be
+          identified in the proteom and genome. An inability to identify BUSCOs in the proteome
+          that could alredy be identified in the genome without employing an extensive annotation
+          pipeline is a sign of poor annotation quality.
+        \item Alternative splicing--we looked at two measures of alternative splicing annotation: the 
+          ratio mRNA to gene gff3 features, and the ratio of `single' to `duplicated' BUSCOs identified
+          in the transcriptome. For species where extensive alternative splicing was expected, 
+          its absence indicates an absence of effort or extrinsic information inclusion in gene annotation.
+        \item UTRs--The average of 3' and 5' UTR features per mRNA feature. A handful of genomes included no, or very few, 
+          UTR annotations, and were thus innapropriate for training a model to predict UTRs. 
+    \end{itemize}
+\end{itemize}
+
+All of the raw metadata and the four derived features mentioned above can be found in 
+Dataset S\ref{supdata:metadata}).
+
+\begin{supdata}\label{supdata:metadata}\end{supdata}  % just a placeholder for the CSV and where it's referenced
+
+% species and versions table
+\def \versionscale{0.95}
 \begin{table}[!h]
-\resizebox{0.8\textwidth}{!}{%
+\resizebox*{!}{\versionscale\textheight}{%
 \centering
-\begin{tabular}{@{}lll|lll|lll|lll@{}}
+\begin{tabular}{@{}lll@{}}
 \hline
-Samples&HQ&S&Samples&HQ&S&Samples&HQ&S&Samples&HQ&S\\
+Ensembl98 name&Version info&Test\\
 \hline
-\\
-\textit{P. anubis}\\
-\hline
-SRS3122053&&&SRS3122094&\checkmark&\checkmark&SRS3270781&&&SRS3270847&&\\
-SRS3122057&\checkmark&\checkmark&SRS3122111&&&SRS3270785&&&SRS3270853&&\\
-SRS3122063&\checkmark&\checkmark&SRS3270734&&&SRS3270808&&&SRS3270858&&\\
-SRS3122070&&&SRS3270735&&&SRS3270811&&&SRS3270862&&\\
-SRS3122074&&&SRS3270737&&&SRS3270812&&&SRS3270863&&\\
-SRS3122079&\checkmark&\checkmark&SRS3270738&&&SRS3270821&&&SRS3270870&&\\
-SRS3122081&&&SRS3270746&&&SRS3270824&&&SRS3270872&&\\
-SRS3122088&&&SRS3270751&&&SRS3270839&&&SRS3270880&&\\
-SRS3122092&\checkmark&\checkmark&SRS3270763&&&SRS3270840&&&SRS819311&\checkmark&\checkmark\\
-SRS3122093&&&SRS3270773&&&SRS3270841&&&SRS819317&\checkmark&\checkmark\\
-\hline
-\\
-\textit{E. caballus}\\
-\hline
-ERS1517592&&&ERS2382444&&&ERS2681771&&&SRS2552997&\checkmark&\checkmark\\
-ERS1517600&&&ERS2681720&\checkmark&\checkmark&ERS2681772&\checkmark&\checkmark&SRS2553004&\checkmark&\checkmark\\
-ERS1517608&&&ERS2681730&&&ERS2681775&&&SRS2770963&&\\
-ERS1517617&&&ERS2681733&&&ERS3563898&&&SRS2770972&&\\
-ERS1517625&&&ERS2681734&&&SRS1102326&&&SRS3347177&&\\
-ERS1517633&&&ERS2681740&&&SRS1102328&&&SRS3347182&&\\
-ERS1517641&&&ERS2681742&&&SRS1102336&&&SRS4826859&&\\
-ERS2382439&&&ERS2681750&&&SRS2158774&&&SRS4826867&&\\
-ERS2382440&&&ERS2681754&&&SRS2158777&&&SRS4890460&\checkmark&\checkmark\\
-ERS2382442&&&ERS2681758&&&SRS2158788&&&SRS5330332&\checkmark&\checkmark\\
-ERS2382443&&&ERS2681770&&&SRS2552988&\checkmark&\checkmark&SRS5330340&&\\
-\hline
-\\
-\textit{P. marinus}\\
-\hline
-SRS5315360&\checkmark&\checkmark&SRS5315363&\checkmark&&SRS5315366&\checkmark&&SRS5315369&\checkmark&\\
-SRS5315361&\checkmark&\checkmark&SRS5315364&\checkmark&\checkmark&SRS5315367&\checkmark&\checkmark&&&\\
-SRS5315362&\checkmark&\checkmark&SRS5315365&\checkmark&\checkmark&SRS5315368&\checkmark&\checkmark&&&\\
-\hline
-\\
-\textit{M. esculenta}\\
-\hline
-SRS1608507&&&SRS1610089&\checkmark&\checkmark&SRS1610201&&&SRS946172&&\\
-SRS1608510&\checkmark&\checkmark&SRS1610128&\checkmark&\checkmark&SRS1610205&\checkmark&\checkmark&SRS946227&&\\
-SRS1610036&&&SRS1610150&&&SRS1610207&&&SRS946633&&\\
-SRS1610041&&&SRS1610177&&&SRS1610208&&&SRS946650&&\\
-SRS1610076&\checkmark&\checkmark&SRS1610181&&&SRS945853&&&SRS946703&&\\
-SRS1610079&\checkmark&\checkmark&SRS1610187&&&SRS946078&&&SRS947897&&\\
-SRS1610084&\checkmark&\checkmark&SRS1610197&&&SRS946138&&&&&\\
-\hline
-\\
-\textit{M. truncatula}\\
-\hline
-ERS1556003&&&SRS1948297&&&SRS3700721&\checkmark&&SRS4425365&\checkmark&\\
-ERS1556006&&&SRS1948300&&&SRS3700725&\checkmark&\checkmark&SRS4538246&&\\
-ERS1556009&&&SRS1948304&\checkmark&&SRS4425341&&&SRS4538249&&\\
-ERS1556012&&&SRS1948306&&&SRS4425343&\checkmark&&SRS5045319&&\\
-ERS1556015&&&SRS1948309&&&SRS4425346&\checkmark&\checkmark&SRS5045322&&\\
-ERS1556018&\checkmark&&SRS1948313&\checkmark&\checkmark&SRS4425347&\checkmark&\checkmark&SRS5045325&&\\
-ERS1556021&&&SRS1948315&&&SRS4425350&\checkmark&&SRS5045328&&\\
-ERS1556024&&&SRS3700712&\checkmark&&SRS4425353&&&SRS5045330&&\\
-SRS1736395&\checkmark&\checkmark&SRS3700715&\checkmark&&SRS4425356&\checkmark&\checkmark&SRS5045334&&\\
-SRS1736398&\checkmark&&SRS3700717&&&SRS4425357&&&SRS5045337&&\\
-SRS1948293&&&SRS3700718&\checkmark&\checkmark&SRS4425364&\checkmark&&&&\\
-\hline
-\\
-\textit{T. cacao}\\
-\hline
-SRS5244538&\checkmark&&SRS5244546&\checkmark&\checkmark&SRS5244554&&&SRS5244562&\checkmark&\checkmark\\
-SRS5244539&&&SRS5244547&&&SRS5244555&&&SRS5244563&&\\
-SRS5244540&&&SRS5244548&&&SRS5244556&\checkmark&\checkmark&SRS5244564&&\\
-SRS5244541&&&SRS5244549&&&SRS5244557&\checkmark&&SRS5244565&\checkmark&\checkmark\\
-SRS5244542&&&SRS5244550&&&SRS5244558&&&SRS5244566&&\\
-SRS5244543&\checkmark&\checkmark&SRS5244551&&&SRS5244559&&&SRS5244567&&\\
-SRS5244544&\checkmark&\checkmark&SRS5244552&&&SRS5244560&&&SRS5244568&&\\
-SRS5244545&&&SRS5244553&\checkmark&\checkmark&SRS5244561&&&&&\\
+acanthochromis\_polyacanthus&ASM210954v1&\\
+ailuropoda\_melanoleuca&ailMel1&\\
+amphilophus\_citrinellus&Midas\_v5&\\
+amphiprion\_ocellaris&AmpOce10&\\
+amphiprion\_percula&Nemo\_v1&\\
+anabas\_testudineus&fAnaTes11&\\
+anas\_platyrhynchos\_platyrhynchos&CAU\_duck10&\\
+anolis\_carolinensis&AnoCar20&\\
+anser\_brachyrhynchus&ASM259213v1&\\
+aotus\_nancymaae&Anan\_20&\\
+apteryx\_haastii&aptHaa1&\\
+apteryx\_owenii&aptOwe1&\\
+astatotilapia\_calliptera&fAstCal12&\\
+astyanax\_mexicanus&Astyanax\_mexicanus-20&\\
+betta\_splendens&fBetSpl52&\\
+bison\_bison\_bison&Bison\_UMD10&\\
+bos\_indicus\_hybrid&UOA\_Brahman\_1&\\
+bos\_mutus&BosGru\_v20&\\
+bos\_taurus&ARS-UCD12&\\
+caenorhabditis\_elegans&WBcel235&\\
+calidris\_pygmaea&ASM369795v1&\\
+callithrix\_jacchus&ASM275486v1&\\
+callorhinchus\_milii&Callorhinchus\_milii-613&\\
+canis\_familiaris&CanFam31&\\
+canis\_lupus\_dingo&ASM325472v1&\\
+capra\_hircus&ARS1&\\
+carlito\_syrichta&Tarsius\_syrichta-201&\\
+castor\_canadensis&can\_genome\_v10&\\
+cavia\_aperea&CavAp10&\\
+cavia\_porcellus&Cavpor30&\\
+cebus\_capucinus&Cebus\_imitator-10&\\
+cercocebus\_atys&Caty\_10&\\
+chelonoidis\_abingdonii&ASM359739v1&\\
+chinchilla\_lanigera&ChiLan10&\\
+chlorocebus\_sabaeus&ChlSab11&\\
+chrysemys\_picta\_bellii&Chrysemys\_picta\_bellii-303&\\
+ciona\_intestinalis&KH&\\
+ciona\_savignyi&CSAV20&\\
+clupea\_harengus&Ch\_v202&\\
+colobus\_angolensis\_palliatus&pa\_10&\\
+cottoperca\_gobio&fCotGob31&\\
+coturnix\_japonica&Coturnix\_japonica\_20&\\
+cricetulus\_griseus\_picr&CriGri-PICR&\\
+crocodylus\_porosus&CroPor\_comp1&\\
+cynoglossus\_semilaevis&Cse\_v10&\\
+cyprinodon\_variegatus&C\_variegatus-10&\\
+dasypus\_novemcinctus&Dasnov30&\\
+denticeps\_clupeoides&fDenClu11&\\
+dipodomys\_ordii&Dord\_20&\\
+dromaius\_novaehollandiae&droNov1&\\
+drosophila\_melanogaster&BDGP622&\\
+echinops\_telfairi&TENREC&\\
+electrophorus\_electricus&Ee\_SOAP\_WITH\_SSPACE&\\
+eptatretus\_burgeri&Eburgeri\_32&\\
+equus\_asinus\_asinus&ASM303372v1&\\
+equus\_caballus&EquCab30&\\
+erinaceus\_europaeus&HEDGEHOG&\\
+erpetoichthys\_calabaricus&fErpCal11&\\
+esox\_lucius&Eluc\_V3&\\
+felis\_catus&Felis\_catus\_90&\\
+ficedula\_albicollis&FicAlb\_14&\\
+fukomys\_damarensis&DMR\_v10&\\
+fundulus\_heteroclitus&Fundulus\_heteroclitus-302&\\
+gallus\_gallus&GRCg6a&\\
 \hline
 \end{tabular}}
-\label{suptab:rnaseq_samples}
-\caption{List of RNAseq samples that were selected for processing, whether they were of high quality (HQ), and 
-finally, whether they were ultimately selected (S) for merging and use in coverage calculation.}
 \end{table}
 \clearpage
-% 
+
+\begin{table}[!h]
+\resizebox*{!}{\versionscale\textheight}{%
+\centering
+\begin{tabular}{@{}lll@{}}
+\hline
+Ensembl98 name&Version info&Test\\
+\hline
+gambusia\_affinis&ASM309773v1&\\
+gasterosteus\_aculeatus&BROADS1&\\
+gopherus\_agassizii&ASM289641v1&\\
+gorilla\_gorilla&gorGor4&\\
+gouania\_willdenowi&fGouWil21&\\
+haplochromis\_burtoni&AstBur10&\\
+heterocephalus\_glaber\_female&HetGla\_female\_10&\\
+hippocampus\_comes&H\_comes\_QL1\_v1&\\
+homo\_sapiens&GRCh38&\\
+hucho\_hucho&ASM331708v1&\\
+ictalurus\_punctatus&IpCoco\_12&\\
+ictidomys\_tridecemlineatus&SpeTri20&\\
+jaculus\_jaculus&JacJac10&\\
+kryptolebias\_marmoratus&ASM164957v1&\\
+labrus\_bergylta&BallGen\_V1&\\
+larimichthys\_crocea&L\_crocea\_20&\\
+lates\_calcarifer&ASB\_HGAPassembly\_v1&\\
+latimeria\_chalumnae&LatCha1&\\
+lepidothrix\_coronata&Lepidothrix\_coronata-10&\\
+lepisosteus\_oculatus&LepOcu1&\\
+lonchura\_striata\_domestica&LonStrDom1&\\
+loxodonta\_africana&loxAfr3&\\
+macaca\_fascicularis&Macaca\_fascicularis\_50&\\
+macaca\_nemestrina&Mnem\_10&\\
+manacus\_vitellinus&ASM171598v2&\\
+mandrillus\_leucophaeus&le\_10&\\
+marmota\_marmota\_marmota&marMar21&\\
+mastacembelus\_armatus&fMasArm11&\\
+meleagris\_gallopavo&Turkey\_201&\\
+melopsittacus\_undulatus&Melopsittacus\_undulatus\_63&\\
+meriones\_unguiculatus&MunDraft-v10&\\
+mesocricetus\_auratus&MesAur10&\\
+microcebus\_murinus&Mmur\_30&\\
+microtus\_ochrogaster&MicOch10&\\
+mola\_mola&ASM169857v1&\\
+monopterus\_albus&M\_albus\_10&\\
+mus\_caroli&CAROLI\_EIJ\_v11&\\
+mus\_musculus&GRCm38&\\
+mus\_pahari&PAHARI\_EIJ\_v11&\\
+mus\_spicilegus&MUSP714&\\
+mus\_spretus&SPRET\_EiJ\_v1&\\
+mustela\_putorius\_furo&MusPutFur10&\\
+myotis\_lucifugus&Myoluc20&\\
+neolamprologus\_brichardi&NeoBri10&\\
+neovison\_vison&v01&\\
+nomascus\_leucogenys&Nleu\_30&\\
+notamacropus\_eugenii&Meug\_10&\\
+notechis\_scutatus&TS10Xv2-PRI&\\
+ochotona\_princeps&OchPri20-Ens&\\
+octodon\_degus&OctDeg10&\\
+oreochromis\_niloticus&Orenil10&\\
+ornithorhynchus\_anatinus&OANA5&\\
+oryctolagus\_cuniculus&OryCun20&\\
+oryzias\_latipes&ASM223467v1&\\
+otolemur\_garnettii&OtoGar3&\\
+ovis\_aries&Oar\_v31&\\
+pan\_paniscus&panpan11&\\
+panthera\_pardus&PanPar10&\\
+panthera\_tigris\_altaica&PanTig10&\\
+pan\_troglodytes&Pan\_tro\_30&\\
+papio\_anubis&Panu\_30&\\
+parambassis\_ranga&fParRan21&\\
+paramormyrops\_kingsleyae&PKINGS\_01&\\
+parus\_major&Parus\_major11&\\
+\hline
+\end{tabular}}
+\end{table}
+\clearpage
+
+\begin{table}[!h]
+\resizebox*{!}{\versionscale\textheight}{%
+\centering
+\begin{tabular}{@{}lll@{}}
+\hline
+Ensembl98 name&Version info&Test\\
+\hline
+pelodiscus\_sinensis&PelSin\_10&\\
+periophthalmus\_magnuspinnatus&fa&\\
+peromyscus\_maniculatus\_bairdii&HU\_Pman\_21&\\
+petromyzon\_marinus&Pmarinus\_70&\\
+phascolarctos\_cinereus&phaCin\_unsw\_v41&\\
+piliocolobus\_tephrosceles&ASM277652v2&\\
+poecilia\_formosa&PoeFor\_512&\\
+poecilia\_latipinna&P\_latipinna-10&\\
+poecilia\_mexicana&P\_mexicana-10&\\
+poecilia\_reticulata&Guppy\_female\_10\_MT&\\
+pogona\_vitticeps&pvi11&\\
+pongo\_abelii&PPYG2&\\
+procavia\_capensis&proCap1&\\
+prolemur\_simus&Prosim\_10&\\
+propithecus\_coquereli&Pcoq\_10&\\
+pteropus\_vampyrus&pteVam1&\\
+pygocentrus\_nattereri&Pygocentrus\_nattereri-102&\\
+rhinopithecus\_bieti&ASM169854v1&\\
+rhinopithecus\_roxellana&Rrox\_v1&\\
+saimiri\_boliviensis\_boliviensis&SaiBol10&\\
+salvator\_merianae&HLtupMer3&\\
+sarcophilus\_harrisii&DEVIL70&\\
+scleropages\_formosus&ASM162426v1&\\
+seriola\_dumerili&Sdu\_10&\\
+seriola\_lalandi\_dorsalis&Sedor1&\\
+sorex\_araneus&COMMON\_SHREW1&\\
+spermophilus\_dauricus&ASM240643v1&\\
+sphenodon\_punctatus&ASM311381v1&\\
+stegastes\_partitus&Stegastes\_partitus-102&\\
+sus\_scrofa&Sscrofa111&\\
+taeniopygia\_guttata&taeGut324&\\
+takifugu\_rubripes&FUGU5&\\
+tetraodon\_nigroviridis&TETRAODON8&\\
+theropithecus\_gelada&Tgel\_10&\\
+tupaia\_belangeri&TREESHREW&\\
+tursiops\_truncatus&turTru1&\\
+urocitellus\_parryii&ASM342692v1&\\
+ursus\_americanus&ASM334442v1&\\
+ursus\_maritimus&UrsMar\_10&\\
+vicugna\_pacos&vicPac1&\\
+vombatus\_ursinus&bare-nosed\_wombat\_genome\_assembly&\\
+vulpes\_vulpes&VulVul22&\\
+xenopus\_tropicalis&Xenopus\_tropicalis\_v91&\\
+xiphophorus\_couchianus&Xiphophorus\_couchianus-401&\\
+xiphophorus\_maculatus&X\_maculatus-50-male&\\
+apteryx\_rowi&aptRow1&\checkmark\\
+calidris\_pugnax&ASM143184v1&\checkmark\\
+choloepus\_hoffmanni&choHof1&\checkmark\\
+cyanistes\_caeruleus&cyaCae2&\checkmark\\
+danio\_rerio&GRCz11&\checkmark\\
+gadus\_morhua&gadMor1&\checkmark\\
+junco\_hyemalis&ASM382977v1&\checkmark\\
+macaca\_mulatta&Mmul\_10&\checkmark\\
+maylandia\_zebra&M\_zebra\_UMD2a&\checkmark\\
+monodelphis\_domestica&ASM229v1&\checkmark\\
+nannospalax\_galili&galili\_v10&\checkmark\\
+nothoprocta\_perdicaria&notPer1&\checkmark\\
+numida\_meleagris&NumMel10&\checkmark\\
+oryzias\_melastigma&Om\_v07RACA&\checkmark\\
+pundamilia\_nyererei&PunNye10&\checkmark\\
+rattus\_norvegicus&Rnor\_60&\checkmark\\
+scophthalmus\_maximus&ASM318616v1&\checkmark\\
+serinus\_canaria&SCA1&\checkmark\\
+zonotrichia\_albicollis&Zonotrichia\_albicollis-101&\checkmark\\
+\hline
+\end{tabular}}
+\caption{Exact animal genome and annotation versions as download from Ensembl98
+Genomes not included were redundant (same species,
+different accession, assembly or version) with one of the above genomes.}
+\label{suptab:downloads_animals}
+\end{table}
+\clearpage
+
+\begin{table}[!h]
+\resizebox{0.7\textwidth}{!}{%
+\centering
+\begin{tabular}{@{}lllll@{}}
+\hline
+Species Name&Phytozome name&Phytozome ID&Version&Test\\
+\hline
+Ananas comosus&Acomosus&321&v3&\\
+Amaranthus hypochondriacus&Ahypochondriacus&459&v2.1&\\
+Asparagus officinalis&Aofficinalis&498&V1.1&\\
+Arabidopsis thaliana&Athaliana&167&TAIR10&\\
+Amborella trichopoda&Atrichopoda&291&v1.0&\\
+Brachypodium distachyon&Bdistachyon&314&v3.1&\\
+Brassica oleracea&Boleraceacapitata&446&v1.0&\\
+Cicer arietinum&Carietinum&492&v1.0&\\
+Citrus clementina&Cclementina&182&v1.0&\\
+Capsella grandiflora&Cgrandiflora&266&v1.1&\\
+Carica papaya&Cpapaya&113&ASGPBv0.4&\\
+Chenopodium quinoa&Cquinoa&392&v1.0&\\
+Chlamydomonas reinhardtii&Creinhardtii&281&v5.6&\\
+Capsella rubella&Crubella&474&v1.1&\\
+Citrus sinensis&Csinensis&154&v1.1&\\
+Coccomyxa subellipsoidea C-169&CsubellipsoideaC169&227&v2.0&\\
+Chromochloris zofingiensis&Czofingiensis&461&v5.2.3.2&\\
+Daucus carota&Dcarota&388&v2.0&\\
+Dunaliella salina&Dsalina&325&v1.0&\\
+Eucalyptus grandis&Egrandis&297&v2.0&\\
+Eutrema salsugineum&Esalsugineum&173&v1.0&\\
+Fragaria vesca&Fvesca&501&v2.0.a2&\\
+Glycine max&Gmax&508&Wm82.a4.v1&\\
+Gossypium raimondii&Graimondii&221&v2.1&\\
+Helianthus annuus&Hannuus&494&r1.2&\\
+Hordeum vulgare&Hvulgare&462&r1&\\
+Kalanchoe fedtschenkoi&Kfedtschenkoi&382&v1.1&\\
+Lactuca sativa&Lsativa&467&v5&\\
+Linum usitatissimum&Lusitatissimum&200&v1.0&\\
+Malus domestica&Mdomestica&491&v1.1&\\
+Manihot esculenta&Mesculenta&305&v6.1&\\
+Mimulus guttatus&Mguttatus&256&v2.0&\\
+Marchantia polymorpha&Mpolymorpha&320&v3.1&\\
+Micromonas pusilla&MpusillaCCMP1545&228&v3.0&\\
+Micromonas sp. RCC299&MspRCC299&229&v3.0&\\
+Medicago truncatula&Mtruncatula&285&Mt4.0v1&\\
+Olea europaea&Oeuropaea&451&v1.0&\\
+Ostreococcus lucimarinus&Olucimarinus&231&v2.0&\\
+Oryza sativa&Osativa&323&v7.0&\\
+Oropetium thomaeum&Othomaeum&386&v1.0&\\
+Prunus persica&Ppersica&298&v2.1&\\
+Populus trichocarpa&Ptrichocarpa&444&v3.1&\\
+Porphyra umbilicalis&Pumbilicalis&456&v1.5&\\
+Ricinus communis&Rcommunis&119&v0.1&\\
+Sorghum bicolor&Sbicolor&454&v3.1.1&\\
+Setaria italica&Sitalica&312&v2.2&\\
+Solanum lycopersicum&Slycopersicum&514&ITAG3.2&\\
+Selaginella moellendorffii&Smoellendorffii&91&v1.0&\\
+Spirodela polyrhiza&Spolyrhiza&290&v2&\\
+Solanum tuberosum&Stuberosum&448&v4.03&\\
+Theobroma cacao&Tcacao&233&v1.1&\\
+Vitis vinifera&Vvinifera&457&v2.1&\\
+Zostera marina&Zmarina&324&v2.2&\\
+Zea mays&Zmays&493&RefGen\_V4&\\
+Volvox carteri&Vcarteri&317&v2.1&\checkmark\\
+Cucumis sativus&Csativus&122&v1.0&\checkmark\\
+Musa acuminata&Ppatens&318&v3.3&\checkmark\\
+Physcomitrella patens&Macuminata&304&v1&\checkmark\\
+Triticum aestivum&Taestivum&296&v2.2&\checkmark\\
+Arabidopsis lyrata&Alyrata&384&v2.1&\checkmark\\
+\hline
+\end{tabular}}
+\caption{Exact plant genome and annotation versions as download from Phytozome13.
+Genomes not included were either still under embargo or redundant (same species,
+different accession, assembly or version) with one of the above genomes.}
+\label{suptab:downloads_plants}
+\end{table}
+\clearpage
+% meta data table?
+ 
 
 \section{Model Evaluation by Species}
 \label{ssec:generalization}
@@ -406,8 +654,8 @@ xiphophorus\_maculatus & 0.8854 & 0.9156 & 0.5964 & 0.8368 & 0.871 & 0.8671 & 0.
 zonotrichia\_albicollis & 0.9216 & 0.9482 & 0.382 & 0.8601 & 0.8667 & 0.8663 & 0.857 \\
 \hline
 \end{tabular}}
-\label{suptab:generalization_animals}
 \caption{Detailed results for all animal genomes.}
+\label{suptab:generalization_animals}
 \end{table}
 
 \begin{figure}[!h]
@@ -505,8 +753,8 @@ Zostera\_marina & 0.9148 & 0.9463 & 0.5865 & 0.9052 & 0.8261 & 0.8571 & 0.8387 \
 Zea\_mays & 0.9843 & 0.9931 & 0.6073 & 0.886 & 0.854 & 0.8643 & 0.8406 \\
 \hline
 \end{tabular}}
-\label{suptab:generalization_plants}
 \caption{Detailed results for all plant genomes.}
+\label{suptab:generalization_plants}
 \end{table}
 
 \clearpage
@@ -564,13 +812,130 @@ Intron & 1.2 & 0.3 \\
 \caption{The class weights used during training. We found this parameter to be highly impactful for establishing a more balanced performance across the different classes. These are the only hyperparameters that are different for animals and plants. The exact weights were determined manually and partially reflect the difference in the class distributions of both datasets (see Table [?]).}
 \label{suptab:classweights}
 \end{table}
+\newpage
+
+\section{RNAseq Evaluation Setup}
+\label{sec:rnaseq_setup}
+% selecting species for RNAseq
+\begin{figure}[!h]
+\label{supfig:rna_select_animals}
+\centerline{\includegraphics[width=1.0\textwidth]{images/RNAseq_animals_fit}}
+\caption{Visualizes how the performance of Helixer (in consideration of Augustus' performance)
+was used to select three animal species (larger points) for detailed RNAseq analysis. The 
+species were chosen to have good, medium and poor performance; invertebrates (diamonds) were
+not considered as the generalizability and recommended use of the Helixer animal model
+currently only extends to vertebrates; candidate species were checked for the availibility of
+stranded, paired-end RNAseq data and skipped if none was available.}
+\end{figure}
+
+\clearpage
+\begin{figure}[!hbt]
+\label{supfig:rna_select_plants}
+\centerline{\includegraphics[width=0.5\textwidth]{images/RNAseq_plants}}
+\caption{Visualizes how the performance of Helixer (in consideration of Augustus' performance)
+was used to select three plant species (larger points) for detailed RNAseq analysis. The 
+species were chosen to have good, medium and poor performance; algae (diamonds) were
+not considered as the generalizability and recommended use of the Helixer animal model
+currently only extends to higher plants; candidate species were checked for the availibility of
+stranded, paired-end RNAseq data and skipped if none was available.}
+\end{figure}
+\clearpage
+
+% RNAseq tested samples table
+\begin{table}[!h]
+\resizebox{0.8\textwidth}{!}{%
+\centering
+\begin{tabular}{@{}lll|lll|lll|lll@{}}
+\hline
+Samples&HQ&S&Samples&HQ&S&Samples&HQ&S&Samples&HQ&S\\
+\hline
+\\
+\textit{P. anubis}\\
+\hline
+SRS3122053&&&SRS3122094&\checkmark&\checkmark&SRS3270781&&&SRS3270847&&\\
+SRS3122057&\checkmark&\checkmark&SRS3122111&&&SRS3270785&&&SRS3270853&&\\
+SRS3122063&\checkmark&\checkmark&SRS3270734&&&SRS3270808&&&SRS3270858&&\\
+SRS3122070&&&SRS3270735&&&SRS3270811&&&SRS3270862&&\\
+SRS3122074&&&SRS3270737&&&SRS3270812&&&SRS3270863&&\\
+SRS3122079&\checkmark&\checkmark&SRS3270738&&&SRS3270821&&&SRS3270870&&\\
+SRS3122081&&&SRS3270746&&&SRS3270824&&&SRS3270872&&\\
+SRS3122088&&&SRS3270751&&&SRS3270839&&&SRS3270880&&\\
+SRS3122092&\checkmark&\checkmark&SRS3270763&&&SRS3270840&&&SRS819311&\checkmark&\checkmark\\
+SRS3122093&&&SRS3270773&&&SRS3270841&&&SRS819317&\checkmark&\checkmark\\
+\hline
+\\
+\textit{E. caballus}\\
+\hline
+ERS1517592&&&ERS2382444&&&ERS2681771&&&SRS2552997&\checkmark&\checkmark\\
+ERS1517600&&&ERS2681720&\checkmark&\checkmark&ERS2681772&\checkmark&\checkmark&SRS2553004&\checkmark&\checkmark\\
+ERS1517608&&&ERS2681730&&&ERS2681775&&&SRS2770963&&\\
+ERS1517617&&&ERS2681733&&&ERS3563898&&&SRS2770972&&\\
+ERS1517625&&&ERS2681734&&&SRS1102326&&&SRS3347177&&\\
+ERS1517633&&&ERS2681740&&&SRS1102328&&&SRS3347182&&\\
+ERS1517641&&&ERS2681742&&&SRS1102336&&&SRS4826859&&\\
+ERS2382439&&&ERS2681750&&&SRS2158774&&&SRS4826867&&\\
+ERS2382440&&&ERS2681754&&&SRS2158777&&&SRS4890460&\checkmark&\checkmark\\
+ERS2382442&&&ERS2681758&&&SRS2158788&&&SRS5330332&\checkmark&\checkmark\\
+ERS2382443&&&ERS2681770&&&SRS2552988&\checkmark&\checkmark&SRS5330340&&\\
+\hline
+\\
+\textit{P. marinus}\\
+\hline
+SRS5315360&\checkmark&\checkmark&SRS5315363&\checkmark&&SRS5315366&\checkmark&&SRS5315369&\checkmark&\\
+SRS5315361&\checkmark&\checkmark&SRS5315364&\checkmark&\checkmark&SRS5315367&\checkmark&\checkmark&&&\\
+SRS5315362&\checkmark&\checkmark&SRS5315365&\checkmark&\checkmark&SRS5315368&\checkmark&\checkmark&&&\\
+\hline
+\\
+\textit{M. esculenta}\\
+\hline
+SRS1608507&&&SRS1610089&\checkmark&\checkmark&SRS1610201&&&SRS946172&&\\
+SRS1608510&\checkmark&\checkmark&SRS1610128&\checkmark&\checkmark&SRS1610205&\checkmark&\checkmark&SRS946227&&\\
+SRS1610036&&&SRS1610150&&&SRS1610207&&&SRS946633&&\\
+SRS1610041&&&SRS1610177&&&SRS1610208&&&SRS946650&&\\
+SRS1610076&\checkmark&\checkmark&SRS1610181&&&SRS945853&&&SRS946703&&\\
+SRS1610079&\checkmark&\checkmark&SRS1610187&&&SRS946078&&&SRS947897&&\\
+SRS1610084&\checkmark&\checkmark&SRS1610197&&&SRS946138&&&&&\\
+\hline
+\\
+\textit{M. truncatula}\\
+\hline
+ERS1556003&&&SRS1948297&&&SRS3700721&\checkmark&&SRS4425365&\checkmark&\\
+ERS1556006&&&SRS1948300&&&SRS3700725&\checkmark&\checkmark&SRS4538246&&\\
+ERS1556009&&&SRS1948304&\checkmark&&SRS4425341&&&SRS4538249&&\\
+ERS1556012&&&SRS1948306&&&SRS4425343&\checkmark&&SRS5045319&&\\
+ERS1556015&&&SRS1948309&&&SRS4425346&\checkmark&\checkmark&SRS5045322&&\\
+ERS1556018&\checkmark&&SRS1948313&\checkmark&\checkmark&SRS4425347&\checkmark&\checkmark&SRS5045325&&\\
+ERS1556021&&&SRS1948315&&&SRS4425350&\checkmark&&SRS5045328&&\\
+ERS1556024&&&SRS3700712&\checkmark&&SRS4425353&&&SRS5045330&&\\
+SRS1736395&\checkmark&\checkmark&SRS3700715&\checkmark&&SRS4425356&\checkmark&\checkmark&SRS5045334&&\\
+SRS1736398&\checkmark&&SRS3700717&&&SRS4425357&&&SRS5045337&&\\
+SRS1948293&&&SRS3700718&\checkmark&\checkmark&SRS4425364&\checkmark&&&&\\
+\hline
+\\
+\textit{T. cacao}\\
+\hline
+SRS5244538&\checkmark&&SRS5244546&\checkmark&\checkmark&SRS5244554&&&SRS5244562&\checkmark&\checkmark\\
+SRS5244539&&&SRS5244547&&&SRS5244555&&&SRS5244563&&\\
+SRS5244540&&&SRS5244548&&&SRS5244556&\checkmark&\checkmark&SRS5244564&&\\
+SRS5244541&&&SRS5244549&&&SRS5244557&\checkmark&&SRS5244565&\checkmark&\checkmark\\
+SRS5244542&&&SRS5244550&&&SRS5244558&&&SRS5244566&&\\
+SRS5244543&\checkmark&\checkmark&SRS5244551&&&SRS5244559&&&SRS5244567&&\\
+SRS5244544&\checkmark&\checkmark&SRS5244552&&&SRS5244560&&&SRS5244568&&\\
+SRS5244545&&&SRS5244553&\checkmark&\checkmark&SRS5244561&&&&&\\
+\hline
+\end{tabular}}
+\caption{List of RNAseq samples that were selected for processing, whether they were of high quality (HQ), and 
+finally, whether they were ultimately selected (S) for merging and use in coverage calculation.}
+\label{suptab:rnaseq_samples}
+\end{table}
+\clearpage
+%
 
 
 \newpage
 \section{Longer Sequence Input}
 \label{sec:longer}
 \begin{table}[!h]
-\label{suptab:prediction_lengths}
 %\renewcommand\thetable{S5}
 \centering
 \begin{tabular}{@{}lll@{}}
@@ -589,6 +954,7 @@ Insecta & 20.000 \\
 \hline
 \end{tabular}
 \caption{Input sequence length for each phylogenetic class present in our animal dataset. As a rule of thumb, we found the input length should be proportional to the average gene length of the class while staying in the interval [20.000, 200.000]. If the N75 of a specific species was less than twice as high as the supposed sequence length it was lowered until either this criteria as met or a length of 50.000 was reached. }
+\label{suptab:prediction_lengths}
 \end{table}
 
 \newpage
@@ -667,7 +1033,6 @@ The following plots show the effect of overlapping for each species we worked wi
 \section{Training Data statistics}
 \label{sec:training_data}
 \begin{table}[!h]
-\label{suptab:genome_stats}
 %\renewcommand\thetable{S6}
 \centering
 \begin{tabular}{@{}lll@{}}
@@ -684,6 +1049,7 @@ Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 \hline
 \end{tabular}
 \caption{The description of Table [?] applies here as well.}  % 2
+\label{suptab:genome_stats}
 \end{table}
 
 
@@ -691,7 +1057,6 @@ Fraction of class Intron  & 0.207 (+- 0.023) & 0.083 (+- 0.037) \\
 \section{Dilated CNN Baseline Network Search}
 \label{sec:dcnn}
 \begin{table}[!h]
-\label{suptab:dcnn_xval}
 %\renewcommand\thetable{S7}
 \centering
 \begin{tabular}{@{}ll@{}}
@@ -709,10 +1074,10 @@ Learning Rate & \{1e-3, 1e-4\}\\
 \hline
 \end{tabular}
 \caption{Above are all parameters used during neural architecture search for the dilated CNN baseline. The same overall space was used for plant and animal data. We did, however, run multiple distinct searches that sometimes only operated over a subset of the given parameters. This was done as those seemed to be the most promising. We for example restricted the search space of the number of LSTM layers to the highest 3 values in later runs. Decisions were guided by the Genic F1 on the validation set of exactly the same data we trained our final LSTM models with. Runs with a Genic F1 below 0.5 after 10 epochs were stopped and the overall maximum epoch was 15. The performances seemed to be leveling off well before that. The batch size used for almost all runs was 32, the dilation was capped to 81 and the size of each fully connected layer was fixed at 128. New parameters where chosen at random. The implementation and parameter space is very roughly based on \citep{gupta2017dilated} and can be found in the Helixer source code repository. In total, we trained 30 models for the animals and 48 with the plant data.}
+\label{suptab:dcnn_xval}
 \end{table}
 
 \begin{table}[!h]
-\label{suptab:dcnn_params}
 %\renewcommand\thetable{S8}
 \centering
 \begin{tabular}{@{}lll@{}}
@@ -730,14 +1095,17 @@ Learning Rate & 1e-4 & 1e-3\\
 \hline
 \end{tabular}
 \caption{The parameters of the dilated CNN model that performed the best according to the Genic F1 of the validation data of the respective training genomes. The best animal model has circa 4.6 million parameters; the best plant model around 2.1 million.}
+\label{suptab:dcnn_params}
 \end{table}
 
 \newpage
 \section{Evaluation against RNAseq}
 \label{sec:rnaseq_eval}
 
+
 \begin{figure}[!h]
 \label{supfig:cov_example_02}
+
 %\renewcommand\thefigure{S7}
 \centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_002}}
 \caption{
@@ -865,9 +1233,9 @@ for intron, and ``IG" stands for intergenic.
 \end{figure}
 
 
-
+\clearpage
 \renewcommand\refname{Supplemental References}
 \bibliographystyle{natbib}
 \bibliography{literature}
-
+\clearpage
 \end{document}

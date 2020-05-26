@@ -17,6 +17,10 @@
 \newcounter{supsec}
 \newenvironment{supsec}[1][]{\refstepcounter{supsec}}
 
+\newcounter{supdata}
+\newenvironment{supdata}[1][]{\refstepcounter{supdata}}
+
+
 \begin{document}
 \firstpage{1}
 
@@ -122,30 +126,18 @@ is publically available.
 The foundation of our work are 192 animal and 60 plant genomes. The data of each 
 genome consists of the latest publically available genomic assembly in form of a 
 FASTA file and the latest annotation in the GFF format. One genome for each species of animal 
-in EnsemblMetazoa 45 \citep{howe2020ensembl} as well as all non-embargoed plant
-species from the JGI Phytosome 13 database \citep{goodstein2012phytozome}; exact 
-genomes used are list here \ref{suptab:source_data}. % add a supplemental table with names and versions
+in EnsemblMetazoa 45 (\cite{howe2020ensembl}; Table S\ref{suptab:downloads_animals}) 
+as well as all non-embargoed plant species from the JGI Phytosome 13 database 
+(\cite{goodstein2012phytozome}; Table S\ref{suptab:downloads_plants}); exact 
+genomes used are list here . % add a supplemental table with names and versions
 Data was downloaded on 15/10/2019 and 29/03/2019 for animals and plants respectively. 
 Both data groups were used seperately during training as well as during evaluation. 
-
-Both to divide genomes into training, validation and test sets, as well as to understand
-performance, we needed a way to evaluate genome and annotation quality.
-Metadata was generated for each genome, including: basic length and 
-composition statistics \citep{gurevich2013quast}; k-mer content \citep{marccais2011fast};
-conserved gene content of the genome, transcriptome, and proteome (\cite{simao2015busco};
-file conversion with gffread from \cite{trapnell2012differential}; 
-and finally simple counts of genic features from the gff files. In particular, 
-we considered the following features of the metadata when judging the quality of a genome and it's 
-annotation: assembly contiguity (N50 / genome size); retention in the proteome 
-of detected conserved orthogroups (BUSCOs) that were identified in the genome; and
-the presence of UTRs and alternative splicing as estimated by the gff feature-counts.
-Finally this metadata was combined with researcher knowledge of model species to guide genome
-selection as necessary.
 
 At the start of our work we split both genome groups into {\it training genomes} and 
 {\it test genomes}. The test genome groups are made up of 19 and 6 genomes, 
 respectively, and were chosen to be of decent quality and diversity based on collected 
-metadata while also representing a broad phylogenetic spread. 
+metadata (see section S\ref{ssec:data_prep} and Dataset S\ref{supdata:metadata}) 
+while also representing a broad phylogenetic spread. 
 
 For both feasibility and iterative cross-species generalization validattion, we
 selected only some of the remaining genomes for direct training.
@@ -356,8 +348,8 @@ parameter. For plants, the entire retraining could be performed as above; howeve
 we randomly selected only half the BUSCO-generated training set, which resulted in a training set 
 size and runtime comparable to the plants (~400 genes and several days per species). For animals
 the training was carried out with the subsetted training file and using the following scripts provided
-by AUGUSTUS. An untrained model was setup with "new\_species.pl", and the model was fit by running
-"etraining" before and after the major hyper-parameter optimization with "optimize\_augustus.pl".
+by AUGUSTUS. An untrained model was setup with ``new\_species.pl", and the model was fit by running
+"etraining" before and after the major hyper-parameter optimization with ``optimize\_augustus.pl".
 Using the trained model for each species, we ran the main prediction ("augustus") with ``--UTR=off"
 and ``--gff3=on". The gffs produced by AUGUSTUS were imported into GeenuFF and exported as h5
 files in the same manor as the reference, allowing direct comparison with reference and 
@@ -375,7 +367,7 @@ AUGUSTUS or HMMs as AUGUSTUS was used as the {\it de novo} gene caller for the r
 many plant species % (e.g. {\it Arabidopsis lyrata}, \cite{rawat2015improving}; 
 %{\it Asparagus officinalis}, 
 %\cite{harkess2017asparagus}; and {\it Chenopodium quinoa}, \cite{jarvis2017genome})  
-and other HMM-based tools for many more %(e.g. {\it Citrus clementina}, \cite{wu2018genomics}; and
+and other HMM-based tools for many more. %(e.g. {\it Citrus clementina}, \cite{wu2018genomics}; and
 %{\it Capsella grandiflora}, \cite{slotte2013capsella}). 
 The Ensemble animal dataset by and large
 used the Ensembl annotation pipeline, which includes no HMM-based tool.
@@ -597,7 +589,9 @@ phylogenetic groups (land plants and vertebrates, respectively).
 Within these groups, this eliminates the dependency on retraining and the
 expertise and data required therefore. Production of comparable, single-method
 annotations for broad groups has the potential to greatly facilitate downstream
-analyses which suffer when data is heterogeneous \citep{}.
+analyses; for instance it could avoid some of the inconsistency and errors that
+are otherwise seen in RNAseq analyses when different annotations are used 
+\citep{zhao2015comprehensive,torres2016robust}.
 
 We found our models to be highly sensitive to the training genomes we chose. A 
 different set could lead to a significant shift in strengths and weaknesses of the 
@@ -637,22 +631,25 @@ This work has been supported by the... \vspace*{-12pt}
 % :'<,'>s/$/\\end{supfig}/g
 % and similar for tables/sections
 % tables
-\begin{suptab}\label{suptab:rnaseq_samples}\end{suptab}
+
+\begin{suptab}\label{suptab:downloads_animals}\end{suptab}
+\begin{suptab}\label{suptab:downloads_plants}\end{suptab}
 \begin{suptab}\label{suptab:generalization_animals}\end{suptab}
 \begin{suptab}\label{suptab:generalization_plants}\end{suptab}
 \begin{suptab}\label{suptab:params}\end{suptab}
 \begin{suptab}\label{suptab:classweights}\end{suptab}
+\begin{suptab}\label{suptab:rnaseq_samples}\end{suptab}
 \begin{suptab}\label{suptab:prediction_lengths}\end{suptab}
 \begin{suptab}\label{suptab:genome_stats}\end{suptab}
 \begin{suptab}\label{suptab:dcnn_xval}\end{suptab}
 \begin{suptab}\label{suptab:dcnn_params}\end{suptab}
 % figures
-\begin{supfig}\label{supfig:rna_select_animals}\end{supfig}
-\begin{supfig}\label{supfig:rna_select_plants}\end{supfig}
 \begin{supfig}\label{supfig:phylogeny_f1_animals}\end{supfig}
 \begin{supfig}\label{supfig:phylogeny_differences_animals}\end{supfig}
 \begin{supfig}\label{supfig:phylogeny_f1_plants}\end{supfig}
 \begin{supfig}\label{supfig:phylogeny_differences_plants}\end{supfig}
+\begin{supfig}\label{supfig:rna_select_animals}\end{supfig}
+\begin{supfig}\label{supfig:rna_select_plants}\end{supfig}
 \begin{supfig}\label{supfig:overlapping_animals}\end{supfig}
 \begin{supfig}\label{supfig:overlapping_plants}\end{supfig}
 \begin{supfig}\label{supfig:cov_example_02}\end{supfig}
@@ -666,12 +663,14 @@ This work has been supported by the... \vspace*{-12pt}
 \begin{supsec}\label{ssec:data_prep}\end{supsec}
 \begin{supsec}\label{ssec:generalization}\end{supsec}
 \begin{supsec}\label{ssec:hyperparameters}\end{supsec}
+\begin{supsec}\label{ssec:rnaseq_setup}\end{supsec}
 \begin{supsec}\label{ssec:longer}\end{supsec}
 \begin{supsec}\label{ssec:overlapping}\end{supsec}
 \begin{supsec}\label{ssec:training_data}\end{supsec}
 \begin{supsec}\label{ssec:dcnn}\end{supsec}
 \begin{supsec}\label{ssec:rnaseq_eval}\end{supsec}
-
+% datasets
+\begin{supdata}\label{supdata:metadata}\end{supdata}  % just a placeholder for the CSV and where it's referenced
 
 
 \end{document}
