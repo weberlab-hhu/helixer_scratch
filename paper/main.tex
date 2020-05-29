@@ -139,11 +139,8 @@ respectively, and were chosen to be of decent quality and diversity based on col
 metadata (see section S\ref{ssec:data_prep} and Dataset S\ref{supdata:metadata}) 
 while also representing a broad phylogenetic spread. 
 
-For both feasibility and the frequent validation of cross-species generalization during
-development, we
-selected only some of the remaining genomes for direct training.
-The selection of training genomes also requires balancing multiple conflicting 
-tradeoffs in general. On the one hand, we want to train with as much data as possible, but 
+For the selection of training genomes we had to balance multiple conflicting 
+tradeoffs. On the one hand, we want to train with as much data as possible, but 
 on the other
 not all data has sufficient quality to enable a powerful generalization. It is 
 also very desirable to have diverse training genomes with a broad phylogenetic spread, 
@@ -222,8 +219,8 @@ missing UTR and GeenuFF marks a potentially large intergenic region for it. Tabl
 For the training itself, we divide each continous genomic sequence into 20,000 bp 
 long subsequences, for which one-hot vectors of the base pairs and annotations 
 are generated and respectively used as input and label for the neural network 
-together with the sample weights. We append zero padding if the sequences (or
-sequence ends) are shorter than 20,000 bp. 
+together with the sample weights. We append zero padding if the subsequences  
+are shorter than 20,000 bp. 
 If a subsequence is fully marked as erroneous, we exclude it from all analyses. 
 
 \begin{table}[!htb]
@@ -357,7 +354,7 @@ by AUGUSTUS. An untrained model was setup with ``new\_species.pl", and the model
 Using the trained model for each species, we ran the main prediction ("augustus") with ``--UTR=off"
 and ``--gff3=on". The gffs produced by AUGUSTUS were imported into GeenuFF and exported as HDF5
 files in the same manor as the reference, allowing for the direct comparison with both the reference and 
-Helixer predictions. While tenable for some 237 species, this method allowed neither training
+Helixer predictions. While still feasible for some 237 species, this method allowed neither training
 nor prediction of UTR regions with AUGUSTUS, so the metric Subgenic F1, which disregards the class UTR,
 was used for all comparisons between AUGUSTUS and Helixer (see Section \ref{sec:metrics} for more details) .
 
@@ -520,7 +517,7 @@ to make finalized single predictions, but instead output basewise probabilities.
 We see that the model exibits higher uncertainty around transitions between annotation 
 classes, for instance between UTR and CDS, or more dramatically between UTR and 
 intergenic even where Helixer predictions closely match the reference and RNAseq data (a). 
-Helixer's uncertainty around UTR <-> intergenic transitions may relate to a
+Helixer's uncertainty around transitions from UTR to intergenic regions may relate to a
 fundamentally harder problem (there is no conserved motif at the site as is observed
 for splice sites and start/stop codons), lack of a precise one 
 base pair biological site \citep{carninci2006genome,hon2013quantification}
@@ -533,11 +530,11 @@ annotation, it assigned a low but non-trivial probability to the RNAseq-supporte
 exon/intron pattern (Figures \ref{fig:cov_example_main}b-c,S\ref{supfig:cov_example_02}c). However, in the extreme,
 there are cases where the Helixer model exibits substantial indecision or confusion 
 and shifts gradually between classes with no single class receiving a high probability 
-for extended stretches (Figures S\ref{supfig:cov_example_02}c, S\ref{supfig:cov_example_02}c-d). 
-Notably, in one of the examples (S\ref{supfig:cov_example_02}d))
+for extended stretches (Figures S\ref{supfig:cov_example_02}c-d). 
+Notably, in one of the examples (Figure S\ref{supfig:cov_example_02}d)
 the RNAseq shows evidence of alternative splicing; 
-and in another (S\ref{supfig:cov_example_02}c) Helixer's
-prediction falls between that of the reference and AUGUSTUS.
+and in another (Figure S\ref{supfig:cov_example_02}c) Helixer's
+prediction falls between that of the reference and of AUGUSTUS.
 
 \begin{figure}[hbt]
 \label{fig:average_vs_augustus}
@@ -551,23 +548,24 @@ while the remaining bars show paired conflicts. ``Ntrn" stand
 for intron, and ``IG" stands for intergenic.}
 \end{figure}
 
-Coverage and Spliced coverage were broken down by the confusion matrix (of both
-Helixer vs AUGUSTUS and Helixer vs the reference) for all genomes (Figure \ref{fig:average_vs_augustus}). % H vs A main, H vs R supp
-Where tools were in agreement (far left), coverage and spliced coverage closely matched
-expectations. Specifically for CDS:CDS and UTR:UTR most base pairs had some, and many
+Coverage and Spliced coverage were broken down by the confusion matrix of both
+Helixer vs AUGUSTUS as well as Helixer vs the reference for all genomes (Figure \ref{fig:average_vs_augustus}). % H vs A main, H vs R supp
+Where both tools agreee on far left in the figure, coverage and spliced coverage closely matched expectations. 
+Specifically for CDS:CDS and UTR:UTR most base pairs had some, and many
 had moderate or high coverage. The same pattern was seen for intron:intron and spliced
 coverage. Finally, intergenic:intergenic showed only a small fraction of base pairs with 
 any of either coverage or spliced coverage. In all conflicts the amount of RNAseq support
 fell between the cases where tools agreed, indicating that all options were at least
 capable of finding weak-spots in the other annotations.
+
 In cases of conflict, Helixer's predictions were substantially more consistent with
-the RNAseq data than those of AUGUSTUS. Specifically, for base pairs where one tool said CDS and
+the RNAseq data than those of AUGUSTUS. Specifically, for base pairs where one tool predicted CDS and
 the other intergenic or intron, there was more coverage when 
-Helixer said CDS (Figure \ref{fig:average_vs_augustus}a). Similarly, for base pairs where one tool said intron and the other 
-CDS or intergenic, there was more spliced coverage when Helixer said intron (Figure \ref{fig:average_vs_augustus}b). 
+Helixer predicted CDS (Figure \ref{fig:average_vs_augustus}a). Similarly, for base pairs where one tool predicted intron and the other 
+CDS or intergenic, there was more spliced coverage when Helixer predicted intron (Figure \ref{fig:average_vs_augustus}b). 
 These patterns were consistent in direction but varied in magnitude in the individual species,
 with the expception of {\it P. marinus} where Helixer and AUGUSTUS performed comparably
-at differentiating CDS and introns (Figure S\ref{supfig:each_sp_vs_augustus}).
+at differentiating between CDS and intron regions (Figure S\ref{supfig:each_sp_vs_augustus}).
 
 RNAseq based comparison of Helixer and the reference was less clear cut.
 Averaged across species, helixer's predictions received slightly more support
@@ -582,7 +580,7 @@ AUGUSTUS; for the former the RNAseq confirms relatively weak performance for Hel
 for the latter RNAseq rather indicates a sub-par reference. 
 
 \section{Discussion}
-We indtroduce Helixer a novel, deep-learning based tool for gene annotation
+With Helixer, we introduce a novel, deep-learning based tool for gene annotation
 prediction. Helixer outperforms AUGUSTUS on base pair wise metrics and on 
 consistency with independent RNASeq data. 
 
