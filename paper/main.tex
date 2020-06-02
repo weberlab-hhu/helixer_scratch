@@ -55,7 +55,7 @@ present two novel post-processing techniques that each worked to further strengt
 our annotations and show in-depth results of an RNA-Seq based comparison of our 
 predictions.\\
 \textbf{Availability:} The source code of this work is available at 
-\url{https://github.com/weberlab-hhu/HelixerPrep} [change] under the GNU General 
+\url{https://github.com/weberlab-hhu/Helixer} under the GNU General 
 Public License v3.0.\\
 \textbf{Contact:} \href{andreas.weber@hhu.de}{andreas.weber@hhu.de}\\  
 \textbf{Supplementary information:} Supplementary data are available at 
@@ -81,9 +81,8 @@ State-of-the-art performance is achieved by higher order hidden markov models
 or SNAP \citep{johnson2008snap}. Their accuracy, however, leaves room for 
 improvement. By encoding possible states and transitions in a probalistic model, 
 designers of HMMs assume structure in the sequence that may limit its predictive 
-power. In practice HMMs have trouble generalizing across species and it seems 
-actual learning of underlying patterns is limited despite the fundamental ability 
-to do so being present \citep{}. 
+power. In practice HMMs have trouble generalizing across species and any actual learning 
+related to sequence motifs is limited to very short sequences that indicate state transitions.
 
 In the last decade, deep neural networks (DNN) have been applied with great success 
 in many areas of statistical modelling, including biology 
@@ -273,7 +272,7 @@ We use a 4-layer deep stacked BLSTM network with 256 units per layer and layer
 normalization \citep{ba2016layer} between each BLSTM layer to produce the 
 predictions in the form of a base pair wise classification. The model consists of 
 circa 5.4 million parameters and was implemented with the deep learning library 
-Keras \citep{chollet2015keras} on top of TensorFlow \citep{abadi2016tensorflow}. We 
+Keras (https://keras.io) on top of TensorFlow \citep{abadi2016tensorflow}. We 
 tested multiple different architectures before arriving at this model configuration, 
 including convolutional neural networks (CNN) and hybrid architectures. We also use 
 class weigths as the class frequencies are both unbalanced and 
@@ -289,7 +288,7 @@ maximum epochs were reached or Genic F1 stopped improving and training was inter
 The hyperparameters were optimized by a combination of manual and automatic 
 optimization. Automatic optimization was carried out by using either the TPE 
 algorithm \citep{bergstra2011algorithms}, random search or grid search depending on 
-the situation. We used NNI \citep{nni2019} to facilitate the search. All relevant 
+the situation. We used NNI (https://github.com/microsoft/nni) to facilitate the search. All relevant 
 hyperparameters can be found in Table S\ref{suptab:params} and 
 S\ref{suptab:classweights} or in the Helixer source code repository. 
 	
@@ -444,7 +443,7 @@ Best model (+ varied input length) + overlapping &  0.844  & 0.843  \\
 \end{tabular}}{{\it Note:} Values are the median in Subgenic F1 across all 
 validation and test genomes of the respective group. Varied input length was only 
 used in the animal case. The best model was chosen out of the eight models of the 
-ensemble for having the best performance in the reported setup.}
+ensemble for having the best performance on the validation set of the training genomes.}
 \end{table}
 
 \section{Results}
@@ -485,10 +484,10 @@ before in a model developed for gene annotation.
 \centerline{\includegraphics[width=\textwidth]{images/cov_examples/cov_example_main}}
 \caption{Four example helixer predictions in the context of RNAseq data, the reference,
 and AUGUSTUS' prediction for {\it M. esculenta}. The examples were chosen so
-that a) Helixer had high accuracy against the reference and the reference
-was supported by the RNAseq data, b) Helixer had high accuracy but the 
-reference was not supported by the RNAseq data, c) Helixer had low accuracy
-and the reference was supported by the RNAseq data, and d) helixer had low
+that {\bf a)} Helixer had high accuracy against the reference and the reference
+was supported by the RNAseq data, {\bf b)} Helixer had high accuracy but the 
+reference was not supported by the RNAseq data, {\bf c)} Helixer had low accuracy
+and the reference was supported by the RNAseq data, and {\bf d)} helixer had low
 accuracy but the reference was not supported by RNAseq data. Plotability was
 a major secondary consideration. Each subplot shows from top to
 bottom i) the natural log of the coverage (``cov", solid) and spliced coverage 
@@ -508,9 +507,9 @@ RNAseq coverage provides support for an
 exonic annotation (UTR or CDS), spliced coverages provides support for an 
 annotation of intron, and neither coverage nor spliced coverage is expected 
 for intergenic annotations. Looking at selected subsequences (Figure \ref{fig:cov_example_main}) % and supplemental figures.
-we identified cases where RNAseq supported both the annotations of the reference 
-and Helixer a), neither b), the reference, but not Helixer c),
-and Helixer, but not the reference d). 
+we identified cases where RNAseq supported a) both the annotations of the reference 
+and Helixer, b) neither, c) the reference, but not Helixer,
+and d) Helixer, but not the reference. 
 
 Helixer models do not yet have postprocessing
 to make finalized single predictions, but instead output basewise probabilities.
@@ -527,7 +526,7 @@ or noise in the reference, which we observed relative to the RNAseq data
 Helixer models also sometimes showed uncertainty for larger regions.
 In some cases, where Helixer did not receive RNAseq support for its highest probability
 annotation, it assigned a low but non-trivial probability to the RNAseq-supported 
-exon/intron pattern (Figures \ref{fig:cov_example_main}b-c,S\ref{supfig:cov_example_02}c). However, in the extreme,
+exon/intron pattern (Figures \ref{fig:cov_example_main}b-c, S\ref{supfig:cov_example_02}c). However, in the extreme,
 there are cases where the Helixer model exibits substantial indecision or confusion 
 and shifts gradually between classes with no single class receiving a high probability 
 for extended stretches (Figures S\ref{supfig:cov_example_02}c-d). 
@@ -539,7 +538,7 @@ prediction falls between that of the reference and of AUGUSTUS.
 \begin{figure}[hbt]
 \label{fig:average_vs_augustus}
 \includegraphics[width=8.6cm]{images/cov_examples/average_vs_augustus}  % should be 8.6 when floats are sorted out right
-\caption{Fraction of bp with color-indicated a) coverage and b) spliced coverage of genomic positions 
+\caption{Fraction of bp with color-indicated {\bf a)} coverage and {\bf b)} spliced coverage of genomic positions 
 broken down by the confusion matrix of AUGUSTUS' and Helixer's predictions. Categories 
 are only displayed if they can be meaningfully compared by examining a) coverage or b) spliced
 coverage. The displayed fractions are the averages of the individual fractions for the 
@@ -580,12 +579,14 @@ AUGUSTUS; for the former the RNAseq confirms relatively weak performance for Hel
 for the latter RNAseq rather indicates a sub-par reference. 
 
 \section{Discussion}
-With Helixer, we introduce a novel, deep-learning based tool for gene annotation
-prediction. Helixer outperforms AUGUSTUS on base pair wise metrics and on 
-consistency with independent RNASeq data. 
+With Helixer, we introduce a novel, deep-learning based framework for the development 
+of more capable tools for gene annotation prediction. 
+Helixer outperforms AUGUSTUS on base pair wise metrics and on 
+consistency with independent RNASeq data while also predicting cross-species for a wide range of  
+genomes with one model. 
 
 We include trained models for plants and animals which achieve 
-high prediction accuracy on cross-species gene annotation for broad 
+high prediction accuracy on gene annotation for broad 
 phylogenetic groups (land plants and vertebrates, respectively).
 Within these groups, this eliminates the dependency on retraining and the
 expertise and data required therefore. Production of comparable, single-method
@@ -614,9 +615,6 @@ transcripts at each loci could both further improve performance and would
 greatly increase real world applications.
 
 \section*{Acknowledgements}
-
-We are very grateful for the support of...
-
 HHU HPC-team, deNBI, Ebenh{\"o}h lab for computational (particularly GPU) resources.
 
 \section*{Funding}
