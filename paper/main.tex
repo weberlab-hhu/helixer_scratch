@@ -421,7 +421,7 @@ Details of how AUGUSTUS was used are given in Section \ref{sec:augustus}. {\bf b
 Scatterplots showing the prediction performances measured in Subgenic F1 by genome 
 length. The regression line is shown with a 95\% confidence interval. {\bf c)} The 
 average Genic F1 (in red) and basepair wise accuracy (in purple) with respect to 
-the position in the 20000 basepair long input sequences. The dashed line shows the 
+the position in the 20,000 basepair long input sequences. The dashed line shows the 
 same without overlapping. Each value is the average performance of a 200 basepair 
 long subsection by one of the models of the final ensemble. 
 See Section \ref{ssec:overlapping} of the 
@@ -537,7 +537,7 @@ prediction falls between that of the reference and of AUGUSTUS.
 
 \begin{figure}[hbt]
 \label{fig:average_vs_augustus}
-\includegraphics[width=8.6cm]{images/cov_examples/average_vs_augustus}  % should be 8.6 when floats are sorted out right
+\includegraphics[width=8.6cm]{images/cov_examples/average_vs_augustus} 
 \caption{Fraction of bp with color-indicated {\bf a)} coverage and {\bf b)} spliced coverage of genomic positions 
 broken down by the confusion matrix of AUGUSTUS' and Helixer's predictions. Categories 
 are only displayed if they can be meaningfully compared by examining a) coverage or b) spliced
@@ -548,7 +548,7 @@ for intron, and ``IG" stands for intergenic.}
 \end{figure}
 
 Coverage and Spliced coverage were broken down by the confusion matrix of both
-Helixer vs AUGUSTUS as well as Helixer vs the reference for all genomes (Figure \ref{fig:average_vs_augustus}). % H vs A main, H vs R supp
+Helixer vs AUGUSTUS as well as Helixer vs the reference for all genomes (Figure \ref{fig:average_vs_augustus}). 
 Where both tools agreee on far left in the figure, coverage and spliced coverage closely matched expectations. 
 Specifically for CDS:CDS and UTR:UTR most base pairs had some, and many
 had moderate or high coverage. The same pattern was seen for intron:intron and spliced
@@ -580,7 +580,7 @@ for the latter RNAseq rather indicates a sub-par reference.
 
 \section{Discussion}
 With Helixer, we introduce a novel, deep-learning based framework for the development 
-of more capable tools for gene annotation prediction. 
+of more effective tools for gene annotation prediction. 
 Helixer outperforms AUGUSTUS on base pair wise metrics and on 
 consistency with independent RNASeq data while also predicting cross-species for a wide range of  
 genomes with one model. 
@@ -614,12 +614,14 @@ to go from base pair wise predictions to integrated predictions for whole
 transcripts at each loci could both further improve performance and would
 greatly increase real world applications.
 
-\section*{Acknowledgements}
-HHU HPC-team, deNBI, Ebenh{\"o}h lab for computational (particularly GPU) resources.
-
 \section*{Funding}
-
 This work has been supported by the... \vspace*{-12pt}
+
+
+\section*{Acknowledgements}
+We are grateful for the computational suppport and GPU access provided by
+the de.NBI cloud, and by both the Centre for Information and Media Technology (ZIM)
+and the institute of Quantitative and Theoretical Biology at Heinrich Heine University.
 
 
 \bibliographystyle{natbib}
