@@ -26,8 +26,8 @@
 
 \subtitle{Genome analysis}
 
-\title[short Title]{Helixer: Cross-species Gene Annotation Of Large Eucaryotic Genomes Using Deep Learning}
-\author[Sample \textit{et~al}.]{Felix Stiehler\,$^{\text{\sfb 1}}$, Marvin Steinborn\,$^{\text{\sfb 1}}$, Stephan Scholz, Daniela Dey, Andreas P.M. Weber\,$^{\text{\sfb 1,}*}$, Alisandra K. Denton\,$^{\text{\sfb 1}}$}
+\title[short Title]{Helixer: Cross-species Gene Annotation Of Large Eukaryotic Genomes Using Deep Learning}
+\author[Sample \textit{et~al}.]{Felix Stiehler\,$^{\text{\sfb 1}}$, Marvin Steinborn\,$^{\text{\sfb 1}}$, Stephan Scholz, Daniela Dey, Andreas P.M. Weber\,$^{\text{\sfb 1}}$, Alisandra K. Denton\,$^{\text{\sfb 1,}*}$}
 \address{$^{\text{\sf 1}}$Institue for Plant Biochemistry, Heinrich-Heine-University, Dusseldorf, D-40225, Germany}
 
 \corresp{$^\ast$To whom correspondence should be addressed.}
@@ -57,7 +57,7 @@ predictions.\\
 \textbf{Availability:} The source code of this work is available at 
 \url{https://github.com/weberlab-hhu/Helixer} under the GNU General 
 Public License v3.0.\\
-\textbf{Contact:} \href{andreas.weber@hhu.de}{andreas.weber@hhu.de}\\  
+\textbf{Contact:} \href{alisandra.denton@hhu.de}{alisandra.denton@hhu.de}\\  
 \textbf{Supplementary information:} Supplementary data are available at 
 \textit{Bioinformatics} online.
 }
@@ -102,8 +102,8 @@ prokaryotes is considered more amenable than in eukaryotes, as genes in prokaryo
 are proportionately more frequent in the genome, feature simpler control structures 
 and do not use splicing \citep{wang2004brief}. DanQ \citep{quang2016danq} proposes 
 the use of a BLSTM after a convolutional neural net (CNN) to find detailed motifs in 
-the human genome. DeePromotor \citep{oubounyt2019deepromoter} trains a similar 
-architecture for the recognition of promotor regions. Recently, several groups 
+the human genome. DeePromoter \citep{oubounyt2019deepromoter} trains a similar 
+architecture for the recognition of promoter regions. Recently, several groups 
 \citep{jaganathan2019predicting, wang2019splicefinder} successfully used CNNs to 
 find splicing sites.
 
@@ -117,20 +117,20 @@ viridiplantae, respectively, which we will call {\it animals} and {\it plants} f
 now on. We worked with the full data of 192 animal genomes and 60 plant genomes. 
 Both the ability to generalize across genomes as well as the scope of the evaluation 
 greatly surpasses all other work in this field. The source code and all input data 
-is publically available.
+is publicly available.
 
 \begin{methods}
 \section{Methods}
 \subsection{Datasets}
 The foundation of our work are 192 animal and 60 plant genomes. The data of each 
-genome consists of the latest publically available genomic assembly in form of a 
+genome consists of the latest publicly available genomic assembly in form of a 
 FASTA file and the latest annotation in the GFF format. One genome for each species of animal 
 in EnsemblMetazoa 45 (\cite{howe2020ensembl}; Table S\ref{suptab:downloads_animals}) 
 as well as all non-embargoed plant species from the JGI Phytosome 13 database 
 (\cite{goodstein2012phytozome}; Table S\ref{suptab:downloads_plants}); The exact 
-genomes are listed in the aformentioned tables.
+genomes are listed in the aforementioned tables.
 Data was downloaded on the 15/10/2019 and 29/03/2019 for animals and plants respectively. 
-Both data groups were used seperately during training as well as during evaluation. 
+Both data groups were used separately during training and evaluation. 
 
 At the start of our work we split both genome groups into {\it training genomes} and 
 {\it test genomes}. The test genome groups are made up of 19 and 6 genomes, 
@@ -139,7 +139,7 @@ metadata (see section S\ref{ssec:data_prep} and Dataset S\ref{supdata:metadata})
 while also representing a broad phylogenetic spread. 
 
 For the selection of training genomes we had to balance multiple conflicting 
-tradeoffs. On the one hand, we want to train with as much data as possible, but 
+trade-offs. On the one hand, we want to train with as much data as possible, but 
 on the other
 not all data has sufficient quality to enable a powerful generalization. It is 
 also very desirable to have diverse training genomes with a broad phylogenetic spread, 
@@ -159,11 +159,11 @@ add to the training set or to remove from it. This process was repeated multiple
 times concurrently with the model search until we saw no more room for substantial 
 improvement given our computational constraints.
 
-We call the genomes that were ultimatily not used during training from the original 
+We call the genomes that were ultimately not used during training from the original 
 split the {\it validation genomes}. While we did split off a group of test genomes 
 at the beginning of our work, we ended up only reporting on the generalization 
 performance on the combined set of validation and test genomes as the validation 
-genomes are by far the largest set. We also did not find a noticible difference in 
+genomes are by far the largest set. We also did not find a noticeable difference in 
 performance between those two groups. 
 
 Once a set of training genomes was selected, we further split the sequences therein into a {\it 
@@ -211,11 +211,11 @@ whether such sequences contain no genes or were simply not annotated in the refe
 genomic annotations for potential errors during import and is able to mark those 
 areas. We use this information to effectively blank out those bases during training 
 by using the sample weights described in Table \ref{tab:arrays}. The vast majority 
-of masked bases lie in the intergenic region as the most prevelant error is a 
+of masked bases lie in the intergenic region as the most prevalent error is a 
 missing UTR and GeenuFF marks a potentially large intergenic region for it. Table 
 \ref{tab:statistics_all} shows statistics about the masking. 
 
-For the training itself, we divide each continous genomic sequence into 20,000 bp 
+For the training itself, we divide each continuous genomic sequence into 20,000 bp 
 long subsequences, for which one-hot vectors of the base pairs and annotations 
 are generated and respectively used as input and label for the neural network 
 together with the sample weights. We append zero padding if the subsequences  
@@ -238,7 +238,7 @@ Fraction of class Intron & 0.201 (+- 0.035) & 0.099 (+- 0.057) \\
 \end{tabular}}{{\it Note:} Values are averages of the individual values of each 
 genome in a data group. All statistics except the average gene lengths exclude
 FASTA sequences without a gene and any 20,000 bp subsequences that were masked as completely 
-erroneous. Each strand of DNA was counted seperately. The gene length was 
+erroneous. Each strand of DNA was counted separately. The gene length was 
 determined by the length of the pre-mRNA of the longest protein at each
 loci. Brackets show the standard deviation.}
 \end{table}
@@ -275,9 +275,9 @@ circa 5.4 million parameters and was implemented with the deep learning library
 Keras (https://keras.io) on top of TensorFlow \citep{abadi2016tensorflow}. We 
 tested multiple different architectures before arriving at this model configuration, 
 including convolutional neural networks (CNN) and hybrid architectures. We also use 
-class weigths as the class frequencies are both unbalanced and 
+class weights as the class frequencies are both unbalanced and 
 vary greatly between animals and plants. 
-For example, the tradeoff between the number of intergenic and intronic bases is 
+For example, the trade-off between the number of intergenic and intronic bases is 
 quite different in both groups (see Table \ref{tab:statistics_all}). 
 
 A class wise evaluation including the calculation of the Genic 
@@ -369,8 +369,8 @@ many plant species % (e.g. {\it Arabidopsis lyrata}, \cite{rawat2015improving};
 %\cite{harkess2017asparagus}; and {\it Chenopodium quinoa}, \cite{jarvis2017genome})  
 and other HMM-based tools for many more. %(e.g. {\it Citrus clementina}, \cite{wu2018genomics}; and
 %{\it Capsella grandiflora}, \cite{slotte2013capsella}). 
-The Ensemble animal dataset by and large
-used the Ensembl annotation pipeline, which includes no HMM-based tool.
+The Ensemble animal dataset by and large used the Ensembl annotation pipeline, which primarily
+uses extrinsic data but never-the-less incorporates Genscan \citep{burge1997prediction} predictions.
 
 We downloaded and processed public RNAseq data to obtain an independent option 
 for evaluating model performance. We selected three each of plant and animal genomes for
@@ -383,27 +383,29 @@ within our generalizable range (i.e. excluding the outgroups algae and
 invertebrates). Selections were further constrained by the availability of stranded RNAseq
 data. 
 
-% todo, add versions to everything below
-For each of these six species the following search was performed on Sequence Read Archive
+For each of these six species the following search was performed on Sequence Read Archive \citep{leinonen2010sequence}
 `(("<species name>"[Organism] OR <species name>[All Fields]) AND stranded[All Fields]) 
 AND ("biomol rna"[Properties] AND "library layout paired"[Properties])'. In so far as 
 more than 50 samples were identified and every Nth sample was selected so that under 50
 samples were chosen for further processing (see Table S\ref{suptab:rnaseq_samples}).
-Each sample was quality controlled with FastQC (www.bioinformatics.babraham.ac.uk/projects/fastqc/), before and after trimming
-with Trimmomatic \citep{bolger2014trimmomatic}, and then mapped to the genome with Hisat2 \citep{kim2019graph}. 
-Samtools \citep{li2009sequence} was used for the sorting and indexing that was necessary both for
-RNAseq mapped metric collection with PicardTools (http://broadinstitute.github.io/picard/) and custom downstream 
-processing below. MultiQC \citep{ewels2016multiqc} was used to summarize the results. The above was 
-automated and the results visualized with the code here (... make available and link to RNAseq stuff).
-The samples were filtered based on many different metrics. Relatively high mapping rates, high mapping to
-exonic regions relative to other regions, low 3' bias, normal FastQC, Trimmomatic stats and a confirmation
-to be stranded with 2nd strand as sense strand were all taken into account. If more remained, seven
+Each sample was prepped, mapped, and quality controlled in a pipeline using Trimmomatic 
+\citep{bolger2014trimmomatic}, 
+Hisat2 \citep{kim2019graph}, Samtools \citep{li2009sequence}, PicardTools 
+(http://broadinstitute.github.io/picard/), 
+FastQC 
+(www.bioinformatics.babraham.ac.uk/projects/fastqc/),
+and MultiQC (\cite{ewels2016multiqc}; see
+Table S\ref{suptab:bioinfo_params} for details). The above was 
+automated and the results visualized with the code here (https://github.com/weberlab-hhu/RNAsleek).
+The samples were filtered to those with relatively high mapping rates, high mapping to
+exonic relative to non-exonic regions, low 3' bias, normal FastQC and Trimmomatic stats, 
+and a stranded mapping pattern (2nd read is sense strand). If more remained, seven
 of the high quality samples were selected randomly.
 
-Finally, the selected and mapped RNAseq samples were merged and quantified to
-get the coverage (number of reads matching; i.e. cigar =, M or X),
+Finally, the selected and mapped RNAseq samples (Table S\ref{suptab:rnaseq_samples}) were merged with Samtools 
+and quantified to get the coverage (number of reads matching; i.e. cigar =, M or X),
 and spliced coverage (number of reads with gap or splice; i.e. cigar N or D)
-for every base pair in the genomes as implemented in the "training\_rnaseq.py"
+for every base pair in the genomes as implemented in Helixer's "training\_rnaseq.py"
 script.
 
 \end{methods}
@@ -460,7 +462,7 @@ genomes or species that are phylogenetically the furthest away from our training
 genomes. This is the case for both animals and plants and is visualized by the 
 Figures S\ref{supfig:phylogeny_f1_animals} and S\ref{supfig:phylogeny_f1_plants}. 
 We do not, for example, consistently predict very well on the 
-algae nor on the non-avian reptiles. While one of the the algae were included 
+algae nor on the non-avian reptiles. While one of the algae were included 
 in our training genomes it accounted for a tiny proportion of the total training 
 data and the non-avian reptiles were not included at all.
  
@@ -488,7 +490,7 @@ that {\bf a)} Helixer had high accuracy against the reference and the reference
 was supported by the RNAseq data, {\bf b)} Helixer had high accuracy but the 
 reference was not supported by the RNAseq data, {\bf c)} Helixer had low accuracy
 and the reference was supported by the RNAseq data, and {\bf d)} helixer had low
-accuracy but the reference was not supported by RNAseq data. Plotability was
+accuracy but the reference was not supported by RNAseq data. Feasibility for visualization was
 a major secondary consideration. Each subplot shows from top to
 bottom i) the natural log of the coverage (``cov", solid) and spliced coverage 
 (``sc", dotted) + 1, ii) the reference annotation in matrix form, iii) 
@@ -499,11 +501,10 @@ for intron, and ``IG" stands for intergenic.
 }
 \end{figure*}
 
-As an independent evaluation and to get a better qualitative understanding of
+To make an independent qualitative and quantitative evaluation of
 performance we compared Helixer predictions, AUGUSTUS predictions and the
-reference to RNAseq coverage data. RNAseq was processed for three each of plants
-and animals chosen because they had varied performance quality relative to AUGUSTUS. 
-RNAseq coverage provides support for an 
+reference to RNAseq coverage data. RNAseq evaluation was performed for
+three each animals and plants. RNAseq coverage provides support for an 
 exonic annotation (UTR or CDS), spliced coverages provides support for an 
 annotation of intron, and neither coverage nor spliced coverage is expected 
 for intergenic annotations. Looking at selected subsequences (Figure \ref{fig:cov_example_main}) % and supplemental figures.
@@ -512,8 +513,8 @@ and Helixer, b) neither, c) the reference, but not Helixer,
 and d) Helixer, but not the reference. 
 
 Helixer models do not yet have postprocessing
-to make finalized single predictions, but instead output basewise probabilities.
-We see that the model exibits higher uncertainty around transitions between annotation 
+to make finalized single predictions, but instead output base-wise probabilities.
+We see that the model exhibits higher uncertainty around transitions between annotation 
 classes, for instance between UTR and CDS, or more dramatically between UTR and 
 intergenic even where Helixer predictions closely match the reference and RNAseq data (a). 
 Helixer's uncertainty around transitions from UTR to intergenic regions may relate to a
@@ -527,7 +528,7 @@ Helixer models also sometimes showed uncertainty for larger regions.
 In some cases, where Helixer did not receive RNAseq support for its highest probability
 annotation, it assigned a low but non-trivial probability to the RNAseq-supported 
 exon/intron pattern (Figures \ref{fig:cov_example_main}b-c, S\ref{supfig:cov_example_02}c). However, in the extreme,
-there are cases where the Helixer model exibits substantial indecision or confusion 
+there are cases where the Helixer model exhibits substantial indecision or confusion 
 and shifts gradually between classes with no single class receiving a high probability 
 for extended stretches (Figures S\ref{supfig:cov_example_02}c-d). 
 Notably, in one of the examples (Figure S\ref{supfig:cov_example_02}d)
@@ -549,7 +550,7 @@ for intron, and ``IG" stands for intergenic.}
 
 Coverage and Spliced coverage were broken down by the confusion matrix of both
 Helixer vs AUGUSTUS as well as Helixer vs the reference for all genomes (Figure \ref{fig:average_vs_augustus}). 
-Where both tools agreee on far left in the figure, coverage and spliced coverage closely matched expectations. 
+Where both tools agree on far left in the figure, coverage and spliced coverage closely matched expectations. 
 Specifically for CDS:CDS and UTR:UTR most base pairs had some, and many
 had moderate or high coverage. The same pattern was seen for intron:intron and spliced
 coverage. Finally, intergenic:intergenic showed only a small fraction of base pairs with 
@@ -563,7 +564,7 @@ the other intergenic or intron, there was more coverage when
 Helixer predicted CDS (Figure \ref{fig:average_vs_augustus}a). Similarly, for base pairs where one tool predicted intron and the other 
 CDS or intergenic, there was more spliced coverage when Helixer predicted intron (Figure \ref{fig:average_vs_augustus}b). 
 These patterns were consistent in direction but varied in magnitude in the individual species,
-with the expception of {\it P. marinus} where Helixer and AUGUSTUS performed comparably
+with the exception of {\it P. marinus} where Helixer and AUGUSTUS performed comparably
 at differentiating between CDS and intron regions (Figure S\ref{supfig:each_sp_vs_augustus}).
 
 RNAseq based comparison of Helixer and the reference was less clear cut.
@@ -573,9 +574,9 @@ however helixer's predictions received slightly less support than the reference
 when differentiating CDS and UTR from introns (Figure S\ref{supfig:average_vs_ref}). Performance varies between individual
 species, from {\it P. marinus}, where the reference receives more support
 in every conflict, to {\it T. cacao}, where Helixer models receive equivalent
-or more support in every conflict (Figure S\ref{supfig:each_sp_vs_ref}). Interestingly, these are the two species that
-were selected because they had (relative to the usual difference) low Subgenic F1 compared to 
-AUGUSTUS; for the former the RNAseq confirms relatively weak performance for Helixer, while the 
+or more support in every conflict (Figure S\ref{supfig:each_sp_vs_ref}). Interestingly, these two
+species were selected as examples where Helixer had poor Subgenic F1; 
+for the former the RNAseq confirms relatively weak performance for Helixer, while the 
 for the latter RNAseq rather indicates a sub-par reference. 
 
 \section{Discussion}
@@ -609,21 +610,17 @@ to real world applicable performance improvements if the results of this work ar
 any indication, as deep learning has been shown to excel in a multimodal settings 
 \citep{ching2018opportunities}.
 
-Finally, developent of a post-processing method
+Finally, development of a post-processing method
 to go from base pair wise predictions to integrated predictions for whole 
 transcripts at each loci could both further improve performance and would
 greatly increase real world applications.
-
 \section*{Funding}
 This work has been supported by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) 
 under Germany's Excellence Strategy--EXC-2048/1--Project ID: 390686111.\vspace*{-12pt}
-
-
 \section*{Acknowledgements}
-We are grateful for the computational suppport and GPU access provided by
+We are grateful for the computational support and GPU access provided by
 the de.NBI cloud, and by both the Centre for Information and Media Technology (ZIM)
 and the Institute of Quantitative and Theoretical Biology at Heinrich Heine University.
-
 
 \bibliographystyle{natbib}
 \bibliography{literature}
@@ -641,6 +638,7 @@ and the Institute of Quantitative and Theoretical Biology at Heinrich Heine Univ
 \begin{suptab}\label{suptab:params}\end{suptab}
 \begin{suptab}\label{suptab:classweights}\end{suptab}
 \begin{suptab}\label{suptab:rnaseq_samples}\end{suptab}
+\begin{suptab}\label{suptab:bioinfo_params}\end{suptab}
 \begin{suptab}\label{suptab:prediction_lengths}\end{suptab}
 \begin{suptab}\label{suptab:genome_stats}\end{suptab}
 \begin{suptab}\label{suptab:dcnn_xval}\end{suptab}

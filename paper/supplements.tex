@@ -4,6 +4,7 @@
 \usepackage{natbib}
 \usepackage{geometry}
 \usepackage{hyperref}
+\usepackage{makecell}
 \usepackage{amssymb}
 \hypersetup{
     colorlinks,
@@ -24,7 +25,7 @@
 
 \begin{document}
 
-\title{Supplemental Materials for \\ Helixer: Cross-species Gene Annotation of Large Eucaryotic Genomes Using Deep Learning}
+\title{Supplemental Materials for \\ Helixer: Cross-species Gene Annotation of Large Eukaryotic Genomes Using Deep Learning}
 
 \author[1]{Felix Stiehler}
 \author[1]{Marvin Steinborn}
@@ -930,6 +931,27 @@ finally, whether they were ultimately selected (S) for merging and use in covera
 \end{table}
 \clearpage
 %
+\newpage
+\begin{table}[!h]
+\resizebox{\textwidth}{!}{%
+\centering
+\begin{tabular}{@{}llll@{}}
+\hline
+Purpose&Tool&Version&Customized Parameters\\
+\hline
+Read quality control&FastQC&v0.11.5&\\ \\
+Adapter, Quality trimming&Trimmomatic&0.36&\makecell[l]{ILLUMINACLIP:TruSeq3-PE-2.fa:3:30:10:1:true\\MAXINFO:36:0.7 MINLEN:36}\\ \\
+Mapping&Hisat2&2.1.0&\makecell[l]{Both: --max-seeds 8 --dta\\Plants only: --pen-canintronlen G,-8,1.5 --pen-noncanintronlen G,-8,1.5} \\ \\
+Bam conversion, sorting and indexing&Samtools&1.6&\\ \\
+Mapping quality control&PicardTools&52.0&\makecell[l]{CollectRnaSeqMetrics\\STRAND=SECOND\_READ\_TRANSCRIPTION\_STRAND}\\ \\
+Summarizing and organizing&MultiQC&1.8\\
+\hline
+\end{tabular}}
+\caption{List of bioinformatics software, versions, and parameters used in processing
+public RNAseq data.}
+\label{suptab:bioinfo_params}
+\end{table}
+\clearpage
 
 
 \newpage
@@ -1115,7 +1137,7 @@ that a) Helixer had high accuracy against the reference and the reference
 was supported by the RNAseq data, b) Helixer had high accuracy but the
 reference was not supported by the RNAseq data, c) Helixer had low accuracy
 and the reference was supported by the RNAseq data, and d) helixer had low
-accuracy but the reference was not supported by RNAseq data. Plotability was
+accuracy but the reference was not supported by RNAseq data. Feasibility for visualization was
 a major secondary consideration. Each subplot shows from top to
 bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
 (``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
@@ -1137,7 +1159,7 @@ that a) Helixer had high accuracy against the reference and the reference
 was supported by the RNAseq data, b) Helixer had high accuracy but the
 reference was not supported by the RNAseq data, c) Helixer had low accuracy
 and the reference was supported by the RNAseq data, and d) helixer had low
-accuracy but the reference was not supported by RNAseq data. Plotability was
+accuracy but the reference was not supported by RNAseq data. Feasibility for visualization was
 a major secondary consideration. Each subplot shows from top to
 bottom i) the natural log of the coverage (``cov", solid) and spliced coverage
 (``sc", dotted) + 1, ii) the reference annotation in matrix form, iii)
