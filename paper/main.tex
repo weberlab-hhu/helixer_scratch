@@ -27,8 +27,9 @@
 \subtitle{Genome analysis}
 
 \title[short Title]{Helixer: Cross-species Gene Annotation Of Large Eukaryotic Genomes Using Deep Learning}
-\author[Sample \textit{et~al}.]{Felix Stiehler\,$^{\text{\sfb 1}}$, Marvin Steinborn\,$^{\text{\sfb 1}}$, Stephan Scholz, Daniela Dey, Andreas P.M. Weber\,$^{\text{\sfb 1}}$, Alisandra K. Denton\,$^{\text{\sfb 1,}*}$}
-\address{$^{\text{\sf 1}}$Institue for Plant Biochemistry, Heinrich-Heine-University, Dusseldorf, D-40225, Germany}
+\author[Sample \textit{et~al}.]{Felix Stiehler\,$^{\text{\sfb 1}}$, Marvin Steinborn\,$^{\text{\sfb 1}}$, Stephan Scholz, Daniela Dey\,$^{\text{\sfb 2}}$, Andreas P.M. Weber\,$^{\text{\sfb 1}}$, Alisandra K. Denton\,$^{\text{\sfb 1,}*}$}
+\address{$^{\text{\sf 1}}$Institue for Plant Biochemistry, Heinrich-Heine-University, Dusseldorf, D-40225, Germany\\
+$^{\text{\sf 2}}$Institute of Human Genetics, Medical Faculty, RWTH Aachen University, Aachen, 52062, Germany}
 
 \corresp{$^\ast$To whom correspondence should be addressed.}
 
@@ -65,8 +66,10 @@ Public License v3.0.\\
 \maketitle
 
 \section{Introduction}
-The annotation of genes in DNA is fundamental for many downstream tasks, which 
-depend on high quality annotations. Gene annotation can be performed at different levels 
+Annotating genes is an integral part of
+genomic DNA sequence analysis, with many downstream taks
+dependent on annotation quality.
+Gene annotation can be performed at different levels 
 of precision, from simple coding -- non-coding classification to detailed structural 
 labeling. Because of the sheer size of genomes alone, manual gene annotation is 
 generally intractable. Instead, researchers can use pipelines such as 
@@ -81,8 +84,8 @@ State-of-the-art performance is achieved by higher order hidden markov models
 or SNAP \citep{johnson2008snap}. Their accuracy, however, leaves room for 
 improvement. By encoding possible states and transitions in a probalistic model, 
 designers of HMMs assume structure in the sequence that may limit its predictive 
-power. In practice HMMs have trouble generalizing across species and any actual learning 
-related to sequence motifs is limited to very short sequences that indicate state transitions.
+power. In practice HMMs have trouble generalizing across species and the actual learning 
+of sequence motifs is limited to very short sequences that indicate state transitions.
 
 In the last decade, deep neural networks (DNN) have been applied with great success 
 in many areas of statistical modelling, including biology 
@@ -90,14 +93,14 @@ in many areas of statistical modelling, including biology
 special kind of recurrent neural network (RNN) called long-short term memory (LSTM) 
 \citep{hochreiter1997long} is an established building block for many different 
 architectures. LSTM units can also be used to process sequential input starting 
-from both ends, forming a bi-directional LSTM (BLSTM). It has also been shown that 
+from both ends, forming a bidirectional LSTM (BLSTM). It has also been shown that 
 HMMs can be successfully combined with DNNs \citep{liu2016novo, liu2016pedla}.
 
 For the purpose of gene annotation, RNNs have already shown promising results. 
 \citep{choudharypredicting} carries out preliminary explorations on the potential 
 of BLSTMs for cross species gene prediction and trains his model on human genes to 
 test it later on two more species. DeepAnnotator \citep{amin2018deepannotator} uses 
-bidirectional LSTMs (BLSTM) for gene finding in prokaryotes. Gene prediction in 
+BLSTMs for gene finding in prokaryotes. Gene prediction in 
 prokaryotes is considered more amenable than in eukaryotes, as genes in prokaryotes 
 are proportionately more frequent in the genome, feature simpler control structures 
 and do not use splicing \citep{wang2004brief}. DanQ \citep{quang2016danq} proposes 
@@ -116,7 +119,7 @@ for the annotation of a large set of genomes from the kingdoms metazoa and
 viridiplantae, respectively, which we will call {\it animals} and {\it plants} from 
 now on. We worked with the full data of 192 animal genomes and 60 plant genomes. 
 Both the ability to generalize across genomes as well as the scope of the evaluation 
-greatly surpasses all other work in this field. The source code and all input data 
+represent cutting edge progress in this field. The source code and all input data 
 is publicly available.
 
 \begin{methods}
@@ -145,25 +148,25 @@ not all data has sufficient quality to enable a powerful generalization. It is
 also very desirable to have diverse training genomes with a broad phylogenetic spread, 
 a variety of genome sizes and average gene lengths as the model is increasingly unlikely to generalize 
 well beyond the borders given by the training data. However, it also may be difficult 
-for the model learn and generalize if the genomic patterns inside the data are 
+for the model to learn and generalize if the genomic patterns inside the data are 
 too different from each other. Practically, it was important for us to limit the size of
-our training genomes set to be small enough that enough that we could get experimental 
+our training genomes set to be small enough that we could get experimental 
 results within a couple of days and thereby be able to test many different data and 
 model configurations.
 
 We employed an iterative approach to effectively select a proper set of training 
-genomes. We first started with 3-4 genomes that were expected to be of the 
+genomes, starting from 3-4 genomes that were expected to be of the 
 highest quality. We then evaluated the performance of the resulting model on all 
 genomes individually (including the training genomes) and looked for candidates to 
 add to the training set or to remove from it. This process was repeated multiple 
 times concurrently with the model search until we saw no more room for substantial 
 improvement given our computational constraints.
 
-We call the genomes that were ultimately not used during training from the original 
-split the {\it validation genomes}. While we did split off a group of test genomes 
-at the beginning of our work, we ended up only reporting on the generalization 
+The genomes that were ultimately not used during training from the original 
+split are hereafter refered to as the {\it validation genomes}. 
+We report only the generalization 
 performance on the combined set of validation and test genomes as the validation 
-genomes are by far the largest set. We also did not find a noticeable difference in 
+genomes are by far the largest set, and there was not a noticeable difference in 
 performance between those two groups. 
 
 Once a set of training genomes was selected, we further split the sequences therein into a {\it 
@@ -178,15 +181,15 @@ performance. Ultimately we used the cross-species performance on all
 validation genomes as the decisive measure of model quality.
 
 \subsection{Data Pre-processing}
-We first pre-process and store the raw genomic information by using GeenuFF 
+We first pre-processed and stored the raw genomic information by using GeenuFF 
 (https://github.com/weberlab-hhu/GeenuFF). 
-GeenuFF is a tool for checking and exploring genomic data, that 
-stores all information inside a SQL database. Training and evaluation-ready data is 
+GeenuFF is a tool for checking and exploring genomic data and annotations, that 
+stores all information inside a SQL database. Training and evaluation-ready data was
 generated by querying this database and then transforming the returned data into a 
 numerical format suitable for machine learning. The encoding of the genomic sequence 
-is done in line with the IUPAC nucleic acid notation and the functional annotation 
+was done in line with the IUPAC nucleic acid notation and the functional annotation 
 used as labels during training is transformed to a one hot encoding with the four 
-classes {\it Intergenic}, {\it UTR}, {\it CDS} and {\it Intron}. See also Table 
+classes {\it Intergenic}, {\it UTR}, {\it CDS} and {\it Intron}. See Table 
 \ref{tab:arrays} for a more detailed description of the generated data types.
 
 \begin{table}[!htb]
@@ -205,22 +208,23 @@ Sample weights & One of $\{0,1\}$; whether there is an error at a base\\
 in coding and non-coding regions.}
 \end{table}
 
-During data generation, we query for the transcript with the longest protein of each gene and 
+During data generation, we queried for the transcript with the longest protein of each gene and 
 disregard FASTA sequences that have no functional annotation as it is ambiguous
-whether such sequences contain no genes or were simply not annotated in the reference. GeenuFF checks the 
+whether such sequences contain no genes or 
+were simply not annotated in the reference. GeenuFF checks the 
 genomic annotations for potential errors during import and is able to mark those 
-areas. We use this information to effectively blank out those bases during training 
+areas. We used this information to effectively mask those bases during training 
 by using the sample weights described in Table \ref{tab:arrays}. The vast majority 
 of masked bases lie in the intergenic region as the most prevalent error is a 
 missing UTR and GeenuFF marks a potentially large intergenic region for it. Table 
 \ref{tab:statistics_all} shows statistics about the masking. 
 
-For the training itself, we divide each continuous genomic sequence into 20,000 bp 
+For the training itself, we divided each continuous genomic sequence into 20,000 bp 
 long subsequences, for which one-hot vectors of the base pairs and annotations 
 are generated and respectively used as input and label for the neural network 
-together with the sample weights. We append zero padding if the subsequences  
+together with the sample weights. We appended zero padding if the subsequences  
 are shorter than 20,000 bp. 
-If a subsequence is fully marked as erroneous, we exclude it from all analyses. 
+If a subsequence is fully marked as erroneous, we excluded it from all analyses. 
 
 \begin{table}[!htb]
 \processtable{Data group statistics for all data\label{tab:statistics_all}} {
@@ -246,20 +250,20 @@ loci. Brackets show the standard deviation.}
 
 \subsection{Metrics}
 \label{sec:metrics}
-We mainly use two metrics to judge model performance. The {\it Genic F1} is our 
-primary metric that provides the most comprehensive picture of annotation quality 
+We mainly used two metrics to judge model performance. The {\it Genic F1} was selected as our 
+primary metric and provides the most comprehensive picture of annotation quality 
 in one number. The {\it Subgenic F1} is similar to the Genic F1, except that it does 
-not take UTR predictions into account. This is done for comparability with AUGUSTUS 
+not take UTR predictions into account. This was calculated for comparability with AUGUSTUS 
 as further explained in Section \ref{sec:augustus}. Both metrics work by summing up 
 True Positives (TP), False Positives (FP) and False Negatives (FN) of each 
 considered class before calculating precision and recall from these values and 
-combining the two into a F1 score. Neither metric takes the values of the 
-intergenic class into account, as this class is very abundant and appears to be by 
+combining the two into a F1 score. Neither metric includes the
+intergenic class, as this class is very abundant and appears to be by 
 far the easiest to predict. (See Table \ref{tab:statistics_all} for the class 
 distribution and Tables S\ref{suptab:generalization_animals} 
 and S\ref{suptab:generalization_plants} for a more in-depth report our model performance 
 including the intergenic class). In the case of the Genic F1, this means that 
-effectively only the TP of the intergenic class are disregarded. The metrics 
+effectively only the TP of the intergenic class were disregarded. The metrics 
 essentially provide a weighted mean of the performances in the considered classes,
 with weights proportional to class frequency.
 
@@ -268,27 +272,28 @@ accuracy besides the Genic F1.
 
 \subsection{Model Architecture and Training}
 \label{sec:model}
-We use a 4-layer deep stacked BLSTM network with 256 units per layer and layer 
+We used a 4-layer deep stacked BLSTM network with 256 units per layer and layer 
 normalization \citep{ba2016layer} between each BLSTM layer to produce the 
 predictions in the form of a base pair wise classification. The model consists of 
 circa 5.4 million parameters and was implemented with the deep learning library 
 Keras (https://keras.io) on top of TensorFlow \citep{abadi2016tensorflow}. We 
 tested multiple different architectures before arriving at this model configuration, 
-including convolutional neural networks (CNN) and hybrid architectures. We also use 
+including convolutional neural networks (CNN) and hybrid architectures. We also used 
 class weights as the class frequencies are both unbalanced and 
 vary greatly between animals and plants. 
 For example, the trade-off between the number of intergenic and intronic bases is 
 quite different in both groups (see Table \ref{tab:statistics_all}). 
 
 A class wise evaluation including the calculation of the Genic 
-F1 score is performed on the validation set after every epoch. The best model
+F1 score was performed on the validation set after every epoch. The best model
 from any training run was selected as the model with the highest Genic F1 after either
 maximum epochs were reached or Genic F1 stopped improving and training was interrupted.
 
 The hyperparameters were optimized by a combination of manual and automatic 
 optimization. Automatic optimization was carried out by using either the TPE 
 algorithm \citep{bergstra2011algorithms}, random search or grid search depending on 
-the situation. We used NNI (https://github.com/microsoft/nni) to facilitate the search. All relevant 
+the situation. We used NNI (https://github.com/microsoft/nni) to 
+facilitate the search. All relevant 
 hyperparameters can be found in Table S\ref{suptab:params} and 
 S\ref{suptab:classweights} or in the Helixer source code repository. 
 	
@@ -297,14 +302,15 @@ time step and produces individual predictions for each of those 10 bases
 simultaneously. This grouping enabled us to train effectively with far longer 
 sequences than usual. 
 
-We also compare our final models to a dilated CNN (dCNN) baseline as this kind of architecture is 
+We also compared our final models to a dilated CNN (dCNN) 
+baseline as this kind of architecture is 
 widely used when working with DNA data as input. Details of the neural architecture 
 search are given in Section \ref{ssec:dcnn} of the Supplements.
 
 \subsection{Inference Techniques}
 We also used multiple techniques to improve the prediction quality after the 
-training was done. One very effective way for genomes with larger genes was to input 
-longer sequences during inference time than during training. This was done for all 
+training was done. One very effective way for genomes with larger genes was inputting
+longer sequences during inference than during training. This was done for all 
 animal genomes except the invertebrates. The input sequences were up to 10 times 
 longer, depending on the phylogenetic group and assembly quality. This also demonstrates the 
 ability of our model to generalize as it is able to make successful prediction on 
@@ -313,20 +319,21 @@ concrete lengths were chosen to keep the typical average gene length roughly
 proportional to the length of the sequence input. For more implementation details 
 on this see Section \ref{ssec:longer} of the Supplements or the source code.
 	
-The final predictions of a single model are constructed by overlapping predictions, 
-that were made from a sliding window and then cropped to a core sequence. This was done 
+The final predictions of a single model were constructed by overlapping predictions, 
+which were made from a sliding window and then cropped to a core sequence. This was done 
 to strongly reduce a typical drop in performance of the models towards the beginning 
 and end of each sequence (see Figure \ref{fig:main_results}c). It also improves the 
-average model performance in general by providing the model with multiple different 
+average model performance by providing the model with multiple different 
 starting points. The different overlapping sequences were combined by averaging 
-the individual softmax values of each base. The figures in Section \ref{ssec:overlapping} of the 
+the individual softmax values of each base. 
+The figures in Section \ref{ssec:overlapping} of the 
 Supplements show the effect of overlapping for each genome, ordered by N75. We found 
 that overlapping tends to work best if the genomes are not very fragmented and we 
 used it for both animals and plants.
 
 A model ensemble with 8 components was used to generate the final predictions for 
 each species. For this, we performed 4 separate animal and plant training runs and 
-selected two checkpoints each, specifically the checkpoint from the epoch with the best precision and the  % please check / epoch model / version something
+selected two checkpoints each, specifically the checkpoint from the epoch with the best precision and the
 other from the epoch with the best recall. The model checkpoint with the best Genic F1 was always best in one of 
 those. This was done to increase the diversity of the model ensemble. As with the 
 overlapping, the fusion of the 8 individual predictions was done by averaging the 
@@ -335,10 +342,10 @@ softmax values of each base pair prediction.
 \subsection{Evaluation of AUGUSTUS} 
 \label{sec:augustus}
 Due to the practical time constraints for retraining and running, we decided to compare our Helixer
-models only to one existing {\it de novo} gene caller, the popular gene caller, AUGUSTUS \citep{stanke2003gene}.
+models only to one existing {\it de novo} tool, namely the popular gene caller AUGUSTUS \citep{stanke2003gene}.
 Typical usage requires retraining AUGUSTUS for each species, with the exception of a
 few lucky cases where a model for a sufficiently close relative is already available. To scale this for 
-the large plant and animal datasets, we used protein-homology to create a training set and
+the large plant and animal datasets, we used protein-homology to create an AUGUSTUS training set and
 therefore could train and evaluate only models without UTRs. 
 
 Orthologs of highly conserved generally single-copy genes were identified in each genome using
@@ -346,16 +353,16 @@ BUSCO. The {\it viridiplantae} set was used for plants and the {\it metazoa} set
 The training genbank files were generated directly by BUSCO, by utilizing the ``--long"  % inline code?
 parameter. For plants, the entire retraining could be performed as above; however, for animals
 we randomly selected only half the BUSCO-generated training set, which resulted in a training set 
-size and runtime comparable to the plants (about 400 genes and several days per species). For animals
+size and runtime comparable to the plants (about 400 genes and several CPU days per species). For animals
 the training was carried out with the subsetted training file and using the following scripts provided
 by AUGUSTUS. An untrained model was setup with ``new\_species.pl", and the model was fit by running
 "etraining" before and after the major hyper-parameter optimization with ``optimize\_augustus.pl".
 Using the trained model for each species, we ran the main prediction ("augustus") with ``--UTR=off"
 and ``--gff3=on". The gffs produced by AUGUSTUS were imported into GeenuFF and exported as HDF5
 files in the same manor as the reference, allowing for the direct comparison with both the reference and 
-Helixer predictions. While still feasible for some 237 species, this method allowed neither training
+Helixer predictions. While this method was feasible for some 237 species, it allowed neither training
 nor prediction of UTR regions with AUGUSTUS, so the metric Subgenic F1, which disregards the class UTR,
-was used for all comparisons between AUGUSTUS and Helixer (see Section \ref{sec:metrics} for more details) .
+was used for all comparisons between AUGUSTUS and Helixer (see Section \ref{sec:metrics} for more details).
 
 \subsection{Evaluation against independent RNAseq data}
 \label{sec:rnaseq}
@@ -385,9 +392,10 @@ data.
 
 For each of these six species the following search was performed on Sequence Read Archive \citep{leinonen2010sequence}
 `(("<species name>"[Organism] OR <species name>[All Fields]) AND stranded[All Fields]) 
-AND ("biomol rna"[Properties] AND "library layout paired"[Properties])'. In so far as 
-more than 50 samples were identified and every Nth sample was selected so that under 50
-samples were chosen for further processing (see Table S\ref{suptab:rnaseq_samples}).
+AND ("biomol rna"[Properties] AND "library layout paired"[Properties])'.
+If more than 50 samples were identified, every Nth samples was selected 
+so that in total under 50 samples were chosen for further processing
+(see Table S\ref{suptab:rnaseq_samples}).
 Each sample was prepped, mapped, and quality controlled in a pipeline using Trimmomatic 
 \citep{bolger2014trimmomatic}, 
 Hisat2 \citep{kim2019graph}, Samtools \citep{li2009sequence}, PicardTools 
@@ -395,8 +403,8 @@ Hisat2 \citep{kim2019graph}, Samtools \citep{li2009sequence}, PicardTools
 FastQC 
 (www.bioinformatics.babraham.ac.uk/projects/fastqc/),
 and MultiQC (\cite{ewels2016multiqc}; see
-Table S\ref{suptab:bioinfo_params} for details). The above was 
-automated and the results visualized with the code here (https://github.com/weberlab-hhu/RNAsleek).
+Table S\ref{suptab:bioinfo_params} for details). This pipeline was 
+automated and the results visualized with the code available here (https://github.com/weberlab-hhu/RNAsleek).
 The samples were filtered to those with relatively high mapping rates, high mapping to
 exonic relative to non-exonic regions, low 3' bias, normal FastQC and Trimmomatic stats, 
 and a stranded mapping pattern (2nd read is sense strand). If more remained, seven
@@ -413,11 +421,10 @@ script.
 \begin{figure*}[!tpb]
 \label{fig:main_results}
 \centerline{\includegraphics[width=\textwidth]{images/main_results}}
-\caption{Main overall results and other investigations. The top row shows the animal
- data; the bottom row is concerned with the plants. Orange dots are for AUGUSTUS and 
+\caption{Main overall results and other investigations. The top and bottom rows
+show the animal and plant data, respectively. Orange dots are for AUGUSTUS and 
 the blue ones are for Helixer. {\bf a)} Swarm - and boxplots showing the Subgenic F1 
-scores for all genomes that were not used during training of Helixer, which is 
-equivalent to all validation and test genomes. Each dot represents the prediction 
+scores for all validation and test genomes. Each dot represents the prediction 
 performace for one genome. The median prediction scores are shown by the red line. 
 Details of how AUGUSTUS was used are given in Section \ref{sec:augustus}. {\bf b)} 
 Scatterplots showing the prediction performances measured in Subgenic F1 by genome 
@@ -454,12 +461,12 @@ of performances on all non-training genomes in the animal and plant case by Subg
 F1. In the case of Helixer, these scores represent cross-species predictions. We 
 also compare the median performances of different configurations of Helixer with 
 AUGUSTUS and a dilated CNN baseline in Table \ref{tab:results}. The results show a 
-clear improvement over the AUGUSTUS both in median performance and spread. We also 
+clear improvement over the AUGUSTUS both in higher median performance and reduced spread. We also 
 significantly outperform a baseline constructed of a dilated CNN architecture.
 
 Our models, however, tend to perform less well for the very smallest and largest 
 genomes or species that are phylogenetically the furthest away from our training 
-genomes. This is the case for both animals and plants and is visualized by the 
+genomes. This is the case for both animals and plants and is visualized in
 Figures S\ref{supfig:phylogeny_f1_animals} and S\ref{supfig:phylogeny_f1_plants}. 
 We do not, for example, consistently predict very well on the 
 algae nor on the non-avian reptiles. While one of the algae were included 
@@ -476,7 +483,7 @@ by phylogenetic position.
 Two techniques were used during inference to improve performance and limit model 
 bias. The usage of longer input lengths helped especially for genomes that tend to 
 have longer genes and was enabled by our model architecture being a relatively 
-simple LSTM stack without any fully connected layers on top. We also constructed the 
+simple BLSTM stack without any fully connected layers on top. We also constructed the 
 final predictions out of a overlapping ones, which greatly helped to reduce 
 prediction bias in most genomes. To our knowledge, neither technique has been used 
 before in a model developed for gene annotation. 
@@ -503,9 +510,9 @@ for intron, and ``IG" stands for intergenic.
 
 To make an independent qualitative and quantitative evaluation of
 performance we compared Helixer predictions, AUGUSTUS predictions and the
-reference to RNAseq coverage data. RNAseq evaluation was performed for
-three each animals and plants. RNAseq coverage provides support for an 
-exonic annotation (UTR or CDS), spliced coverages provides support for an 
+reference to RNAseq coverage data. Evaluation with RNAseq data was performed for
+three each of animal and plant species. RNAseq coverage provides support for an 
+exonic annotation (UTR or CDS), spliced coverage provides support for an 
 annotation of intron, and neither coverage nor spliced coverage is expected 
 for intergenic annotations. Looking at selected subsequences (Figure \ref{fig:cov_example_main}) % and supplemental figures.
 we identified cases where RNAseq supported a) both the annotations of the reference 
@@ -525,7 +532,7 @@ or noise in the reference, which we observed relative to the RNAseq data
 (Figures S\ref{supfig:UTRs_animals}-\ref{supfig:UTRs_plants}). % supplemental UTR figures, 1/species
 
 Helixer models also sometimes showed uncertainty for larger regions.
-In some cases, where Helixer did not receive RNAseq support for its highest probability
+In some cases where Helixer did not receive RNAseq support for its highest probability
 annotation, it assigned a low but non-trivial probability to the RNAseq-supported 
 exon/intron pattern (Figures \ref{fig:cov_example_main}b-c, S\ref{supfig:cov_example_02}c). However, in the extreme,
 there are cases where the Helixer model exhibits substantial indecision or confusion 
@@ -561,17 +568,19 @@ capable of finding weak-spots in the other annotations.
 In cases of conflict, Helixer's predictions were substantially more consistent with
 the RNAseq data than those of AUGUSTUS. Specifically, for base pairs where one tool predicted CDS and
 the other intergenic or intron, there was more coverage when 
-Helixer predicted CDS (Figure \ref{fig:average_vs_augustus}a). Similarly, for base pairs where one tool predicted intron and the other 
+Helixer predicted CDS (Figure \ref{fig:average_vs_augustus}a). 
+Similarly, for base pairs where one tool predicted intron and the other 
 CDS or intergenic, there was more spliced coverage when Helixer predicted intron (Figure \ref{fig:average_vs_augustus}b). 
 These patterns were consistent in direction but varied in magnitude in the individual species,
 with the exception of {\it P. marinus} where Helixer and AUGUSTUS performed comparably
 at differentiating between CDS and intron regions (Figure S\ref{supfig:each_sp_vs_augustus}).
 
 RNAseq based comparison of Helixer and the reference was less clear cut.
-Averaged across species, helixer's predictions received slightly more support
+Averaged across species, Helixer's predictions received slightly more support
 than the reference when differentiating CDS, UTR and introns from intergenic;
-however helixer's predictions received slightly less support than the reference 
-when differentiating CDS and UTR from introns (Figure S\ref{supfig:average_vs_ref}). Performance varies between individual
+however Helixer's predictions received slightly less support than the reference 
+when differentiating CDS and UTR from introns (Figure S\ref{supfig:average_vs_ref}). 
+Performance varies between individual
 species, from {\it P. marinus}, where the reference receives more support
 in every conflict, to {\it T. cacao}, where Helixer models receive equivalent
 or more support in every conflict (Figure S\ref{supfig:each_sp_vs_ref}). Interestingly, these two
