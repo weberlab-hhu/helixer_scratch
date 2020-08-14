@@ -1,0 +1,17 @@
+working_name,Model (= Epoch-1),target_group,file_name,training_run,epoch,genic_Precision,genic_Recall,genic_F1
+duZo1.h5,6,animals,animals_a_e07.h5,animals_a,7,0.7932,0.7189,0.7542
+duZo1_7.h5,7,animals,animals_a_e08.h5,animals_a,8,0.8342,0.6498,0.7305
+home.h5,8,animals,animals_b_e09.h5,animals_b,9,0.7687,0.7331,0.7505
+home_5.h5,5,animals,animals_b_e06.h5,animals_b,6,0.8219,0.6728,0.7399
+ZCPHo.h5,8,animals,animals_c_e09.h5,animals_c,9,0.835,0.6805,0.7498
+ZCPHo_6.h5,6,animals,animals_c_e07.h5,animals_c,7,0.799,0.7024,0.7476
+lH8Hq.h5,7,animals,animals_d_e08.h5,animals_d,8,0.809,0.693,0.7466
+lH8Hq_5.h5,5,animals,animals_d_e06.h5,animals_d,6,0.837,0.6175,0.7107
+TSTA8.h5,9,plants,plants_a_e10.h5,plants_a,10,0.8645,0.8145,0.8387
+TSTA8_6.h5,6,plants,plants_a_e07.h5,plants_a,7,0.8192,0.8257,0.8224
+IiFEB.h5,10,plants,plants_b_e11.h5,plants_b,11,0.8349,0.8178,0.8263
+IiFEB_11.h5,11,plants,plants_b_e12.h5,plants_b,12,0.8017,0.8328,0.817
+mjnps.h5,10,plants,plants_c_e11.h5,plants_c,11,0.8513,0.8124,0.8314
+mjnps_6.h5,6,plants,plants_c_e07.h5,plants_c,7,0.7978,0.8275,0.8124
+m5MV8.h5,9 (12 is best actually… but too similar to care),plants,plants_d_e10.h5,plants_d,10,0.8358,0.8268,0.8313
+m5MV8_11.h5,11,plants,plants_d_e12.h5,plants_d,12,0.8059,0.8398,0.8225
