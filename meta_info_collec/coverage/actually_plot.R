@@ -1,6 +1,7 @@
 h=2.6
 widths = c(6, 4)
-cex=0.55
+widths = widths * 0.9
+cex=0.54
 
 targ_files <- c('/ref_vs_helixer.csv', '/aug_vs_helixer.csv')
 outdirs <- c('plots/vs_ref/', 'plots/vs_aug/')
@@ -11,7 +12,7 @@ rows_cov <- list(c(1:8, 13:16),
                  c(1, 3:4, 7:8, 15:16))
 mwidths <- c(4, 3)
 r_margin_cov <- c(2.1, 10.5) 
-
+r_margin_cov[1] <- 2.6
 for (j in 1:2){
     targ_file <- targ_files[j]
     outdir <- outdirs[j]
@@ -21,7 +22,7 @@ for (j in 1:2){
     source('import.R')
     
     postscript(file=paste0(outdir, 'averaged_spliced.eps'), height=h, width=w)
-      par(xpd=TRUE, mar=c(5.1, 4.1, 4.1, 10.5), cex=cex)
+      par(xpd=TRUE, mar=c(5.1, 4.1, 4.1, 10.1), cex=cex)
       ticksat <- viribp(summed_demelted_sc[rows_sc[[j]], ], 
                         ylab='average fraction of bp in\nspliced coverage bin',
                         ref=ref, match_length=mw)
@@ -42,7 +43,7 @@ for (j in 1:2){
         postscript(file=paste0(outdir, sp, '_spliced.eps'), height=h, width=w)
           par(xpd=TRUE, mar=c(5.1, 4.1, 4.1, 10.5), cex=cex)
           ticksat <- viribp(sp_demelted_sc[[sp]][rows_sc[[j]], ],
-                            ylab='average fraction of bp in\nspliced coverage bin',
+                            ylab='fraction of bp in\nspliced coverage bin',
                             ref=ref, match_length=mw)
           legend(ticksat[length(ticksat)] + 0.2, 1, rev(colnames(summed_demelted_sc)),
                  fill=viridis(6), bty='n', title='Bin')
@@ -52,7 +53,7 @@ for (j in 1:2){
           par(xpd=TRUE, mar=c(5.1, 4.1, 4.1, r_margin_cov[j]), cex=cex)
     
           ticksat <- viribp(sp_demelted_cov[[sp]][rows_cov[[j]],],
-                            ylab='average fraction of bp in\ncoverage bin',
+                            ylab='fraction of bp in\ncoverage bin',
                             ref=ref, match_length=mw)
         dev.off()
     }

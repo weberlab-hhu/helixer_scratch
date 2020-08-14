@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def count(f, training_genomes):
     values = []
     for i, line in enumerate(open(f)):
