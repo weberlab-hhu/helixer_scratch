@@ -1,0 +1,51 @@
+#!/bin/bash
+#PBS -l select=1:ncpus=1:mem=4000mb:arch=skylake
+#PBS -l walltime=69:55:00
+#PBS -A "HelixerOpt"
+#PBS -N bscG_SPECIES
+
+source $HOME/.bashrc
+module load Python/3.6.5
+source $HOME/virtualenvs/venv36/bin/activate
+
+
+cd $PBS_O_WORKDIR
+
+## Log-File definieren
+export LOGFILE=$PBS_O_WORKDIR/$PBS_JOBNAME"."$PBS_JOBID".log"
+echo "$PBS_JOBID ($PBS_JOBNAME) @ `hostname` at `date` in "$RUNDIR" START" > $LOGFILE
+echo "`date +"%d.%m.%Y-%T"`" >> $LOGFILE 
+
+## important bits
+module load BLAST+
+module load HMMER
+module load Augustus
+#module load Busco
+
+export BUSCO_CONFIG_FILE=/gpfs/project/alden101/resources/config.ini.default
+export AUGUSTUS_CONFIG_PATH=/gpfs/project/alden101/resources/Augustus/config
+
+#basedir=/gpfs/project/alden101/genomedata/Phytozome/ready/train/
+basedir=BASEDIR/
+fa_in=$basedir/SPECIES/*/assembly/*.fa 
+busco_out=$basedir/SPECIES/meta_collection/busco/
+tmp_out=tmp_SPECIES
+other_tmp_out=tmp/SPECIES
+#busco_lin=/gpfs/project/alden101/resources/viridiplantae_odb10 # or metazoa_odb9
+busco_lin=/gpfs/project/alden101/resources/LINEAGE
+mkdir -p $busco_out
+
+gz_in=`echo $fa_in.gz`
+fa_in=${gz_in%.gz}
+zcat $gz_in > $fa_in
+
+~/repos/gitlab/ezlab/busco/scripts/run_BUSCO.py -i $fa_in -o $tmp_out -m geno -l $busco_lin -t $other_tmp_out 
+
+mv run_$tmp_out $busco_out/geno
+## and more logging
+
+qstat -f $PBS_JOBID >> $LOGFILE  
+uptime >> $LOGFILE 
+echo "$PBS_JOBID ($PBS_JOBNAME) @ `hostname` at `date` in "$RUNDIR" END" >> $LOGFILE
+echo "`date +"%d.%m.%Y-%T"`" >> $LOGFILE
+

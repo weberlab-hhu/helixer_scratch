@@ -19,6 +19,7 @@ supplements.toc
 supplements.out
 .log
 */.ipynb_checkpoints/*
+.ipynb_checkpoints/
 .nfs*
 output.csv
 plots/phylogenetic_trees/ete3/plot.png
