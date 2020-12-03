@@ -6,12 +6,15 @@
 # uses eval-from-predictions-one-trial.sh to work concurrently
 
 if [[ $# -lt 2 ]]; then
-	echo "Usage: ./eval-from-predictions.sh main_folder output_file_name [--redo]"
+	echo "Usage: ./stats-from-eval.sh main_folder output_file_name"
 	exit
 fi
 
 main_folder=$1
 output_file_name=$2
 source $hppath/venv/bin/activate
-ls -d "$main_folder"/*/| xargs -n1 -P8 -I% $hppath/../helixer_scratch/cluster_eval_predictions/evaluations/overall/eval-from-predictions-one-trial_nothpc.sh % $output_file_name
+for i in `ls -d "$main_folder"/*/`;
+do 
+  $hppath/../helixer_scratch/cluster_eval_predictions/evaluations/overall/stats-from-eval-one-trial_nothpc.sh $i  $output_file_name
+done
 
