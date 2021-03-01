@@ -14,6 +14,9 @@ parser.add_argument('--main-folder', type=str, default='', required=True,
 parser.add_argument('--output-file', type=str, default='./generalization_validation.h5')
 parser.add_argument('--coefficient', type=float, default=30.0, help='Can not be too large.')
 parser.add_argument('--exponent', type=float, default=0.45)
+parser.add_argument('--max-samples', type=int, default=0, help='Maximum samples taken from one genome if > 0',
+                    help='Maximum samples taken from one genome if > 0')
+parser.add_argument('--skip-datasets', type=str, nargs='+', default=['gene_lengths', 'err_samples', 'fully_intergenic_samples'])
 args = parser.parse_args()
 print(vars(args))
 
@@ -23,22 +26,30 @@ for i, folder in enumerate(os.listdir(args.main_folder)):
     h5_in = h5py.File(os.path.join(args.main_folder, folder, 'test_data.h5'), 'r')
     dsets_in = h5_in['data']
 
-    # sample sqrt(n_samples) from each genome
     n_samples_source = dsets_in['X'].shape[0]
     # have an exponent to undersample large genomes but also a linear coeffient to scale everything to where we want it
     n_samples = int(args.coefficient * math.pow(n_samples_source, args.exponent))
+    n_samples = min(n_samples_source, n_samples)  # make sure there are enough samples
+    if args.max_samples > 0:
+        n_samples = min(args.max_samples, n_samples)
+
     samples_idx = sorted(np.random.choice(n_samples_source, n_samples, replace=False))
     print(f'selecting {n_samples} samples of {folder}')
-    for key  in h5_in['data'].keys():
-        samples = dsets_in[key][samples_idx]
-        if i == 0:
-            HelixerExportController._create_dataset(h5_out, f'/data/{key}', samples, dsets_in[key].dtype)
-            dsets_out = h5_out['data']
-        old_len = dsets_out[key].shape[0]
-        dsets_out[key].resize(old_len + n_samples, axis=0)
-        dsets_out[key][old_len:] = samples
+    for key in h5_in['data'].keys():
+        if key not in args.skip_datasets:
+            samples = dsets_in[key][samples_idx]
+            if i == 0:
+                HelixerExportController._create_dataset(h5_out, f'/data/{key}', samples, dsets_in[key].dtype)
+                dsets_out = h5_out['data']
+            old_len = dsets_out[key].shape[0]
+            dsets_out[key].resize(old_len + n_samples, axis=0)
+            dsets_out[key][old_len:] = samples
     h5_in.close()
     print(f'added {n_samples} / {n_samples_source} samples of {folder} in {time.time() - start_time:.2f} secs')
 
 h5_out.attrs['timestamp'] = datetime.datetime.now()
+h5_out.attrs['coefficient'] = args.coefficient
+h5_out.attrs['exponent'] = args.exponent
+h5_out.attrs['max_samples'] = args.max_samples
+h5_out.attrs['skip_datasets'] = args.skip_datasets
 h5_out.close()
