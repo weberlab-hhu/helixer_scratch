@@ -11,15 +11,16 @@ from helixer.export.exporter import HelixerExportController
 parser = argparse.ArgumentParser()
 parser.add_argument('--main-folder', type=str, default='', required=True,
                     help='Main single genome folder. Expects "test_data.h5" files inside subfolders.')
-parser.add_argument('--output-file', type=str, default='./generalization_validation.h5')
-parser.add_argument('--coefficient', type=float, default=30.0, help='Can not be too large.')
-parser.add_argument('--exponent', type=float, default=0.45)
+parser.add_argument('--output-file', type=str, default='./validation_data.h5')
+parser.add_argument('--coefficient', type=float, default=0.5)
+parser.add_argument('--exponent', type=float, default=1.0)
 parser.add_argument('--max-samples', type=int, default=0, help='Maximum samples taken from one genome if > 0')
 parser.add_argument('--skip-datasets', type=str, nargs='+', default=['gene_lengths', 'err_samples', 'fully_intergenic_samples'])
 parser.add_argument('--dry-run', action='store_true', help='Just output what would be done')
 args = parser.parse_args()
 print(vars(args))
 
+n_total_samples = 0
 if not args.dry_run:
     h5_out = h5py.File(args.output_file, 'w')
 for i, folder in enumerate(os.listdir(args.main_folder)):
@@ -33,6 +34,7 @@ for i, folder in enumerate(os.listdir(args.main_folder)):
     n_samples = min(n_samples_source, n_samples)  # make sure there are enough samples
     if args.max_samples > 0:
         n_samples = min(args.max_samples, n_samples)
+    n_total_samples += n_samples
 
     samples_idx = sorted(np.random.choice(n_samples_source, n_samples, replace=False))
     print(f'selecting {n_samples} samples of {folder}', flush=True)
@@ -50,7 +52,9 @@ for i, folder in enumerate(os.listdir(args.main_folder)):
     print(f'added {n_samples} / {n_samples_source} samples of {folder} in {time.time() - start_time:.2f} secs', flush=True)
 
 if not args.dry_run:
-    h5_out.attrs['timestamp'] = datetime.datetime.now()
-    for key, value in args.items():
+    h5_out.attrs['timestamp'] = str(datetime.datetime.now())
+    for key, value in vars(args).items():
         h5_out.attrs[key] = value
     h5_out.close()
+
+print(f'done, added {n_total_samples} to {args.output_file}')

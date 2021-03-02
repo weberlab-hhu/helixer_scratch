@@ -6,7 +6,7 @@ import numpy as np
 parser = argparse.ArgumentParser()
 parser.add_argument('--input-file', type=str, default='', required=True)
 parser.add_argument('--output-file', type=str, default='', required=True)
-parser.add_argument('--remove-genome', type=str, nargs='+', required=True)
+parser.add_argument('--remove-genomes', type=str, nargs='+', required=True)
 parser.add_argument('--append', action='store_true')
 args = parser.parse_args()
 print(vars(args))
@@ -16,11 +16,11 @@ mode = 'a' if args.append else 'w'
 newf = h5py.File(args.output_file, mode=mode)
 
 # build mask for species we want to remove
-mask = np.full_like(True, f['data/species'])
+species_names = f['data/species'][:]
+mask = np.full(species_names.shape, True, dtype=np.bool)
 for genome in args.remove_genomes:
-    mask = np.logical_and(mask, f['data/species'][:] != genome.encode())
-
-print(f'removing {np.sum(mask)) / len(mask) * 100:.2f}% of samples'
+    mask = np.logical_and(mask, species_names != genome.capitalize().encode())
+print(f'removing {np.sum(mask == False) / len(mask) * 100:.2f}% of samples')
 
 for grp in f.keys():
     newf.create_group(grp)
@@ -37,7 +37,9 @@ for grp in f.keys():
                             compression='lzf',
                             shuffle=odat[key].shuffle)
     by = 5000
-    for i in range(0, f['data/y'].shape[0], by):
+    n_samples = f['data/y'].shape[0]
+    for i in range(0, n_samples, by):
+        print(f'{i}/{n_samples}', end='\r')
         submask = mask[i:(i + by)]
         n_seqs = np.sum(submask)
         if n_seqs > 0:
