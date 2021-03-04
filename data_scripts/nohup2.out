@@ -1,0 +1,51 @@
+nohup: ignoring input
+{'main_folder': '/home/felix-stiehler/Desktop/old_data/data/plants/single_genomes', 'output_file': '/home/felix-stiehler/Desktop/generalization_validation.h5', 'coefficient': 30.0, 'exponent': 0.45, 'max_samples': 5000, 'skip_datasets': [], 'dry_run': False}
+selecting 5000 samples of Hvulgare
+added 5000 / 293821 samples of Hvulgare in 271.99 secs
+selecting 3227 samples of Dsalina
+added 3227 / 32739 samples of Dsalina in 147.72 secs
+selecting 2675 samples of Mpolymorpha
+added 2675 / 21568 samples of Mpolymorpha in 117.93 secs
+selecting 2906 samples of Vvinifera
+added 2906 / 25928 samples of Vvinifera in 128.20 secs
+selecting 2874 samples of Kfedtschenkoi
+added 2874 / 25301 samples of Kfedtschenkoi in 127.68 secs
+selecting 3511 samples of Ptrichocarpa
+added 3511 / 39486 samples of Ptrichocarpa in 158.67 secs
+selecting 1989 samples of Creinhardtii
+added 1989 / 11164 samples of Creinhardtii in 84.12 secs
+selecting 2581 samples of Fvesca
+added 2581 / 19930 samples of Fvesca in 111.99 secs
+selecting 2441 samples of Othomaeum
+added 2441 / 17612 samples of Othomaeum in 106.67 secs
+selecting 2087 samples of Crubella
+added 2087 / 12424 samples of Crubella in 88.77 secs
+selecting 2908 samples of Bdistachyon
+added 2908 / 25984 samples of Bdistachyon in 128.21 secs
+selecting 2483 samples of Esalsugineum
+added 2483 / 18284 samples of Esalsugineum in 107.93 secs
+selecting 2022 samples of Spolyrhiza
+added 2022 / 11589 samples of Spolyrhiza in 85.45 secs
+selecting 2851 samples of Carietinum
+added 2851 / 24849 samples of Carietinum in 126.16 secs
+selecting 4150 samples of Sbicolor
+added 4150 / 57251 samples of Sbicolor in 190.70 secs
+selecting 4747 samples of Cquinoa
+added 4747 / 77152 samples of Cquinoa in 230.78 secs
+selecting 3354 samples of Sitalica
+added 3354 / 35661 samples of Sitalica in 149.96 secs
+selecting 1365 samples of CsubellipsoideaC169
+added 1365 / 4839 samples of CsubellipsoideaC169 in 56.46 secs
+selecting 2344 samples of Zmarina
+added 2344 / 16086 samples of Zmarina in 101.94 secs
+selecting 3235 samples of Osativa
+added 3235 / 32908 samples of Osativa in 144.48 secs
+selecting 1988 samples of Athaliana
+added 1988 / 11160 samples of Athaliana in 84.46 secs
+selecting 3195 samples of Ahypochondriacus
+added 3195 / 32019 samples of Ahypochondriacus in 142.08 secs
+selecting 1845 samples of Pumbilicalis
+added 1845 / 9454 samples of Pumbilicalis in 78.31 secs
+selecting 765 samples of Olucimarinus
+added 765 / 1338 samples of Olucimarinus in 30.89 secs
+selecting 3156 samples of Aofficinalis
