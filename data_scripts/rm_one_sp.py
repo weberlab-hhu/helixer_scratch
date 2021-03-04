@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 import h5py
 import argparse
+import datetime
 import numpy as np
 
 parser = argparse.ArgumentParser()
@@ -62,5 +63,8 @@ if 'meta' in newf.keys():
         bkey = key.encode('utf-8')
         h5py.h5o.copy(f['meta'].id, bkey, newf['meta'].id, bkey)
 
+newf.attrs['timestamp-original-data'] = f.attrs['timestamp']
+newf.attrs['timestamp-genome-removal'] = str(datetime.datetime.now())
+newf.attrs['removed-genomes'] = args.remove_genomes
 newf.close()
 f.close()
