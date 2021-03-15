@@ -17,10 +17,10 @@ mode = 'a' if args.append else 'w'
 newf = h5py.File(args.output_file, mode=mode)
 
 # build mask for species we want to remove
-species_names = f['data/species'][:]
+species_names = np.array([s.decode().lower() for s in f['data/species'][:]])
 mask = np.full(species_names.shape, True, dtype=np.bool)
 for genome in args.remove_genomes:
-    mask = np.logical_and(mask, species_names != genome.capitalize().encode())
+    mask = np.logical_and(mask, species_names != genome.lower())
 print(f'removing {np.sum(mask == False) / len(mask) * 100:.2f}% of samples')
 
 for grp in f.keys():
