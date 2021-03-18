@@ -1,10 +1,8 @@
 #! /usr/bin/env python3
 import os
 import time
-import math
 import h5py
 import argparse
-import numpy as np
 import datetime
 from helixer.export.exporter import HelixerExportController
 
