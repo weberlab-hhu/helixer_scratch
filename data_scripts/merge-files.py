@@ -31,7 +31,7 @@ for input_path in args.input_files:
         old_len = len(dsets_out[key])
         dsets_out[key].resize(old_len + n_samples, axis=0)
         for offset in range(0, n_samples, chunk_size):
-            print(f'{offset}/{n_samples}\r')
+            print(f'{key}: {offset}/{n_samples}')
             samples = dsets_in[key][offset:offset + chunk_size]
             dsets_out[key][old_len + offset:old_len + offset + chunk_size] = samples
     h5_in.close()
