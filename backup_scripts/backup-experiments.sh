@@ -9,4 +9,4 @@ echo
 # rsync -rzt --stats --exclude="predictions.h5" /home/felix/nni nni_local_felix/
 
 echo -e "\nnni clc server"
-rsync -rzt --stats  --exclude="predictions.h5" felix-stiehler@134.99.200.63:/home/felix-stiehler/nni-experiments nni_clc_server/
+rsync -rzth --stats  --exclude="predictions.h5" felix-stiehler@134.99.200.63:/home/felix-stiehler/nni-experiments nni_clc_server/
