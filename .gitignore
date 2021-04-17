@@ -1,6 +1,7 @@
 .idea
 nohup.out
 nohup2.out
+nohup*
 backup-home.log
 gene_lengths
 data_files

@@ -37,7 +37,7 @@ for i, pred_file in enumerate(args.prediction_files):
     dest.resize(i + 1, axis=0)
     for offset in range(0, shape[1], chunk_size):
         dest[i, offset:offset + chunk_size] = source[offset:offset + chunk_size]
-        print(f'{offset + chunk_size} / {shape[1]}')
+        print(f'{offset + chunk_size} / {shape[1]}', flush=True)
     h5_pred.close()
     print(f'{i + 1} / {n_preds} added samples of {pred_file} in {time.time() - start_time:.2f} secs', flush=True)
 
