@@ -1,25 +1,7 @@
 __author__ = 'adenton'
-import sys
-import getopt
-import fastahelper
 
-def usage():
-    usagestr = """ python conformation_fasta.py -i sequences.fasta -o ouput.fasta[options]
-###############
--i | --in=              input fasta file
--o | --out=             output prefix (default = conform_fasta_out)
--l | --length=   	    desired line length (default = 60)
--n | --nseqs=           split output in subfiles with n sequences (incompatible with -c)
--c | --nchar=           split output into new file whenever c characters is reached (incompatible with -n)
--m | --min-length=      drop all sequences shorter than m
--x | --max-length=      drop all sequences longer than x
--d | --id_delimiter=    delimiter of id
--p | --id_pieces=       comma separated pieces (indexes from 0) of id to keep
--u | --unique_ids=      add ever increasing numbers for force IDs to be unique (only set if they aren't)
--h | --help             prints this message
-"""
-    print(usagestr)
-    sys.exit(1)
+from dustdas import fastahelper
+import argparse
 
 
 def chunkstring(string, length):
@@ -75,86 +57,68 @@ def reached_nchar(cumulative_char, nchar):
     :return: boolean
     """
     out = False
-    if cumulative_char >= nchar and nchar != -1:
+    if cumulative_char >= nchar != -1:
         out = True
     return out
 
 
 def main():
-    filein = None
-    new_length = 60
-    nseqs = -1
-    pfxout = "conform_fasta_out"
-    max_length = None
-    min_length = None
-    id_delimiter = None
-    id_pieces = None
-    nchar = -1
-    unique_ids = False
-    # get opt
-    try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "i:l:n:c:m:x:d:p:o:uh",
-                                       ["in=", "length=", "nseqs=", "nchar=", "min-length=", "max-length=", "id_delimiter=",
-                                        "id_pieces=", "out=", "unique_ids", "help"])
-    except getopt.GetoptError as err:
-        print (str(err))
-        usage()
 
-    for o, a in opts:
-        if o in ("-i", "--in"):
-            filein = a
-        elif o in ("-l", "--length"):
-            new_length = int(a)
-        elif o in ("-n", "--nseqs"):
-            nseqs = int(a)
-        elif o in ("-c", "--nchar"):
-            nchar = int(a)
-        elif o in ("-m", "--min-length"):
-            min_length = int(a)
-        elif o in ("-x", "--max-length"):
-            max_length = int(a)
-        elif o in ("-d", "--id_delimiter"):
-            id_delimiter = a
-        elif o in ("-p", "--id_pieces"):
-            id_pieces = a.split(',')
-        elif o in ("-o", "--out"):
-            pfxout = a
-        elif o in ("-u", "--unique_ids"):
-            unique_ids = True
-        elif o in ("-h", "--help"):
-            usage()
-        else:
-            assert False, "unhandled option"
-    
-    if filein is None:
-        print("input fasta required")
-        usage()
-    # todo, check set both or none -d -p
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--input', help='input fasta file', required=True)
+    parser.add_argument('-o', '--output', help='output prefix (default = conform_fasta_out)',
+                        default="conform_fasta_out")
+
+    parser.add_argument('-l', '--length', help='characters per line in sequence', type=int, default=60)
+    parser.add_argument('-n', '--nseqs', help='split into subfiles with maximum of N sequences each', default=-1,
+                        type=int)
+    parser.add_argument('-c', '--nchar', help='split into subfiles with maximum of N characters (bases) each',
+                        default=-1, type=int)
+    parser.add_argument('-m', '--min-length', type=int, help='drop all sequences shorter than m')
+    parser.add_argument('-x', '--max-length', type=int, help='drop all sequences longer than x')
+    parser.add_argument('-d', '--id-delimiter', help='delimiter of id')
+    parser.add_argument('-p', '--id-pieces', help='comma separated pieces (indexes from 0) of id to keep')
+    parser.add_argument('-u', '--unique-ids', help='add ever increasing numbers for force IDs to be unique '
+                                                   '(only set if they are not)', action='store_true')
+
+    args = parser.parse_args()
+    filein = args.input
+    new_length = args.length
+    nseqs = args.nseqs
+    nchar = args.nchar
+    pfxout = args.output
+    max_length = args.max_length
+    min_length = args.min_length
+    id_delimiter = args.id_delimiter
+    id_pieces = args.id_pieces
+    unique_ids = args.unique_ids
+
     fastaparser = fastahelper.FastaParser()
 
-    # write to separate files only if nseqs has been set
+    # write to separate files only if nseqs or nchar has been set
     if nseqs == -1 and nchar == -1:
-        nfile = ''
+        mid_file = ''
     elif nseqs != -1 and nchar != -1:
-        print("Options -c and -n are incompatible. Choose one of them.")
-        usage()
+        raise ValueError("Options -c and -n are incompatible. Choose one of them.")
     else:
         nfile = 0
+        mid_file = '{:03}'.format(nfile)
 
     uniquifier = 0
     counter = 0
     cumulative_char = 0
-    fileout = pfxout + str(nfile) + '.fa'
+    fileout = pfxout + mid_file + '.fa'
     openout = open(fileout, 'w')
+    file_is_still_empty = True  # keep from writing empty file 00
     for seq in fastaparser.read_fasta(filein):
         if length_ok(len(seq[1]), max_length=max_length, min_length=min_length):
             cumulative_char += len(seq[1])
-            if counter == nseqs or reached_nchar(cumulative_char, nchar):
+            if counter == nseqs or reached_nchar(cumulative_char, nchar) and not file_is_still_empty:
                 openout.close()
                 nfile += 1
                 counter = 0
                 cumulative_char = 0
-                fileout = pfxout + str(nfile) + '.fa'
+                fileout = '{}{:03}.fa'.format(pfxout, nfile)
                 openout = open(fileout, 'w')
 
             oldid = id_fix(seq[0], id_delimiter=id_delimiter, id_pieces=id_pieces)
@@ -163,7 +127,10 @@ def main():
             openout.write('>' + oldid + '\n')
             for substring in chunkstring(seq[1], new_length):
                 openout.write(substring + '\n')
+            file_is_still_empty = False
         counter += 1
         uniquifier += 1
+
+
 if __name__ == "__main__":
     main()
