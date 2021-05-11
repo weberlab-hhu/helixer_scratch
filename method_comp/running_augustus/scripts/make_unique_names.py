@@ -1,8 +1,11 @@
-import sys
-import getopt
-import copy
+"""restore unique naming scheme for gene models if, e.g., sequences were ran through the predictor individually,
+instead of as a whole genome, and current gene IDs are non-unique. Also adds species prefix. Assumes all transcript
+names etc exactly contain the gene ID; if this isn't true Transcript IDs won't end up unique.
+It works for AUGUSTUS output"""
+
 import re
-from BioHelpers.gffFastaTools import GFFParser
+import argparse
+from dustdas import gffhelper
 
 
 def make_id(n, prefix="Cc", depth=6):
@@ -11,60 +14,32 @@ def make_id(n, prefix="Cc", depth=6):
     newid = prefix + idfill
     return newid
 
-def usage():
-    print ("""
-    ######################################
-    #      make_unique_names.py  [AD]    #
-    ######################################
-    make gff with gene names replaced with continuously incrementing names. Assigns a new name every time
-    it hits a feature == 'gene' entry; so sorting sensitive.
 
-    usage:
-        make_unique_names.py -g in.gff > out.gff
-    options:
-    -g in.gff, --gff=in.gff     input gff with your draft gene models
-    -p prefix, --prefix=prefix  prefix species name (default Xx)
-    -n N, --increment_from=N    start IDs from N (default 0)
-    -h, --help                  prints this
-      """)
-    sys.exit(1)
+def dump2gffline(entry):
+    return '\t'.join([str(x) for x in [entry.seqid, entry.source, entry.type, entry.start, entry.end, entry.score,
+                                       entry.strand, entry.phase, entry.attribute]])
 
 
 def main():
-    gffin = None
-    prefix = "Xx"
-    incrementing_id = 0
-    try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], "g:p:n:h", ["gff=", "prefix=", "increment_from=", "help"])
-    except getopt.GetoptError as err:
-        print (str(err))
-        usage()
-    for o, a in opts:
-        if o in ("-g", "--gff"):
-            gffin = a
-        elif o in ("-p", "--prefix"):
-            prefix = a
-        elif o in ("-n", "--increment_from"):
-            incrementing_id = int(a)
-        elif o in ("-h", "--help"):
-            usage()
-        else:
-            assert False, "unhandled option"
-
-    if gffin is None:
-        print("Input gff missing\n")
-        usage()
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-g', '--gff', help='input gff with our draft gene models', required=True)
+    parser.add_argument('-p', '--prefix', help='prefix species name (default Xx)', default='Xx')
+    parser.add_argument('-n', '--increment-from', help='start IDs counting from N', default=0, type=int)
+    args = parser.parse_args()
+    gffin = args.gff
+    prefix = args.prefix
+    incrementing_id = args.increment_from
 
     # read through gff file
-    gff_r = GFFParser()
+    reader = gffhelper.read_gff_file(gffin)
 
-    for entry in gff_r.parse(gffin):
-        if "gene" == entry._type:
-            geneID = entry._attrib_dct['ID']
+    for entry in reader:
+        if "gene" == entry.type:
+            geneID = entry.get_ID()
             incrementing_id += 1
-        entry._attributes = re.sub(geneID, make_id(incrementing_id, prefix=prefix), entry._attributes)
-        print(entry.toGFF3line())
+        entry.attribute = re.sub(geneID, make_id(incrementing_id, prefix=prefix), entry.attribute)
+        print(dump2gffline(entry))
+
 
 if __name__ == "__main__":
     main()
