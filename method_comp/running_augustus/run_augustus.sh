@@ -10,8 +10,8 @@ fasta_path=$1  # full genome
 prediction_path=$2  # Helixer predictions h5
 data_path=$3  # Helixer data h5
 workingdir=$4  # where all the results land
-augustus_sp=$5  # which species should augustus use
-extrinsic_config=$6  # extrinsic cfg file for augustus & hints
+export augustus_sp=$5  # which species should augustus use
+export extrinsic_config=$6  # extrinsic cfg file for augustus & hints
 sp_prefix=$7
 
 helixer_path=/home/ali/repos/github/weberlab-hhu/Helixer
@@ -19,12 +19,12 @@ scratch_path=/home/ali/repos/github/weberlab-hhu/helixer_scratch
 
 hintsgff=$workingdir/helixer_hints.gff3
 
-hintsfolder=$workingdir/hints_split
+export hintsfolder=$workingdir/hints_split
 idfolder=$workingdir/id_split
-fafolder=$workingdir/fa_split
-augfolder=$workingdir/aug_split
+export fafolder=$workingdir/fa_split
+export augfolder=$workingdir/aug_split
 
-for folder in $workingdir $idfolder $fafolder $augfolder
+for folder in $workingdir $hintsfolder $idfolder $fafolder $augfolder
 do
   mkdir $folder
 done
@@ -38,13 +38,13 @@ python $helixer_path/scripts/predictions2hints.py -p $prediction_path \
 # so we will split up both the input genome and hints
 
 # first split the fasta file (every million bps or so, doesn't split sequences)
-python $scratch_path/method_comp/running_augustus/conformation_fasta.py \
+python $scratch_path/method_comp/running_augustus/scripts/conformation_fasta.py \
   -i $fasta_path --nchar 1000000 -o $fafolder/split_
 
 # second pull seqids off above
 for item in `ls $fafolder/`;
 do 
-  cat $fafolder/$item |grep '>'|sed 's/>//g' > $idfolder/${item%.fa}id
+  cat $fafolder/$item |grep '>'|sed 's/>//g' > $idfolder/${item%.fa}.id
 done
 
 # third use seqids to split hints 
@@ -62,7 +62,9 @@ runone() {
     --gff3=on --UTR=on > $augfolder/$split.gff3
 }
 
-ls $fafolder |xargs -n1 -P6 runone 
+export -f runone
+
+ls $fafolder |xargs -I% -n1 -P6 bash -c 'runone %'
 
 # concatenate and force the augustus output to be unique
 cat $augfolder/*.gff3 > $workingdir/raw.augustus.gff3
