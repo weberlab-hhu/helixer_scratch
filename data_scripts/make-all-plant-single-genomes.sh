@@ -1,8 +1,5 @@
 #! /bin/bash
 
-# simply all
-# cat ~/git/helixer_scratch/data_insight/plants/genome_names | shuf | xargs -I % -P 2 ~/git/HelixerPrep/export.py --db-path-in ~/Desktop/plant_geenuff.sqlite3 --out-dir ~/Desktop/data/plants/single_genomes_new/% --genomes % --chunk-size 20000 --only-test-set
-
 # test genomes
-ls -1 /mnt/data/ali/share/phytozome_organized/ready/test | shuf | xargs -I % -P 2 ~/git/HelixerPrep/export.py --db-path-in ~/Desktop/plant_geenuff_test.sqlite3 --out-dir ~/Desktop/data/plants/single_genomes/% --genomes % --chunk-size 20000 --only-test-set
+ls -1 ~/Desktop/raw_data_with_dbs/plants | shuf | xargs -L 1 -I % ~/git/HelixerPrep/export.py --main-db-path ~/Desktop/db_folders/plants --out-dir ~/Desktop/data/plants/single_genomes/% --genomes %
 

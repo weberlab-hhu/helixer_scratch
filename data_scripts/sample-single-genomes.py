@@ -12,10 +12,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--main-folder', type=str, default='', required=True,
                     help='Main single genome folder. Expects "test_data.h5" files inside subfolders.')
 parser.add_argument('--output-file', type=str, default='./validation_data.h5')
-parser.add_argument('--coefficient', type=float, default=0.5)
+parser.add_argument('--coefficient', type=float, default=1.0)
 parser.add_argument('--exponent', type=float, default=1.0)
-parser.add_argument('--max-samples', type=int, default=0, help='Maximum samples taken from one genome if > 0')
-parser.add_argument('--skip-datasets', type=str, nargs='+', default=['gene_lengths'])
+parser.add_argument('--max-samples', type=int, default=5000, help='Maximum samples taken from one genome if > 0')
+parser.add_argument('--skip-genomes', type=str, nargs='+', default=[''])
+parser.add_argument('--skip-datasets', type=str, nargs='+', default=[''], help='e.g. "gene_lengths"')
 parser.add_argument('--dry-run', action='store_true', help='Just output what would be done')
 args = parser.parse_args()
 print(vars(args))
@@ -24,6 +25,9 @@ n_total_samples = 0
 if not args.dry_run:
     h5_out = h5py.File(args.output_file, 'w')
 for i, folder in enumerate(os.listdir(args.main_folder)):
+    if folder.lower() in [g.lower() for g in args.skip_genomes]:
+        print(f'skipping {folder}')
+        continue
     start_time = time.time()
     h5_in = h5py.File(os.path.join(args.main_folder, folder, 'test_data.h5'), 'r')
     dsets_in = h5_in['data']
