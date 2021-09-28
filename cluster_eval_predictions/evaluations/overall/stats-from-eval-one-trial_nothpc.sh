@@ -9,18 +9,19 @@ trial_folder=$1
 eval_file_name=$2
 
 # if the folder has a trial.log in it we assume nni, otherwise cluster
-if [[ -f "$trial_folder/trial.log" ]]; then
-	log_file="$trial_folder/trial.log"
-	dataset=$(grep "test_data.h5" $log_file| cut -d " " -f5 | tr -d "'")
-else
-	log_file="$trial_folder/*.sh.o*"
-	dataset=$(grep "test_data.h5" $log_file| cut -d " " -f3 | tr -d ",'")
-fi
+log_file="$trial_folder/$eval_file_name"
+dataset=$(cat $log_file| grep -v load_model_path | grep ": '\(.*_data.h5\)'" -o|sed "s/[: ']//g")
+model=$(cat $log_file| grep "'load_model_path': '\(.*.h5\)'" -o|sed "s/[: ']//g;s/load_model_path//g")
 
-dataset=${dataset%/test_data.h5}
+dataset=${dataset%/*_data.h5}
 dataset=`echo $dataset|sed 's@.*/@@g'`
+
+model=`echo $model|sed 's@.*/@@g'`
+
+
+
 
 genicf1=`cat $trial_folder/$eval_file_name |grep '| genic'|sed 's/ //g'|cut -f5 -d'|'`
 subgenicf1=`cat $trial_folder/$eval_file_name |grep '| sub_genic'|sed 's/ //g'|cut -f5 -d'|'`
 
-echo "$dataset,$genicf1,$subgenicf1"
+echo "$model,$dataset,$genicf1,$subgenicf1"
