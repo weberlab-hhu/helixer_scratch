@@ -1,0 +1,4 @@
+datpath: in/dummyin/public
+species: Spolyrhiza
+run_BUSCO: /home/ali/repos/github/ezlab/busco/scripts/run_BUSCO.py
+lineage: /mnt/data/ali/nemicolopterus/ali/Ankylosaurus/Core_projects/Puma/data/resources/viridiplantae_odb10
