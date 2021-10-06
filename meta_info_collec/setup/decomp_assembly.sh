@@ -8,7 +8,7 @@ fa=${gzipped%.gz}
 zcat $gzipped > $fa
 
 echo -n "zcat gff3... "
-gzippedgff=`echo $datadir/*/annotation/*.gff3.gz`
+gzippedgff=`echo $datadir/$sp/*/annotation/*.gff3.gz`
 gff=${gzippedgff%.gz}
 
 zcat $gzippedgff > $gff

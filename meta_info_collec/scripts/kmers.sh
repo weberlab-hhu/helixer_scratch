@@ -9,7 +9,7 @@ kmerdir=$datadir/$sp/meta_collection/kmers/
 
 # count kmers
 mkdir -p $kmerdir
-python ~/repos/github/alisandra/helixer_scratch/meta_info_collec/kmers/count_kmers.py \
+python $metapath/kmers/count_kmers.py \
 	--min_k 1 --max_k 3 $fa > $kmerdir/kmers.tsv
 
 # gzip kmers
