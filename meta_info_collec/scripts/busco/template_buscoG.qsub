@@ -35,9 +35,9 @@ other_tmp_out=tmp/SPECIES
 busco_lin=/gpfs/project/alden101/resources/LINEAGE
 mkdir -p $busco_out
 
-gz_in=`echo $fa_in.gz`
-fa_in=${gz_in%.gz}
-zcat $gz_in > $fa_in
+#gz_in=`echo $fa_in.gz`
+#fa_in=${gz_in%.gz}
+#zcat $gz_in > $fa_in
 
 ~/repos/gitlab/ezlab/busco/scripts/run_BUSCO.py -i $fa_in -o $tmp_out -m geno -l $busco_lin -t $other_tmp_out 
 

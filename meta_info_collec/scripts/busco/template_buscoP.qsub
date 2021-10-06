@@ -17,7 +17,7 @@ echo "`date +"%d.%m.%Y-%T"`" >> $LOGFILE
 module load BLAST+
 module load HMMER
 module load Augustus
-module load Busco
+#module load Busco
 
 export BUSCO_CONFIG_FILE=/gpfs/project/alden101/resources/config.ini.default
 export AUGUSTUS_CONFIG_PATH=/gpfs/project/alden101/resources/Augustus/config
