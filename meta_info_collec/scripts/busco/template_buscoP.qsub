@@ -17,7 +17,7 @@ echo "`date +"%d.%m.%Y-%T"`" >> $LOGFILE
 module load BLAST+
 module load HMMER
 module load Augustus
-#module load Busco
+module load Busco/3.1.0
 
 export BUSCO_CONFIG_FILE=/gpfs/project/alden101/resources/config.ini.default
 export AUGUSTUS_CONFIG_PATH=/gpfs/project/alden101/resources/Augustus/config
@@ -31,6 +31,7 @@ busco_lin=/gpfs/project/alden101/resources/LINEAGE
 
 mkdir -p $busco_out
 
+# this uses the cluster module for a reason (pipe bricks logger)
 run_BUSCO.py -i $fa_in -o $tmp_out -m prot -l $busco_lin -t $other_tmp_out
 
 mv run_$tmp_out $busco_out/prot
