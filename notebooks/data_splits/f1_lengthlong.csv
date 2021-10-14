@@ -18,7 +18,6 @@ best_model_length5.h5,Mguttatus,0.8906,0.9208
 best_model_length4.h5,Sitalica,0.8328,0.8697
 best_model_length4.h5,Cgrandiflora,0.8933,0.9098
 best_model_length5.h5,Boleraceacapitata,0.8702,0.8702
-best_model_length2.h5,Hvulgare,,
 best_model_length0.h5,Ahypochondriacus,0.7627,0.7897
 best_model_length1.h5,Osativa,0.7764,0.8239
 best_model_length4.h5,Esalsugineum,0.8839,0.8989
@@ -76,7 +75,6 @@ best_model_length5.h5,Fvesca,0.7482,0.7885
 best_model_length3.h5,Spolyrhiza,0.7959,0.7959
 best_model_length0.h5,Crubella,0.9320,0.9525
 best_model_length1.h5,Cclementina,0.8883,0.9114
-best_model_length5.h5,Hvulgare,,
 best_model_length2.h5,Spolyrhiza,0.7418,0.7418
 best_model_length2.h5,Osativa,0.7579,0.7673
 best_model_length0.h5,Creinhardtii,0.9440,0.9656
@@ -189,7 +187,6 @@ best_model_length1.h5,Zmays,0.7295,0.7658
 best_model_length4.h5,Csinensis,0.8555,0.8843
 best_model_length2.h5,Atrichopoda,0.7880,0.7880
 best_model_length2.h5,Gmax,0.8501,0.9071
-best_model_length3.h5,Hvulgare,,
 best_model_length0.h5,Lusitatissimum,0.8431,0.8431
 best_model_length2.h5,Lusitatissimum,0.9061,0.9061
 best_model_length5.h5,Osativa,0.7415,0.7564
@@ -259,7 +256,6 @@ best_model_length2.h5,Boleraceacapitata,0.8842,0.8842
 best_model_length4.h5,Athaliana,0.9086,0.9264
 best_model_length1.h5,Lsativa,0.7325,0.7392
 best_model_length3.h5,Zmarina,0.8855,0.9280
-best_model_length4.h5,Hvulgare,,
 best_model_length5.h5,Ppersica,0.8483,0.9196
 best_model_length5.h5,Rcommunis,0.8694,0.8715
 best_model_length0.h5,Mesculenta,0.8151,0.8432
@@ -304,7 +300,6 @@ best_model_length0.h5,Sitalica,0.7843,0.8315
 best_model_length2.h5,Mdomestica,0.8422,0.8663
 best_model_length1.h5,Dsalina,0.5712,0.5936
 best_model_length0.h5,Gmax,0.7648,0.8237
-best_model_length1.h5,Hvulgare,,
 best_model_length4.h5,Ppersica,0.8436,0.9049
 best_model_length5.h5,Bdistachyon,0.7561,0.8082
 best_model_length2.h5,Cclementina,0.8943,0.9163
@@ -318,7 +313,12 @@ best_model_length2.h5,Ptrichocarpa,0.8560,0.8968
 best_model_length5.h5,Egrandis,0.8588,0.8903
 best_model_length2.h5,Sitalica,0.8344,0.8672
 best_model_length0.h5,Spolyrhiza,0.6875,0.6875
-best_model_length0.h5,Hvulgare,,
 best_model_length3.h5,Gmax,0.8779,0.9282
 best_model_length0.h5,Sbicolor,0.6749,0.7305
 best_model_length0.h5,Czofingiensis,0.9800,0.9800
+best_model_length0.h5,Hvulgare,0.5352,0.5536
+best_model_length1.h5,Hvulgare,0.6557,0.7103
+best_model_length2.h5,Hvulgare,0.5847,0.5998
+best_model_length5.h5,Hvulgare,0.5969,0.6198
+best_model_length3.h5,Hvulgare,0.6060,0.6311
+best_model_length4.h5,Hvulgare,0.5838,0.6071
