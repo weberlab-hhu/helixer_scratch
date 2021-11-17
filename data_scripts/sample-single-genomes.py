@@ -24,6 +24,7 @@ print(vars(args))
 n_total_samples = 0
 if not args.dry_run:
     h5_out = h5py.File(args.output_file, 'w')
+    h5_out.create_group('data')
 
 for i, folder in enumerate(os.listdir(args.main_folder)):
     if folder.lower() in [g.lower() for g in args.skip_genomes]:
@@ -47,7 +48,7 @@ for i, folder in enumerate(os.listdir(args.main_folder)):
         for key in h5_in['data'].keys():
             if key not in args.skip_datasets:
                 samples = dsets_in[key][samples_idx]
-                if key not in h5_out.keys():
+                if key not in h5_out['data'].keys():
                     HelixerExportController._create_dataset(h5_out, f'/data/{key}', samples, dsets_in[key].dtype)
                     dsets_out = h5_out['data']
 
