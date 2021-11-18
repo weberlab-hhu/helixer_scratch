@@ -18,6 +18,7 @@ parser.add_argument('--max-samples', type=int, default=5000, help='Maximum sampl
 parser.add_argument('--skip-genomes', type=str, nargs='+', default=[''])
 parser.add_argument('--skip-datasets', type=str, nargs='+', default=[''], help='e.g. "gene_lengths"')
 parser.add_argument('--dry-run', action='store_true', help='Just output what would be done')
+parser.add_argument('--write-by', type=int, default=100_000_000, help='max base pairs to read (into RAM)/write at once')
 args = parser.parse_args()
 print(vars(args))
 
@@ -34,7 +35,9 @@ for i, folder in enumerate(os.listdir(args.main_folder)):
     h5_in = h5py.File(os.path.join(args.main_folder, folder, 'test_data.h5'), 'r')
     dsets_in = h5_in['data']
 
-    n_samples_source = dsets_in['X'].shape[0]
+    n_samples_source, chunk_size = dsets_in['X'].shape[0:2]
+    max_n_chunks = int(args.write_by / chunk_size)
+
     # have an exponent to undersample large genomes but also a linear coeffient to scale everything to where we want it
     n_samples = int(args.coefficient * math.pow(n_samples_source, args.exponent))
     n_samples = min(n_samples_source, n_samples)  # make sure there are enough samples
@@ -47,14 +50,15 @@ for i, folder in enumerate(os.listdir(args.main_folder)):
     if not args.dry_run:
         for key in h5_in['data'].keys():
             if key not in args.skip_datasets:
-                samples = dsets_in[key][samples_idx]
-                if key not in h5_out['data'].keys():
-                    HelixerExportController._create_dataset(h5_out, f'/data/{key}', samples, dsets_in[key].dtype)
-                    dsets_out = h5_out['data']
+                for si in range(0, n_samples, max_n_chunks):
+                    samples = dsets_in[key][samples_idx[si:(si + max_n_chunks)]]
+                    if key not in h5_out['data'].keys():
+                        HelixerExportController._create_dataset(h5_out, f'/data/{key}', samples, dsets_in[key].dtype)
+                        dsets_out = h5_out['data']
 
-                old_len = dsets_out[key].shape[0]
-                dsets_out[key].resize(old_len + n_samples, axis=0)
-                dsets_out[key][old_len:] = samples
+                    old_len = dsets_out[key].shape[0]
+                    dsets_out[key].resize(old_len + len(samples), axis=0)
+                    dsets_out[key][old_len:] = samples
     h5_in.close()
     print(f'added {n_samples} / {n_samples_source} samples of {folder} in {time.time() - start_time:.2f} secs', flush=True)
 
