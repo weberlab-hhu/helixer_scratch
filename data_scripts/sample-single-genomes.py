@@ -8,6 +8,31 @@ import numpy as np
 import datetime
 from helixer.export.exporter import HelixerExportController
 
+
+class GenomeSelector:
+    def __init__(self, skip_genomes=None, only_genomes=None):
+
+        if skip_genomes is not None and only_genomes is not None:
+            raise ValueError("one of skip_genomes and only_genomes must be None, incompatible parameters")
+        elif skip_genomes is not None:
+            self.skip_genomes = [x.lower() for x in skip_genomes]
+            self.chooser = self.skipper
+        elif only_genomes is not None:
+            self.keep_genomes = [x.lower() for x in only_genomes]
+            self.chooser = self.keeper
+        else:
+            self.chooser = self.passer
+
+    def passer(self, _):
+        return True
+
+    def skipper(self, genome):
+        return genome.lower() not in self.skip_genomes
+
+    def keeper(self, genome):
+        return genome.lower() in self.keep_genomes
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--main-folder', type=str, default='', required=True,
                     help='Main single genome folder. Expects "test_data.h5" files inside subfolders.')
@@ -15,12 +40,16 @@ parser.add_argument('--output-file', type=str, default='./validation_data.h5')
 parser.add_argument('--coefficient', type=float, default=1.0)
 parser.add_argument('--exponent', type=float, default=1.0)
 parser.add_argument('--max-samples', type=int, default=5000, help='Maximum samples taken from one genome if > 0')
-parser.add_argument('--skip-genomes', type=str, nargs='+', default=[''])
+parser.add_argument('--skip-genomes', type=str, nargs='+', default=None)
+parser.add_argument('--only-genomes', type=str, nargs='+', default=None)
 parser.add_argument('--skip-datasets', type=str, nargs='+', default=[''], help='e.g. "gene_lengths"')
 parser.add_argument('--dry-run', action='store_true', help='Just output what would be done')
 parser.add_argument('--write-by', type=int, default=100_000_000, help='max base pairs to read (into RAM)/write at once')
 args = parser.parse_args()
 print(vars(args))
+
+genome_selector = GenomeSelector(skip_genomes=args.skip_genomes,
+                                 only_genomes=args.only_genomes)
 
 n_total_samples = 0
 if not args.dry_run:
@@ -28,7 +57,7 @@ if not args.dry_run:
     h5_out.create_group('data')
 
 for i, folder in enumerate(os.listdir(args.main_folder)):
-    if folder.lower() in [g.lower() for g in args.skip_genomes]:
+    if not genome_selector.chooser(folder):
         print(f'skipping {folder}')
         continue
     start_time = time.time()
