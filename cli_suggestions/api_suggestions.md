@@ -79,7 +79,7 @@ Data generation parameters:
 
 ### New CLI ###
 #### export-from-geenuff.py ####
-usage: export-from-geenuff.py [-h] --input-db-path INPUT_DB_PATH --output-path OUTPUT_PATH [--add-additional ADD_ADDITIONAL] [--chunk-size CHUNK_SIZE] [--modes MODES] [--write-by WRITE_BY] [--compression {gzip,lzf}]
+usage: export-from-geenuff.py [-h] [--config-file CONFIG_FILE] --input-db-path INPUT_DB_PATH --output-path OUTPUT_PATH [--add-additional ADD_ADDITIONAL] [--chunk-size CHUNK_SIZE] [--modes MODES] [--write-by WRITE_BY] [--compression {gzip,lzf}]
 
 optional arguments:  
   -h, --help            show this help message and exit  
@@ -99,7 +99,7 @@ Data generation parameters:
   --no-multiprocess     Whether to parallize numerification of large sequences. Uses 2x the memory.  
 
 #### export-from-fasta.py ####
-usage: export-from-geenuff.py [-h] --fasta-path FASTA-PATH --output-path OUTPUT_PATH [--add-additional ADD_ADDITIONAL] --species SPECIES [--chunk-size CHUNK_SIZE] [--modes MODES] [--write-by WRITE_BY] [--compression {gzip,lzf}] [--no-multiprocess]
+usage: export-from-fasta.py [-h] [--config-file CONFIG_FILE] --fasta-path FASTA-PATH --output-path OUTPUT_PATH --species SPECIES [--chunk-size CHUNK_SIZE] [--modes MODES] [--write-by WRITE_BY] [--compression {gzip,lzf}] [--no-multiprocess]
 
 optional arguments:  
   -h, --help            show this help message and exit  
@@ -108,14 +108,13 @@ optional arguments:
 Data input and output:  
   --fasta-path FASTA-PATH  Directly convert from a FASTA file to .h5.  
   --output-path OUTPUT_PATH  Output file for the encoded data. Must end with ".h5".  
-  --add-additional ADD_ADDITIONAL  Outputs the datasets under alternatives/{add-additional}/ (and checks sort order against existing "data" datasets). Use to add e.g. additional annotations from Augustus.  
   --species SPECIES     Species name. 
   
 Data generation parameters:  
-  --chunk-size CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into.  
+  --chunk-size CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into. Default is 20000.
   --modes MODES         Either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  
                         adding an additional annotation set to an existing file.  
   --write-by WRITE_BY   Write in super-chunks with this many bp, will be rounded to be divisible by chunk-size  
-  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files compression level is set as 4.  
-  --no-multiprocess     Whether to parallize numerification of large sequences. Uses 2x the memory.  
+  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files compression level is set as 4. Default is "gzip", which is much slower than "lzf".
+  --no-multiprocess     Whether to not parallize the numerification of large sequences. Uses half the memory.  
 
