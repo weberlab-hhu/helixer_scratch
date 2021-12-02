@@ -39,7 +39,7 @@ optional arguments:
   **--replace-db**          Whether to override a GeenuFF database found at the default location or at the location of **--db-path**.  
   **--log-file** LOG_FILE   Output path for the import log (default is current directory).  
 
-Input/output locations: 
+Input/output locations:  
   **--gff3** GFF3           gff3 formatted file to parse / standardize  
   **--fasta** FASTA         fasta file to parse standardize  
   **--db-path** DB_PATH     path of the GeenuFF database  
