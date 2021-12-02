@@ -13,9 +13,6 @@ data_median = np.median(ct.arraytable.matrix, axis=0)
 
 def mylayout(node):
     if node.is_leaf():
-        if node.name == "Danio_rerio":
-            # import pudb; pudb.set_trace()
-            pass
         # profile_face = ProfileFace(data_max[1], data_min[1], 0.0, 100, 14, "heatmap")
         profile_face = ProfileFace(data_max[0], data_min[0], 0.0, 100, 14, "heatmap")
         ete3.treeview.faces.add_face_to_node(profile_face, node, 0, aligned=True)
