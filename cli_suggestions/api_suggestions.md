@@ -73,6 +73,7 @@ Data generation parameters:
 ## Proposed changes ## 
 ### In general ###
 * split into two scripts: export-from-geenuff.py and export-from-fasta.py
+* always give option for config file in YAML format like with Geenuff
 * not sure what to do about --modes (most combinations will not work; what do we need here?)
 * nice to have: change --write-by to --maximum-memory, which then uses the value to calculate to maximum write-by value
 
@@ -82,6 +83,7 @@ usage: export-from-geenuff.py [-h] --input-db-path INPUT_DB_PATH --output-path O
 
 optional arguments:  
   -h, --help            show this help message and exit  
+  --config-file CONFIG_FILE  Config in form of a YAML file with lower priority than parameters given on the command line.  
 
 Data input and output:  
   --input-db-path INPUT_DB_PATH  Path to the GeenuFF SQLite input database (has to contain only one genome).  
@@ -101,6 +103,7 @@ usage: export-from-geenuff.py [-h] --fasta-path FASTA-PATH --output-path OUTPUT_
 
 optional arguments:  
   -h, --help            show this help message and exit  
+  --config-file CONFIG_FILE  Config in form of a YAML file with lower priority than parameters given on the command line.  
 
 Data input and output:  
   --fasta-path FASTA-PATH  Directly convert from a FASTA file to .h5.  
