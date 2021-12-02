@@ -36,8 +36,13 @@ usage: import.py [-h] [--config-file CONFIG_FILE] --gff3 GFF3 --fasta FASTA --db
 optional arguments:  
   -h, **--help**            Show this help message and exit.  
   **--config-file** CONFIG_FILE  Config in form of a YAML file with lower priority than parameters given on the command line.  
-  **--replace-db**          Whether to override a GeenuFF database found at the default location or at the location of **--db**_path.  
+  **--replace-db**          Whether to override a GeenuFF database found at the default location or at the location of **--db-path**.  
   **--log-file** LOG_FILE   Output path for the import log (default is current directory).  
+
+Input/output locations: 
+  **--gff3** GFF3           gff3 formatted file to parse / standardize  
+  **--fasta** FASTA         fasta file to parse standardize  
+  **--db-path** DB_PATH     path of the GeenuFF database  
   
 Possible genome attributes:  
   **--species** SPECIES     The name of the species.  
@@ -46,7 +51,7 @@ Possible genome attributes:
   **--acquired-from** ACQUIRED_FROM The genome source.  
 
 
-# Geenuff/import2geenuff.py #
+# Helixer/export.py #
 ## Current cli help output ## 
 
 usage: export.py [-h] [--input-db-path INPUT_DB_PATH] [--direct-fasta-to-h5-path DIRECT_FASTA_TO_H5_PATH] --output-path OUTPUT_PATH [--add-additional ADD_ADDITIONAL] [--species SPECIES] [--chunk-size CHUNK_SIZE] [--modes MODES] [--write-by WRITE_BY] [--compression {gzip,lzf}]
@@ -111,9 +116,8 @@ Data input and output:
   **--species** SPECIES     Species name. 
   
 Data generation parameters:  
-  **--chunk-size** CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into. Default is 20000.
-  **--modes** MODES         Either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  
-                        adding an additional annotation set to an existing file.  
+  **--chunk-size** CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into. Default is 20000.  
+  **--modes** MODES         Either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  adding an additional annotation set to an existing file.  
   **--write-by** WRITE_BY   Write in super-chunks with this many bp, will be rounded to be divisible by chunk-size  
   **--compression** {gzip,lzf}  Compression algorithm used for the .h5 output files with a fixed compression level of 4. Default is "gzip", which is much slower than "lzf".  
   **--no-multiprocess**     Whether to not parallize the numerification of large sequences. Uses half the memory.  
