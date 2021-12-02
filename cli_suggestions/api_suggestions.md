@@ -56,24 +56,18 @@ optional arguments:
   -h, --help            show this help message and exit  
 
 Data input and output:  
-  --input-db-path INPUT_DB_PATH  
-                        Path to the GeenuFF SQLite input database (has to contain only one genome).  
-  --direct-fasta-to-h5-path DIRECT_FASTA_TO_H5_PATH  
-                        Directly convert from a FASTA file to .h5, circumventing import into a Geenuff database  
-  --output-path OUTPUT_PATH  
-                        Output file for the encoded data. Must end with ".h5"  
-  --add-additional ADD_ADDITIONAL  
-                        outputs the datasets under alternatives/{add-additional}/ (and checks sort order against existing "data" datasets). Use to add e.g. additional annotations from Augustus.  
+  --input-db-path INPUT_DB_PATH  Path to the GeenuFF SQLite input database (has to contain only one genome).  
+  --direct-fasta-to-h5-path DIRECT_FASTA_TO_H5_PATH  Directly convert from a FASTA file to .h5, circumventing import into a Geenuff database  
+  --output-path OUTPUT_PATH  Output file for the encoded data. Must end with ".h5"  
+  --add-additional ADD_ADDITIONAL  outputs the datasets under alternatives/{add-additional}/ (and checks sort order against existing "data" datasets). Use to add e.g. additional annotations from Augustus.  
   --species SPECIES     Species name. Only used with --direct-fasta-to-h5-path.  
   
 Data generation parameters:  
-  --chunk-size CHUNK_SIZE  
-                        Size of the chunks each genomic sequence gets cut into.  
+  --chunk-size CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into.  
   --modes MODES         either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  
                         adding an additional annotation set to an existing file.  
   --write-by WRITE_BY   write in super-chunks with this many bp, will be rounded to be divisible by chunk-size  
-  --compression {gzip,lzf}  
-                        Compression algorithm used for the .h5 output files compression level is set as 4.  
+  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files compression level is set as 4.  
   --no-multiprocess     Whether to parallize numerification of large sequences. Uses 2x the memory.  
 
 ## Proposed changes ## 
@@ -90,21 +84,16 @@ optional arguments:
   -h, --help            show this help message and exit  
 
 Data input and output:  
-  --input-db-path INPUT_DB_PATH  
-                        Path to the GeenuFF SQLite input database (has to contain only one genome).  
-  --output-path OUTPUT_PATH  
-                        Output file for the encoded data. Must end with ".h5"  
-  --add-additional ADD_ADDITIONAL  
-                        Outputs the datasets under alternatives/{add-additional}/ (and checks sort order against existing "data" datasets). Use to add e.g. additional annotations from Augustus.  
+  --input-db-path INPUT_DB_PATH  Path to the GeenuFF SQLite input database (has to contain only one genome).  
+  --output-path OUTPUT_PATH  Output file for the encoded data. Must end with ".h5"  
+  --add-additional ADD_ADDITIONAL  Outputs the datasets under alternatives/{add-additional}/ (and checks sort order against existing "data" datasets). Use to add e.g. additional annotations from Augustus.  
   
 Data generation parameters:  
-  --chunk-size CHUNK_SIZE  
-                        Size of the chunks each genomic sequence gets cut into.  
+  --chunk-size CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into.  
   --modes MODES         Either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  
                         adding an additional annotation set to an existing file.  
   --write-by WRITE_BY   Write in super-chunks with this many bp, will be rounded to be divisible by chunk-size  
-  --compression {gzip,lzf}  
-                        Compression algorithm used for the .h5 output files compression level is set as 4.  
+  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files compression level is set as 4.  
   --no-multiprocess     Whether to parallize numerification of large sequences. Uses 2x the memory.  
 
 #### export-from-fasta.py ####
@@ -114,21 +103,16 @@ optional arguments:
   -h, --help            show this help message and exit  
 
 Data input and output:  
-  --fasta-path FASTA-PATH  
-                        Directly convert from a FASTA file to .h5.
-  --output-path OUTPUT_PATH  
-                        Output file for the encoded data. Must end with ".h5".
-  --add-additional ADD_ADDITIONAL  
-                        Outputs the datasets under alternatives/{add-additional}/ (and checks sort order against existing "data" datasets). Use to add e.g. additional annotations from Augustus.  
+  --fasta-path FASTA-PATH  Directly convert from a FASTA file to .h5.  
+  --output-path OUTPUT_PATH  Output file for the encoded data. Must end with ".h5".  
+  --add-additional ADD_ADDITIONAL  Outputs the datasets under alternatives/{add-additional}/ (and checks sort order against existing "data" datasets). Use to add e.g. additional annotations from Augustus.  
   --species SPECIES     Species name. 
   
 Data generation parameters:  
-  --chunk-size CHUNK_SIZE  
-                        Size of the chunks each genomic sequence gets cut into.  
+  --chunk-size CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into.  
   --modes MODES         Either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  
                         adding an additional annotation set to an existing file.  
   --write-by WRITE_BY   Write in super-chunks with this many bp, will be rounded to be divisible by chunk-size  
-  --compression {gzip,lzf}  
-                        Compression algorithm used for the .h5 output files compression level is set as 4.  
+  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files compression level is set as 4.  
   --no-multiprocess     Whether to parallize numerification of large sequences. Uses 2x the memory.  
 
