@@ -95,7 +95,7 @@ Data generation parameters:
   --modes MODES         Either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  
                         adding an additional annotation set to an existing file.  
   --write-by WRITE_BY   Write in super-chunks with this many bp, will be rounded to be divisible by chunk-size  
-  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files with a fixed compression level of 4. Default is "gzip", which is much slower than "lzf".
+  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files with a fixed compression level of 4. Default is "gzip", which is much slower than "lzf".  
   --no-multiprocess     Whether to not parallize the numerification of large sequences. Uses half the memory.  
 
 #### export-from-fasta.py ####
@@ -115,6 +115,6 @@ Data generation parameters:
   --modes MODES         Either "all" (default), or a comma separated list with desired members of the following {X, y, anno_meta, transitions} that should be exported. This can be useful, for instance when skipping transitions (to reduce size/mem) or skipping X because you are  
                         adding an additional annotation set to an existing file.  
   --write-by WRITE_BY   Write in super-chunks with this many bp, will be rounded to be divisible by chunk-size  
-  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files with a fixed compression level of 4. Default is "gzip", which is much slower than "lzf".
+  --compression {gzip,lzf}  Compression algorithm used for the .h5 output files with a fixed compression level of 4. Default is "gzip", which is much slower than "lzf".  
   --no-multiprocess     Whether to not parallize the numerification of large sequences. Uses half the memory.  
 
