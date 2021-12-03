@@ -139,11 +139,11 @@ Data generation parameters:
   **--compression** {gzip,lzf}  Compression algorithm used for the intermediate .h5 output files with a fixed compression level of 4. (Default is "gzip", which is much slower than "lzf".)  
   **--no-multiprocess**     Whether to not parallize the numerification of large sequences. Uses half the memory but can be much slower when many CPU cores can be utilized.  
 
-Post-processing parameters:
-  **--window-size** WINDOW_SIZE  [description]. (Default is 100).
-  **--edge-threshold** EDGE_THRESHOLD  [description]. (Default is 0.1).
-  **--peak-threshold** PEAK_THRESHOLD  [description]. (Default is 0.8).
-  **--min-coding-length** MIN_CODING_LENGTH  [description]. (Default is 60).
+Post-processing parameters:  
+  **--window-size** WINDOW_SIZE  [description]. (Default is 100).  
+  **--edge-threshold** EDGE_THRESHOLD  [description]. (Default is 0.1).  
+  **--peak-threshold** PEAK_THRESHOLD  [description]. (Default is 0.8).  
+  **--min-coding-length** MIN_CODING_LENGTH  [description]. (Default is 60).  
 
 
 
