@@ -121,9 +121,11 @@ Data generation parameters:
 
 # Helixer/helixer.py #
 * New central helixer script, that does the FASTA -> GFF conversion
+* Has access to 3 internal models for animals, plants and fungi
+* Chunk size is fixed now due to the trained models
 * Parameters from export-from-fasta.py and HelixerPost except for the species name, which is now not useful anymore
 
-usage: helixer.py [-h] [--config-file CONFIG_FILE] --fasta-input-path FASTA_INPUT_PATH --gff-output-path GFF_OUTPUT_PATH --species-category {animal,plant,fungi} [--chunk-size CHUNK_SIZE] [--compression {gzip,lzf}] [--no-multiprocess] [--window-size WINDOW_SIZE] [--edge-threshold EDGE_THRESHOLD] [--peak-threshold PEAK_THRESHOLD] [--min-coding-length MIN_CODING_LENGTH]
+usage: helixer.py [-h] [--config-file CONFIG_FILE] --fasta-input-path FASTA_INPUT_PATH --gff-output-path GFF_OUTPUT_PATH --species-category {animal,plant,fungi} [--compression {gzip,lzf}] [--no-multiprocess] [--window-size WINDOW_SIZE] [--edge-threshold EDGE_THRESHOLD] [--peak-threshold PEAK_THRESHOLD] [--min-coding-length MIN_CODING_LENGTH]
 
 optional arguments:  
   -h, **--help**            show this help message and exit  
@@ -135,7 +137,6 @@ Data input and output:
   **--species-category** {animal,plant,fungi} What model to use for the annotation. (Default is "animal".)  
   
 Data generation parameters:  
-  **--chunk-size** CHUNK_SIZE  Size of the chunks each genomic sequence gets cut into. (Default is 20000.)  
   **--compression** {gzip,lzf}  Compression algorithm used for the intermediate .h5 output files with a fixed compression level of 4. (Default is "gzip", which is much slower than "lzf".)  
   **--no-multiprocess**     Whether to not parallize the numerification of large sequences. Uses half the memory but can be much slower when many CPU cores can be utilized.  
 
