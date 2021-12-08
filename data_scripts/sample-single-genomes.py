@@ -94,7 +94,7 @@ for i, folder in enumerate(os.listdir(args.main_folder)):
 if not args.dry_run:
     h5_out.attrs['timestamp'] = str(datetime.datetime.now())
     for key, value in vars(args).items():
-        h5_out.attrs[key] = value
+        h5_out.attrs[key] = str(value)
     h5_out.close()
 
 print(f'done, added {n_total_samples} to {args.output_file}')
