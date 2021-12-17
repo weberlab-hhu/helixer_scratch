@@ -73,3 +73,7 @@ def main(args):
     print(f'added {n_samples} / {n_samples_source} samples of distance less than {furthest_distance} in {time.time() - start_time:.2f} secs', flush=True)
     h5_in.close()
     print(f'closed {args.output_file}')
+
+
+if __name__ == "__main__":
+    main(args)
