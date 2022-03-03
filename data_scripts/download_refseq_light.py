@@ -68,11 +68,13 @@ class DirHolder:
             for d in [self.out_version, self.out_assembly, self.out_annotation]:
                 os.makedirs(d)
 
-    def get_version_from_latest(self):
+    def get_version_from_latest(self, preferred_version):
         with open(ospj(self.latest, 'index.html')) as f:
             soup = BeautifulSoup(f.read(), 'html.parser')
         links = soup.find_all('a')
-        assert len(links) == 1, f'len(links) != 1, instead {len(links)}'
+        if preferred_version is not None:
+            links = [link for link in links if link['href'].find(preferred_version) > -1]
+        assert len(links) == 1, f'len(links) != 1, instead {len(links)}; {links}'
         out = links[0]["href"] + '/'
         # parse out just the last version bit and store
         self.found_version = leaf_path(out)
@@ -113,8 +115,9 @@ def cli():
                                                        'ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_other/')
 @click.option('--out-dir', default='./')
 @click.option('--overwrite/--no-overwrite', default=False)
-def get(species, base_path, out_dir, overwrite):
-    dl_one(species, base_path, out_dir, overwrite)
+@click.option('--preferred-version')
+def get(species, base_path, out_dir, overwrite, preferred_version):
+    dl_one(species, base_path, out_dir, overwrite, preferred_version)
 
 
 @cli.command()
@@ -122,7 +125,13 @@ def get(species, base_path, out_dir, overwrite):
                                                        'ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_other/')
 @click.option('--out-dir', default='./')
 @click.option('--overwrite/--no-overwrite', default=False)
-def get_all(base_path, out_dir, overwrite):
+@click.option('--resume-after', help='exact refseq name of last species to complete successfully, all species up to '
+                                     'and including this will be skipped, if specified')
+def get_all(base_path, out_dir, overwrite, resume_after):
+    if resume_after is None:
+        ready2add = True
+    else:
+        ready2add = False
     # prep directory, todo, don't fail on empty
     if os.path.exists(out_dir) and overwrite:
         print(f'Not implementing auto-deletion here for "{out_dir}", delete it yourself!', file=sys.stderr)
@@ -138,25 +147,39 @@ def get_all(base_path, out_dir, overwrite):
         soup = BeautifulSoup(f.read(), 'html.parser')
     links = soup.find_all('a')
     species = []
+
     for link in links:
         href = link['href']
         if href.endswith('/'):
-            species.append(leaf_path(href))
+            sp = leaf_path(href)
+            if ready2add:
+                species.append(sp)
+            if sp == resume_after:
+                ready2add = True
+
     # clean up for later
+    if resume_after is not None:
+        os.remove(ospj(out_dir, 'index.html'))
     shutil.move('index.html', out_dir)
+
+    # descriptive error if accidentally skipping everything
+    if not ready2add:
+        print(f'--resume-after set to {resume_after}, but was not found, skipping all species', file=sys.stderr)
+        sys.exit(1)
 
     # and go go species fetcher!
     for a_sp in species:
         dl_one(a_sp, base_path, out_dir, overwrite)
 
 
-def dl_one(species, base_path, out_dir, overwrite):
+def dl_one(species, base_path, out_dir, overwrite, preferred_version=None):
     ftp_pfx = 'ftp://'
     dh = DirHolder(ospj(out_dir, species))
     # download latest contents by species name, so we can get the version name
     target = f'{ftp_pfx}{base_path}{species}/latest_assembly_versions/'
     subprocess.run(['wget', target], cwd=dh.latest)
-    datadir = dh.get_version_from_latest()
+    datadir = dh.get_version_from_latest(preferred_version)
+
     # download version contents by version name, so we can get the file names
     subprocess.run(['wget', datadir], cwd=dh.version)
     paths = dh.get_genome_paths_from_version()
