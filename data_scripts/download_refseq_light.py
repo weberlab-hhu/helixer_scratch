@@ -1,4 +1,5 @@
 """automate download of only what we need from refseq and organization to match phytozome"""
+import sys
 
 import click
 import subprocess
@@ -108,20 +109,55 @@ def cli():
 
 @cli.command()
 @click.option('-s', '--species', required=True)
-@click.option('-b', '--base-path', required=True)
+@click.option('-b', '--base-path', required=True, help='main download path, e.g. '
+                                                       'ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_other/')
+@click.option('--out-dir', default='./')
 @click.option('--overwrite/--no-overwrite', default=False)
-def get(species, base_path, overwrite):
-    dl_one(species, base_path, overwrite)
+def get(species, base_path, out_dir, overwrite):
+    dl_one(species, base_path, out_dir, overwrite)
 
 
-def dl_one(species, base_path, overwrite):
+@cli.command()
+@click.option('-b', '--base-path', required=True, help='main download path, e.g. '
+                                                       'ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_other/')
+@click.option('--out-dir', default='./')
+@click.option('--overwrite/--no-overwrite', default=False)
+def get_all(base_path, out_dir, overwrite):
+    # prep directory, todo, don't fail on empty
+    if os.path.exists(out_dir) and overwrite:
+        print(f'Not implementing auto-deletion here for "{out_dir}", delete it yourself!', file=sys.stderr)
+        sys.exit(1)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
     ftp_pfx = 'ftp://'
-    #basepath = "ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_other/"
-    #species = "Seriola_lalandi"
-    dh = DirHolder(species)
+    target = f'{ftp_pfx}{base_path}/'
+    subprocess.run(['wget', target])
+    # parse out all species names
+    with open('index.html') as f:
+        soup = BeautifulSoup(f.read(), 'html.parser')
+    links = soup.find_all('a')
+    species = []
+    for link in links:
+        href = link['href']
+        if href.endswith('/'):
+            species.append(leaf_path(href))
+    # clean up for later
+    shutil.move('index.html', out_dir)
+
+    # and go go species fetcher!
+    for a_sp in species:
+        dl_one(a_sp, base_path, out_dir, overwrite)
+
+
+def dl_one(species, base_path, out_dir, overwrite):
+    ftp_pfx = 'ftp://'
+    dh = DirHolder(ospj(out_dir, species))
+    # download latest contents by species name, so we can get the version name
     target = f'{ftp_pfx}{base_path}{species}/latest_assembly_versions/'
     subprocess.run(['wget', target], cwd=dh.latest)
     datadir = dh.get_version_from_latest()
+    # download version contents by version name, so we can get the file names
     subprocess.run(['wget', datadir], cwd=dh.version)
     paths = dh.get_genome_paths_from_version()
     genome_fa, genome_gff, checksums = [leaf_path(pth) for pth in paths]
