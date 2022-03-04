@@ -31,7 +31,7 @@ class DirHolder:
             shutil.rmtree(self.working)
         if not os.path.exists(self.working):
             # setup
-            for d in [self.working, self.latest, self.version]:
+            for d in [self.working, self.latest, self.version, self.current]:
                 os.makedirs(d)
 
     @property
@@ -41,6 +41,11 @@ class DirHolder:
     @property
     def latest(self):
         return ospj(self.working, 'latest')
+
+    @property
+    def current(self):
+        """the _other_ ~equivalent to latest directory that some species have"""
+        return ospj(self.working, 'current')
 
     @property
     def version(self):
@@ -76,6 +81,20 @@ class DirHolder:
             links = [link for link in links if link['href'].find(preferred_version) > -1]
         assert len(links) == 1, f'len(links) != 1, instead {len(links)}; {links}'
         out = links[0]["href"] + '/'
+        # parse out just the last version bit and store
+        self.found_version = leaf_path(out)
+        return out
+
+    def get_version_from_current(self, preferred_version):
+        with open(ospj(self.current, 'index.html')) as f:
+            soup = BeautifulSoup(f.read(), 'html.parser')
+        links = soup.find_all('a')
+        # directory only (skip XML and readme file)
+        links = [link for link in links if link['href'].endswith('/')]
+        if preferred_version is not None:
+            links = [link for link in links if link['href'].find(preferred_version) > -1]
+        assert len(links) == 1, f'len(links) != 1, instead {len(links)}; {links}'
+        out = links[0]["href"]
         # parse out just the last version bit and store
         self.found_version = leaf_path(out)
         return out
@@ -169,17 +188,35 @@ def get_all(base_path, out_dir, overwrite, resume_after):
 
     # and go go species fetcher!
     for a_sp in species:
-        dl_one(a_sp, base_path, out_dir, overwrite)
+        try:
+            dl_one(a_sp, base_path, out_dir, overwrite)
+        except FileNotFoundError as e:
+            known_error_log(a_sp, out_dir, e)
+        except AssertionError as e:
+            known_error_log(a_sp, out_dir, e)
+
+
+def known_error_log(species, out_dir, e):
+    with open(ospj(out_dir, 'download.log'), 'a') as f:
+        f.write(f"ERROR encountered downloading {species}\n")
+        f.write(str(e))
 
 
 def dl_one(species, base_path, out_dir, overwrite, preferred_version=None):
     ftp_pfx = 'ftp://'
-    dh = DirHolder(ospj(out_dir, species))
+    dh = DirHolder(ospj(out_dir, species), overwrite=overwrite)
     # download latest contents by species name, so we can get the version name
+    # most species indicate the latest and greatest assembly version by putting it in latest_assembly_versions
     target = f'{ftp_pfx}{base_path}{species}/latest_assembly_versions/'
     subprocess.run(['wget', target], cwd=dh.latest)
-    datadir = dh.get_version_from_latest(preferred_version)
-
+    try:
+        datadir = dh.get_version_from_latest(preferred_version)
+    except FileNotFoundError:
+        # a handful of species instead indicate the latest and greatest version as follows
+        target = f'{ftp_pfx}{base_path}{species}/annotation_releases/current/'
+        subprocess.run(['wget', target], cwd=dh.current)
+        # the contents of the resulting index.html are also slightly different; so a different parsing function is used
+        datadir = dh.get_version_from_current(preferred_version)
     # download version contents by version name, so we can get the file names
     subprocess.run(['wget', datadir], cwd=dh.version)
     paths = dh.get_genome_paths_from_version()
@@ -192,16 +229,24 @@ def dl_one(species, base_path, out_dir, overwrite, preferred_version=None):
     # check data made it intact
     oks = subprocess.check_output(['md5sum', '-c', checksums, '--ignore-missing']).decode('utf8').split('\n')
     oks = [ok for ok in oks if ok]  # skip empty line
-    for ok in oks:
-        assert ok.endswith('OK')
-    assert len(oks) == 2, f'not the 2 expected files but {len(oks)} instead: {oks}'
-
+    error = None
+    try:
+        for ok in oks:
+            assert ok.endswith('OK')
+        assert len(oks) == 2, f'not the 2 expected files but {len(oks)} instead: {oks}'
+    except AssertionError as e:
+        # catch this, so that files are still moved to their target location below
+        # thus they are available for debugging, but will not cause trouble for later downloads
+        # e.g. by resulting in md5checksums.txt.1 !
+        error = e
     # move data to project's standard structure
     dh.setup_output()
     shutil.move(checksums, dh.out_version)
     # move and rename fna -> fa and gff -> gff3
     shutil.move(genome_fa, ospj(dh.out_assembly, re.sub('\\.fna\\.gz', '.fa.gz', genome_fa)))
     shutil.move(genome_gff, ospj(dh.out_annotation, re.sub('\\.gff\\.gz', '.gff3.gz', genome_gff)))
+    if error is not None:
+        raise error
 
 
 if __name__ == "__main__":
