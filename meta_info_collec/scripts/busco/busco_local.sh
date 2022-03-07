@@ -3,7 +3,7 @@ mode=$2
 basedir=$3
 species=$4
 
-source /home/ali/extra_programs/busco-5.2.2/venv/bin/activate
+#source /home/ali/extra_programs/busco-5.2.2/venv/bin/activate
 
 if [ $mode = "geno" ]; then
     fa_in=$basedir/$species/*/assembly/*.fa 
