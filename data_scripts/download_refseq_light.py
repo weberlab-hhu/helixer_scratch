@@ -79,7 +79,7 @@ class DirHolder:
         links = soup.find_all('a')
         if preferred_version is not None:
             links = [link for link in links if link['href'].find(preferred_version) > -1]
-        assert len(links) == 1, f'len(links) != 1, instead {len(links)}; {links}'
+        assert len(links) == 1, f'len(links) != 1, instead {len(links)}; {links}\n'
         out = links[0]["href"] + '/'
         # parse out just the last version bit and store
         self.found_version = leaf_path(out)
@@ -109,17 +109,17 @@ class DirHolder:
         for link in links:
             pth = link['href']
             if pth.endswith('md5checksums.txt'):
-                assert path_checksums is None, f"path_checksums already set to {path_checksums} in {self.out_dir}"
+                assert path_checksums is None, f"path_checksums already set to {path_checksums} in {self.out_dir}\n"
                 path_checksums = pth
             elif pth.endswith('.gff.gz'):
-                assert path_genome_gff is None, f"path_genome_gff already set to {path_genome_gff} in {self.out_dir}"
+                assert path_genome_gff is None, f"path_genome_gff already set to {path_genome_gff} in {self.out_dir}\n"
                 path_genome_gff = pth
             elif pth.endswith('genomic.fna.gz') and pth.find('from_genomic') == -1:
-                assert path_genome_fa is None, f"path_genome_fa already set to {path_genome_fa} in {self.out_dir}"
+                assert path_genome_fa is None, f"path_genome_fa already set to {path_genome_fa} in {self.out_dir}\n"
                 path_genome_fa = pth
         for pth in [path_genome_gff, path_genome_fa, path_checksums]:
             assert pth is not None, f"path still unset in [path_genome_gff, path_genome_fa, path_checksums], " \
-                                    f"{[path_genome_gff, path_genome_fa, path_checksums]}"
+                                    f"{[path_genome_gff, path_genome_fa, path_checksums]}\n"
         return path_genome_fa, path_genome_gff, path_checksums
 
 
@@ -194,12 +194,14 @@ def get_all(base_path, out_dir, overwrite, resume_after):
             known_error_log(a_sp, out_dir, e)
         except AssertionError as e:
             known_error_log(a_sp, out_dir, e)
+        # todo, maybe auto-detect and log suppressed genomes differently?
+        # where 'suppressed' is the only folder inside all_assembly_versions/
 
 
 def known_error_log(species, out_dir, e):
     with open(ospj(out_dir, 'download.log'), 'a') as f:
         f.write(f"ERROR encountered downloading {species}\n")
-        f.write(str(e))
+        f.write(str(e) + '\n')
 
 
 def dl_one(species, base_path, out_dir, overwrite, preferred_version=None):
