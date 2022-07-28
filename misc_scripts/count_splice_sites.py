@@ -28,15 +28,24 @@ def main(introns_fasta, file_out):
     two_mers = [''.join(x) for x in itertools.product('ACTG', repeat=2)]
     pairs = itertools.product(two_mers, two_mers)
     sites = {mer_pair: 0 for mer_pair in pairs}
+    sites[('NN', 'NN')] = 0
+    sites['too_short'] = 0
     for _, seq in gen_seqs_from_fasta(introns_fasta):
-        sites[(seq[:2], seq[-2:])] += 1
+        try:
+            sites[(seq[:2], seq[-2:])] += 1
+        except KeyError:
+            print(f'key error for {(seq[:2], seq[-2:])}, adding to err category', file=sys.stderr)
+            if len(seq[:2]) == len(seq[-2:]) == 2:  # probably ambiguous, make fully so
+                sites[('NN', 'NN')] += 1
+            else:
+                sites['too_short'] += 1
     if file_out is None:
         f = sys.stdout
     else:
         f = open(file_out, 'w')
-    print('donor_acceptor,count', file=f)
+    print('donor_acceptor\tcount', file=f)
     for mer, count in sites.items():
-        print(f'{mer},{count}', file=f)
+        print(f'{mer}\t{count}', file=f)
     f.close()
 
 
