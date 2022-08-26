@@ -8,8 +8,14 @@ fi
 trial_folder=$1
 eval_file_name=$2
 
-# if the folder has a trial.log in it we assume nni, otherwise cluster
-log_file="$trial_folder/$eval_file_name"
+# if the folder has a trial.log in it, we'll use it for data paths
+if [[ -f $trial_folder/trial.log ]];
+then
+  log_file=$trial_folder/trial.log
+else
+  log_file="$trial_folder/$eval_file_name"
+fi
+
 dataset=$(cat $log_file| grep -v load_model_path | grep ": '\(.*_data.h5\)'" -o|sed "s/[: ']//g")
 model=$(cat $log_file| grep "'load_model_path': '\(.*.h5\)'" -o|sed "s/[: ']//g;s/load_model_path//g")
 
