@@ -9,12 +9,13 @@ if [[ $# -lt 2 ]]; then
 	echo "Usage: ./stats-from-eval.sh main_folder output_file_name"
 	exit
 fi
-
+here=`readlink -f $0`
+here=${here%/stats-from-eval*sh}
 main_folder=$1
 output_file_name=$2
-source $hppath/venv/bin/activate
+
 for i in `ls -d "$main_folder"/*/`;
 do 
-  $hppath/../helixer_scratch/cluster_eval_predictions/evaluations/overall/stats-from-eval-one-trial_nothpc.sh $i  $output_file_name
+  $here/stats-from-eval-one-trial_nothpc.sh $i  $output_file_name
 done
 
