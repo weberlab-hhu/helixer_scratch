@@ -5,6 +5,7 @@ import argparse
 import numpy as np
 import datetime
 from helixer.export.exporter import HelixerExportController
+from n90_train_val_split import copy_structure, copy_groups_recursively
 
 
 parser = argparse.ArgumentParser()
@@ -15,7 +16,7 @@ parser.add_argument('--h5-to-filter', type=str, required=True, help='h5 file tha
 parser.add_argument('--output-file', type=str, required=True)
 parser.add_argument('--keep-fraction', type=float, default=0.5, help='keep this fraction of total')
 parser.add_argument('--dry-run', action='store_true', help='Just output what would be done')
-parser.add_argument('--write-by', type=int, default=100_000_000, help='max base pairs to read (into RAM)/write at once')
+parser.add_argument('--write-by', type=int, default=6_000_000, help='max base pairs to read (into RAM)/write at once')
 args = parser.parse_args()
 
 
@@ -49,21 +50,18 @@ def main(args):
     assert 0 < n_samples < n_samples_source, '--keep-fraction should be set so that the h5 file is _downsampled_'
     samples_idx, furthest_distance = closest_matches(h5_in, predictions, n_samples)
     samples_idx = sorted(samples_idx)
+    mask = np.zeros(shape=(h5_in['data/X'].shape[0],),
+                    dtype=bool)
+    mask[samples_idx] = True
 
     print(f'selecting {n_samples} with average distance below {furthest_distance}', flush=True)
     if not args.dry_run:
         h5_out = h5py.File(args.output_file, 'w')
-        h5_out.create_group('data')
-        for key in h5_in['data'].keys():
-            for si in range(0, n_samples, max_n_chunks):
-                samples = dsets_in[key][samples_idx[si:(si + max_n_chunks)]]
-                if key not in h5_out['data'].keys():
-                    HelixerExportController._create_dataset(h5_out, f'/data/{key}', samples, dsets_in[key].dtype)
-                    dsets_out = h5_out['data']
-
-                old_len = dsets_out[key].shape[0]
-                dsets_out[key].resize(old_len + len(samples), axis=0)
-                dsets_out[key][old_len:] = samples
+        copy_structure(h5_in, h5_out)
+        groups = [key for key in h5_in.keys() if not key.endswith('_meta')]
+        for si in range(0, h5_in['data/X'].shape[0], max_n_chunks):
+            copy_groups_recursively(h5_in, h5_out, groups=groups, start_i=si, end_i=si + max_n_chunks,
+                                    mask=mask[si:si + max_n_chunks])
 
         h5_out.attrs['timestamp'] = str(datetime.datetime.now())
         for key, value in vars(args).items():

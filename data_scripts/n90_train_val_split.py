@@ -100,13 +100,15 @@ def copy_structure(h5_in, h5_out):
 
 def copy_some_data(h5_in, h5_out, datakey, mask, start_i, end_i):
     """basically appends h5_in[datakey][start_i:end_i][mask] to h5_out[datakey]"""
-    if end_i is None:
+    if end_i is None or end_i > len(h5_in[datakey]):
         end_i = len(h5_in[datakey])
 
-    samples = np.array(h5_in[datakey][start_i:end_i])
+    keep_idxs = np.arange(start_i, end_i)
 
     if mask is not None:
-        samples = samples[mask]
+        keep_idxs = keep_idxs[mask]
+
+    samples = np.array(h5_in[datakey][keep_idxs])
 
     old_len = len(h5_out[datakey])
     h5_out[datakey].resize(old_len + len(samples), axis=0)
