@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+import sys
 import time
 import h5py
 import argparse
@@ -22,18 +23,37 @@ args = parser.parse_args()
 
 def closest_matches(h5_in, predictions, n_samples):
     ds = h5_in['data/y']
+    shape = [ds.shape[x] for x in [0, 2]]  # [N, 4] where N varies from ~100-100k with genome length
     by = 100
-    all_dists = np.zeros(shape=(ds.shape[0],))
+    all_dists = np.zeros(shape=shape)
+    all_counts = np.zeros(shape=shape)
     for i in range(0, ds.shape[0], by):
         y = ds[i:(i + by)]
         preds = predictions['predictions'][i:(i + by)]
         # we want to select examples where the predictions are
         # a) confident, and
-        # b) agree with reference
+        # b) agree with reference, and
+        # c) have a fair distribution of each class (i.e. not just intergenic, which is generally easiest)
+        # d) are counted by basepair, ignoring padding
+
+        # for (d) zero-out predictions where y is padded (zeros)
+        padding = np.logical_not(np.sum(y, axis=2).astype(bool))
+        preds[padding] = 0.
+        # for a - c, track distance and counts
         distance = np.abs(y - preds)
-        all_dists[i:(i + by)] = np.sum(distance, axis=(1, 2))
-    argsort = np.argsort(all_dists)
-    return argsort[:n_samples], all_dists[n_samples] / np.prod(ds.shape[1:])
+        all_dists[i:(i + by)] = np.sum(distance, axis=1)
+        all_counts[i:(i + by)] = np.sum(y, axis=1)
+
+    # prep to normalize so that each class has same average distance
+    class_counts = np.sum(all_counts, axis=0)
+    class_distances = np.sum(all_dists, axis=0)
+    average_class_dist = class_distances / class_counts
+    class_dist_weights = np.mean(average_class_dist) / average_class_dist
+    # normalize and summarize down to one value per subsequence
+    normalized_dist = np.sum(all_dists * class_dist_weights / class_counts, axis=1)
+    # indexes of subsequences to sort by this distance
+    argsort = np.argsort(normalized_dist)
+    return argsort[:n_samples], normalized_dist[n_samples] / np.prod(ds.shape[1:])
 
 
 def main(args):
@@ -54,7 +74,7 @@ def main(args):
                     dtype=bool)
     mask[samples_idx] = True
 
-    print(f'selecting {n_samples} with average distance below {furthest_distance}', flush=True)
+    print(f'selecting {n_samples} with average normalized distance below {furthest_distance}', flush=True)
     if not args.dry_run:
         h5_out = h5py.File(args.output_file, 'w')
         copy_structure(h5_in, h5_out)
@@ -68,7 +88,8 @@ def main(args):
             h5_out.attrs[key] = str(value)
         h5_out.close()
 
-    print(f'added {n_samples} / {n_samples_source} samples of distance less than {furthest_distance} in {time.time() - start_time:.2f} secs', flush=True)
+    print(f'added {n_samples} / {n_samples_source} samples of normalized '
+          f'distance less than {furthest_distance} in {time.time() - start_time:.2f} secs', flush=True)
     h5_in.close()
     print(f'closed {args.output_file}')
 
