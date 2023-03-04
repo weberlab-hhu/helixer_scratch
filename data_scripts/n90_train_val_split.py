@@ -4,21 +4,6 @@ import h5py
 import numpy as np
 
 
-DTYPES = {'data/y': 'int8',
-          'data/X': 'float16',
-          'data/sample_weights': 'int8',
-          'data/gene_lengths': 'uint32',
-          'data/phases': 'int8',
-          'data/seqids': 'S50',
-          'data/species': 'S25',
-          'data/start_ends': 'int64',
-          'data/transitions': 'int8',
-          'data/err_samples': 'bool',
-          'data/fully_intergenic_samples': 'bool',
-          'data/is_annotated': 'bool',
-          'evaluation/rnaseq_coverage': 'int',
-          'evaluation/rnaseq_spliced_coverage': 'int',
-          'rnaseq_meta/bam_files': 'S512'}
 
 
 def split_coords_by_N90(genome_coords, val_fraction):
@@ -87,8 +72,8 @@ def copy_structure(h5_in, h5_out):
                 h5_out.create_dataset(f'/{g}/{ds}', shape=shape,
                                       maxshape=tuple([None] + shape[1:]),
                                       chunks=tuple([1] + shape[1:]),
-                                      dtype=DTYPES[f'{g}/{ds}'],
-                                      compression='gzip',  #dat.compression
+                                      dtype=dat.dtype,
+                                      compression='gzip',
                                       shuffle=shuffle)
 
     # attributes are things like the commits and paths, that won't be split
