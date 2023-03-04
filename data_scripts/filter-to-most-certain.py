@@ -21,6 +21,17 @@ parser.add_argument('--write-by', type=int, default=6_000_000, help='max base pa
 args = parser.parse_args()
 
 
+def to_stratification_quantiles(fraction_intergenic, qbreaks=None):
+    """converts raw input to low resolution rank (equal membership bins)"""
+    if qbreaks is None:
+        qbreaks = tuple([x / 6 for x in range(1, 6)])
+
+    quartiles = np.quantile(fraction_intergenic, qbreaks)
+    # basically the index any item in fraction_intergenic would need to slip it sorted into quartiles
+    quant_indices = np.searchsorted(quartiles, fraction_intergenic)
+    return quant_indices
+
+
 def closest_matches(h5_in, predictions, n_samples):
     ds = h5_in['data/y']
     shape = [ds.shape[x] for x in [0, 2]]  # [N, 4] where N varies from ~100-100k with genome length
@@ -44,16 +55,26 @@ def closest_matches(h5_in, predictions, n_samples):
         all_dists[i:(i + by)] = np.sum(distance, axis=1)
         all_counts[i:(i + by)] = np.sum(y, axis=1)
 
-    # prep to normalize so that each class has same average distance
-    class_counts = np.sum(all_counts, axis=0)
-    class_distances = np.sum(all_dists, axis=0)
-    average_class_dist = class_distances / class_counts
-    class_dist_weights = np.mean(average_class_dist) / average_class_dist
-    # normalize and summarize down to one value per subsequence
-    normalized_dist = np.sum(all_dists * class_dist_weights / class_counts, axis=1)
-    # indexes of subsequences to sort by this distance
-    argsort = np.argsort(normalized_dist)
-    return argsort[:n_samples], normalized_dist[n_samples] / np.prod(ds.shape[1:])
+    # summarize down to one value per subsequence
+    average_distances = np.sum(all_dists, axis=1) / np.sum(all_counts, axis=1)
+
+    # normalized_dist still favors pure intergenic so just use stratification to force class distribution
+    ig_ranks = to_stratification_quantiles(all_counts[:, 0] / np.sum(all_counts, axis=1))
+    unique_ranks = np.unique(ig_ranks)
+    n_each = n_samples // len(unique_ranks)
+    argsort_list = []
+    dist_list = []
+    # find lowest distance within each intergenic fraction rank
+    for rnk in unique_ranks:
+        avd = np.copy(average_distances)
+        avd[np.logical_not(ig_ranks == rnk)] = np.inf  # all other ig ranks will not be selected
+        ag = np.argsort(avd)
+        argsort_list.append(ag[:n_each])
+        dist_list.append(avd[ag[n_each]])
+
+    # indexes of subsequences with lowest distances
+    argsort = np.concatenate(argsort_list)
+    return argsort, dist_list
 
 
 def main(args):
@@ -74,7 +95,8 @@ def main(args):
                     dtype=bool)
     mask[samples_idx] = True
 
-    print(f'selecting {n_samples} with average normalized distance below {furthest_distance}', flush=True)
+    print(f'selecting {len(samples_idx)} with average '
+          f'normalized distances below in each genic proportion ranking {furthest_distance}', flush=True)
     if not args.dry_run:
         h5_out = h5py.File(args.output_file, 'w')
         copy_structure(h5_in, h5_out)
@@ -88,8 +110,8 @@ def main(args):
             h5_out.attrs[key] = str(value)
         h5_out.close()
 
-    print(f'added {n_samples} / {n_samples_source} samples of normalized '
-          f'distance less than {furthest_distance} in {time.time() - start_time:.2f} secs', flush=True)
+    print(f'added {len(samples_idx)} / {n_samples_source} samples of normalized '
+          f'distances less than {furthest_distance} in {time.time() - start_time:.2f} secs', flush=True)
     h5_in.close()
     print(f'closed {args.output_file}')
 
