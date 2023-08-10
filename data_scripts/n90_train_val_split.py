@@ -1,9 +1,9 @@
+import sys
+
 from sklearn.model_selection import train_test_split
 import argparse
 import h5py
 import numpy as np
-
-
 
 
 def split_coords_by_N90(genome_coords, val_fraction):
@@ -50,37 +50,45 @@ def split_coords_by_N90(genome_coords, val_fraction):
 
 
 def copy_structure(h5_in, h5_out):
-    """copy structure of one h5 file to another insofar as it's just group/dataset(s)"""
-    groups = h5_in.keys()
-    # setup all groups if they don't exist
-    for g in groups:
-        try:
-            h5_out[g]
-        except KeyError:
-            h5_out.create_group(g)
+    """copy structure of one h5 file to another, mark arrays with dim0 shorter than data/X"""
+    short_arrays = []
+    main_index_shape = h5_in['data/X'].shape[0]
 
-    # setup all datasets within groups if they don't exist
-    for g in groups:
-        for ds in h5_in[g].keys():
+    def make_item(name, item):
+        if isinstance(item, h5py.Group):
             try:
-                h5_out[g][ds]
+                h5_out[name]
             except KeyError:
-                dat = h5_in[g][ds]
+                h5_out.create_group(name)
+        else:
+            try:
+                h5_out[name]
+            except KeyError:
+                dat = h5_in[name]
                 shape = list(dat.shape)
+                if shape[0] != main_index_shape:
+                    short_arrays.append(name)
                 shape[0] = 0  # create it empty
                 shuffle = len(shape) > 1
-                h5_out.create_dataset(f'/{g}/{ds}', shape=shape,
+                h5_out.create_dataset(name, shape=shape,
                                       maxshape=tuple([None] + shape[1:]),
                                       chunks=tuple([1] + shape[1:]),
                                       dtype=dat.dtype,
                                       compression='gzip',
                                       shuffle=shuffle)
 
+    # setup all groups and datasets within groups if they don't exist
+    h5_in.visititems(make_item)
+
     # attributes are things like the commits and paths, that won't be split
     # so copy entirely
     for key, val in h5_in.attrs.items():
         if key not in h5_out.attrs.keys():
             h5_out.attrs.create(key, val)
+    print(f'INFO: the following arrays will be copied in their entirety and not be subset,\n'
+          f'these are expected to relate to metadata:\n {short_arrays}',
+          file=sys.stderr)
+    return short_arrays
 
 
 def copy_some_data(h5_in, h5_out, datakey, mask, start_i, end_i):
@@ -100,11 +108,14 @@ def copy_some_data(h5_in, h5_out, datakey, mask, start_i, end_i):
     h5_out[datakey][old_len:] = samples
 
 
-def copy_groups_recursively(h5_in, h5_out, groups, mask, start_i, end_i):
+def copy_groups_recursively(h5_in, h5_out, skip_arrays, mask, start_i, end_i):
     """basically appends h5_in[*][start_i:end_i][mask] to h5_out[*], where * loops through all groups/datasets"""
-    for g in groups:
-        for key in h5_in[g].keys():
-            copy_some_data(h5_in, h5_out, f'{g}/{key}', mask, start_i, end_i)
+    def maybe_copy_some_data(name, item):
+        if not isinstance(item, h5py.Group):
+            if name not in skip_arrays:
+                copy_some_data(h5_in, h5_out, name, mask, start_i, end_i)
+
+    h5_in.visititems(maybe_copy_some_data)
 
 
 def main(args):
@@ -114,10 +125,9 @@ def main(args):
 
     # setup all shared info for output files
     for h5_out in [train_out, val_out]:
-        copy_structure(h5_in, h5_out)
+        short_meta_groups = copy_structure(h5_in, h5_out)
         # also copy the entirety of the metadata to both outputs
-        meta_groups = [g for g in h5_in.keys() if g.endswith('_meta')]
-        copy_groups_recursively(h5_in, h5_out, meta_groups, mask=None, start_i=0, end_i=None)
+        copy_groups_recursively(h5_in, h5_out, short_meta_groups, mask=None, start_i=0, end_i=None)
 
     # identify what goes to train vs val
     input_seqids = h5_in['data/seqids']
@@ -129,7 +139,6 @@ def main(args):
     val_mask = np.isin(input_seqids, val_coord_ids)
 
     # go through in mem friendly chunks, writing data to each split
-    not_meta_groups = [g for g in h5_in.keys() if not g.endswith('_meta')]
     by = args.write_by // h5_in['data/X'].shape[1]
     end = len(h5_in['data/X'])
     for i in range(0, end, by):
@@ -138,9 +147,9 @@ def main(args):
         sub_v_mask = val_mask[i:i + by]
 
         if np.any(sub_t_mask):
-            copy_groups_recursively(h5_in, train_out, not_meta_groups, sub_t_mask, i, i + by)
+            copy_groups_recursively(h5_in, train_out, short_meta_groups, sub_t_mask, i, i + by)
         if np.any(sub_v_mask):
-            copy_groups_recursively(h5_in, val_out, not_meta_groups, sub_v_mask, i, i + by)
+            copy_groups_recursively(h5_in, val_out, short_meta_groups, sub_v_mask, i, i + by)
 
 
 if __name__ == "__main__":

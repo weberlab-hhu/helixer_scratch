@@ -1,11 +1,9 @@
 #! /usr/bin/env python3
-import sys
 import time
 import h5py
 import argparse
 import numpy as np
 import datetime
-from helixer.export.exporter import HelixerExportController
 from n90_train_val_split import copy_structure, copy_groups_recursively
 
 
@@ -99,10 +97,9 @@ def main(args):
           f'normalized distances below in each genic proportion ranking {furthest_distance}', flush=True)
     if not args.dry_run:
         h5_out = h5py.File(args.output_file, 'w')
-        copy_structure(h5_in, h5_out)
-        groups = [key for key in h5_in.keys() if not key.endswith('_meta')]
+        skip_groups = copy_structure(h5_in, h5_out)
         for si in range(0, h5_in['data/X'].shape[0], max_n_chunks):
-            copy_groups_recursively(h5_in, h5_out, groups=groups, start_i=si, end_i=si + max_n_chunks,
+            copy_groups_recursively(h5_in, h5_out, skip_arrays=skip_groups, start_i=si, end_i=si + max_n_chunks,
                                     mask=mask[si:si + max_n_chunks])
 
         h5_out.attrs['timestamp'] = str(datetime.datetime.now())
