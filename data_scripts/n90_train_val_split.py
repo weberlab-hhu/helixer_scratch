@@ -51,6 +51,7 @@ def split_coords_by_N90(genome_coords, val_fraction):
 
 def copy_structure(h5_in, h5_out):
     """copy structure of one h5 file to another, mark arrays with dim0 shorter than data/X"""
+    main_arrays = []
     short_arrays = []
     main_index_shape = h5_in['data/X'].shape[0]
 
@@ -68,6 +69,8 @@ def copy_structure(h5_in, h5_out):
                 shape = list(dat.shape)
                 if shape[0] != main_index_shape:
                     short_arrays.append(name)
+                else:
+                    main_arrays.append(name)
                 shape[0] = 0  # create it empty
                 shuffle = len(shape) > 1
                 h5_out.create_dataset(name, shape=shape,
@@ -88,7 +91,7 @@ def copy_structure(h5_in, h5_out):
     print(f'INFO: the following arrays will be copied in their entirety and not be subset,\n'
           f'these are expected to relate to metadata:\n {short_arrays}',
           file=sys.stderr)
-    return short_arrays
+    return main_arrays, short_arrays
 
 
 def copy_some_data(h5_in, h5_out, datakey, mask, start_i, end_i):
@@ -125,9 +128,9 @@ def main(args):
 
     # setup all shared info for output files
     for h5_out in [train_out, val_out]:
-        short_meta_groups = copy_structure(h5_in, h5_out)
+        main_groups, short_meta_groups = copy_structure(h5_in, h5_out)
         # also copy the entirety of the metadata to both outputs
-        copy_groups_recursively(h5_in, h5_out, short_meta_groups, mask=None, start_i=0, end_i=None)
+        copy_groups_recursively(h5_in, h5_out, skip_arrays=main_groups, mask=None, start_i=0, end_i=None)
 
     # identify what goes to train vs val
     input_seqids = h5_in['data/seqids']
