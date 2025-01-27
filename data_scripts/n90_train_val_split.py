@@ -123,6 +123,10 @@ def copy_groups_recursively(h5_in, h5_out, skip_arrays, mask, start_i, end_i):
 
 def main(args):
     h5_in = h5py.File(args.h5_to_split, 'r')
+    if args.write_by < h5_in['data/X'].shape[1]:
+        print(f"the argument '--write-by' ({args.write_by}) is smaller than the input files subsequence "
+              f"length ({h5_in['data/X'].shape[1]}), the files will therefore be written 1 subsequence "
+              f"at a time, consider increasing '--write-by' to speed up writing the output files.")
     train_out = h5py.File(args.output_pfx + 'training_data.h5', 'w')
     val_out = h5py.File(args.output_pfx + 'validation_data.h5', 'w')
 
@@ -144,6 +148,8 @@ def main(args):
     # go through in mem friendly chunks, writing data to each split
     by = args.write_by // h5_in['data/X'].shape[1]
     end = len(h5_in['data/X'])
+    if by == 0:  # in case chunk size/subsequence length is larger than write_by
+        by = 1
     for i in range(0, end, by):
         print(f'{i} / {end}')
         sub_t_mask = train_mask[i:i + by]
