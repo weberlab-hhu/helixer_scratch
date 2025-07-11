@@ -39,8 +39,12 @@ def cds_length(entries):
 @click.option("-i", "--gff-file", required=True)
 def main(gff_file):
     transcripts = {}
-    for entry in gff_gen(gff_file):
+    keep_gene=False
+    for i, entry in enumerate(gff_gen(gff_file)):
         if entry.type in ["gene", "pseudogene"]:
+            attr_dict = dict(item.split("=", 1) for item in entry.attribute.split(";") if "=" in item)
+            if attr_dict['gene_biotype'] == 'protein_coding':
+                keep_gene = True
             if transcripts:
                 longest = max(transcripts.values(), key=lambda x: cds_length(x))
                 print(str_entry(gene_entry))
@@ -49,6 +53,8 @@ def main(gff_file):
             transcripts = {}
             gene_id = entry.get_ID()
             gene_entry = entry
+        if not keep_gene:
+            continue
         elif entry.type in ['mRNA', 'transcript']:
             assert entry.get_Parent()[0] == gene_id, f"{entry.get_Parent()[0]} != {gene_id}"
             transcript_id = entry.get_ID()
